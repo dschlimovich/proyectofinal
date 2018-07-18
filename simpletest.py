@@ -40,7 +40,7 @@ print('Reading ADS1x15 values, press Ctrl-C to quit...')
   #  for i in range(4):
         # Read the specified ADC channel using the previously set gain value.
 value = adc.read_adc(0, gain=GAIN)
-valueTransf=(14/65536)*value + 7
+valueTransf=(14/27933)*value
         # Note you can also pass in an optional data_rate parameter that controls
         # the ADC conversion time (in samples/second). Each chip has a different
         # set of allowed data rate values, see datasheet Table 9 config register
