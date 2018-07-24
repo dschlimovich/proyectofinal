@@ -1,0 +1,48 @@
+Bases para definir las funciones:
+
+Sensores:
+- 6 Temperatura sumergibles (Tal vez seria conveniente destinar 1 para el pH)
+- 1 pH
+- 1 Temperatura y Humedad ambiente
+
+Ese conjunto de datos sensados estan asociados con un id de experimento,
+el cual debe pertenecer a un tipo de receta planificada.
+
+Entonces la primer funcion que tengo que realizar:
+Nombre: Obtener datos de sensores (mido y mas adelante veo si lo descarto)
+Entrada: NULL
+Funcion: Obtener valores de sensores y devolverlos en un arreglo de datos
+Salida: *Datos de todos los sensores en un arreglo
+	*Error (tal vez un numero que indique de que sensor no se pudo obtener datos)
+
+La segunda función:
+Nombre: Insertar datos de sensores en base de datos
+Entrada: ID experimento, temp1, ..., temp6, tempamb, humity, pH
+	Siendo temp1, ..., pH booleanos que me indiquen si necesito esos datos
+	almacenados en la base de datos en el instante indicado
+Funcion:
+Crear en base de datos una instancia de "SensedValues", para la cual
+* Tiene que obtener el tiempo del reloj
+* Obtener arreglo de datos con valores sensados
+* Insertar datos con el correspondiente id de experimento
+Salida: Booleano indicando que se pudo realizar la operación correctamente.
+
+Tercer funcion:
+Nombre: Temporizar mediciones
+Entrada:  Regimen de medicion para cada sensor 
+	Siendo un regimen de medición: Cantidad de mediciones + intervalo de medición (segundos)
+Función:
+	/* Considerar que el sensor de pH necesita 2 minutos de estabilizacion
+	Determinar en segundos, cuando tarda el experimento.
+	Hacer un for con un contador para cada segundo{
+		if( toca_medir_algo){ resultado.append() llamar_segunda_funcion(id exp, sensores)} //capaz que habria que hacer un thread o algo así
+		sleep(1seg)
+	}
+	
+Salida: resultado (arreglo de booleanos que diga si cada vez que tocaba medir se pudo hacer sin problemas)
+
+Cuarta funcion:
+Nombre: Determinar temporizacion a partir de la receta guardada.
+Entrada:
+Funcion:
+Salida: 
