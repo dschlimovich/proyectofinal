@@ -1,0 +1,17 @@
+import pymysql.cursors
+connection = pymysql.connect(host='localhost',
+                             user='phpmyadmin',
+                             password='raspberry',
+                             db='prueba',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+sql = "INSERT INTO tabla( id, numero) VALUES (3,3)"
+cursor = connection.cursor()
+cursor.execute(sql)
+connection.commit()
+
+sql = "SELECT * FROM tabla WHERE id = 3"
+cursor.execute(sql)
+result = cursor.fetchone()
+print(result)
+connection.close()
