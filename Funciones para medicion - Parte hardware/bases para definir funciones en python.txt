@@ -9,7 +9,7 @@ Ese conjunto de datos sensados estan asociados con un id de experimento,
 el cual debe pertenecer a un tipo de receta planificada.
 
 Entonces la primer funcion que tengo que realizar:
-Nombre: Obtener datos de sensores
+Nombre: Obtener datos de sensores (mido y mas adelante veo si lo descarto)
 Entrada: NULL
 Funcion: Obtener valores de sensores y devolverlos en un arreglo de datos
 Salida: *Datos de todos los sensores en un arreglo
