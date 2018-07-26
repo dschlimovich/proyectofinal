@@ -19,8 +19,7 @@ def funcionPrueba(Nombre,Apellido,MuchasBoludeces):
 
 
 
-#funcionPrueba("Damian"," esta cagado de miedo xq ")
-#funcionPrueba("Damian"," esta cagado de miedo xq ","le","ofrecieron","darle","un","depa para irse a vivir solo")
+
             
 funcionPrueba(nom,Ape)
 
