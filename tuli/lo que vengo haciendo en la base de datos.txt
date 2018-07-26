@@ -13,6 +13,8 @@ Create Table Experimento(
 	id int NOT NULL AUTO_INCREMENT,
 	fecha date,
 	maceracion int,
+	duracion_min int,
+	intervaloMedicion_seg FLOAT,
 	PRIMARY KEY (id),
 	FOREIGN KEY (maceracion) REFERENCES Maceracion(id)
 );
@@ -21,9 +23,12 @@ Create Table Experimento(
 Create Table SensedValues(
 	id INT NOT NULL AUTO_INCREMENT;
 	exp INT,
-	hora DATETIME,
+	fechayhora DATETIME DEFAULT CURRENT_TIMESTAMP,
 	temp1 FLOAT,
 	temp2 FLOAT,
+	temp3 FLOAT,
+	temp4 FLOAT,
+	tempPh FLOAT,
 	tempAmb FLOAT,
 	humity FLOAT,
 	pH FLOAT,
