@@ -20,7 +20,7 @@ for i in range(num_medidas):
     datos=primer_funcion.funcion_uno()
     segunda_funcion.escribe(idExp,datos)
     print('Termino la iteracion: '+str(i))
-    #time.sleep(interavalo_seg)
+    time.sleep(interavalo_seg)
 print('Salio del For')
 
 
