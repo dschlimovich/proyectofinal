@@ -1,0 +1,37 @@
+Create database maceraciones;
+use maceraciones;
+
+
+Create Table Maceracion(
+	id int NOT NULL AUTO_INCREMENT,
+	nombre varchar(255),
+	PRIMARY KEY (id) 
+);
+
+
+Create Table Experimento(
+	id int NOT NULL AUTO_INCREMENT,
+	fecha date,
+	maceracion int,
+	duracion_min int,
+	intervaloMedicion_seg FLOAT,
+	PRIMARY KEY (id),
+	FOREIGN KEY (maceracion) REFERENCES Maceracion(id)
+);
+
+
+Create Table SensedValues(
+	id INT NOT NULL AUTO_INCREMENT;
+	exp INT,
+	fechayhora DATETIME DEFAULT CURRENT_TIMESTAMP,
+	temp1 FLOAT,
+	temp2 FLOAT,
+	temp3 FLOAT,
+	temp4 FLOAT,
+	tempPh FLOAT,
+	tempAmb FLOAT,
+	humity FLOAT,
+	pH FLOAT,
+	PRIMARY KEY(id),
+	FOREIGN KEY (exp) REFERENCES Experimento(id)
+);
