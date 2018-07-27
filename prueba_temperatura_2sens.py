@@ -9,8 +9,8 @@ Carpeta_Sensor=[]
 #Cargamos la ruta donde se encuentra nuestro sensor.
 Carpeta_Sensor.append(glob.glob( '/sys/bus/w1/devices/' + '28*')[0])
 Carpeta_Sensor.append(glob.glob( '/sys/bus/w1/devices/' + '28*')[1])
-Carpeta_Sensor.append(glob.glob( '/sys/bus/w1/devices/' + '28*')[2])
-Carpeta_Sensor.append(glob.glob( '/sys/bus/w1/devices/' + '28*')[3])
+#Carpeta_Sensor.append(glob.glob( '/sys/bus/w1/devices/' + '28*')[2])
+#Carpeta_Sensor.append(glob.glob( '/sys/bus/w1/devices/' + '28*')[3])
 
 """
 #Con esta linea cargamos el nombre del primer sensor de la lista disponible,
