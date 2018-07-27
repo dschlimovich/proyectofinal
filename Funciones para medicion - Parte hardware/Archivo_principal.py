@@ -22,4 +22,3 @@ for i in range(num_medidas):
     time.sleep(interavalo_seg)
 print('Salio del For')
 #sys.exit()
-return 0
