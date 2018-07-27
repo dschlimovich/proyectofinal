@@ -62,6 +62,8 @@ def medir_ph():
 
 	phVol=avgValue*5.0/6
 	phValue=-5.7 * phVol + calibration
+
+	pin0.disable_reporting()
 	
 	return phValue
 
