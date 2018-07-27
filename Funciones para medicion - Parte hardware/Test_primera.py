@@ -1,3 +1,6 @@
 import primer_funcion
+import segunda_funcion
 
-print(primer_funcion.funcion_uno())
+datos=primer_funcion.funcion_uno()
+print(datos)
+segunda_funcion.escribe(1,datos)

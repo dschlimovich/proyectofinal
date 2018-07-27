@@ -2,20 +2,24 @@ import sys
 import math
 import time
 
-import primera_funcion
+import primer_funcion
 import segunda_funcion
 
 #Valores que el archivo recibe como parametro
 #--------------------------------------------
-idExp=sys.argv[1]
-duracion_min=sys.argv[2]
-interavalo_seg=sys.argv[3]
+idExp=int(sys.argv[1])
+duracion_min=int(sys.argv[2])
+interavalo_seg=int(sys.argv[3])
 #--------------------------------------------
 
 
 num_medidas=math.trunc((duracion_min * 60) / interavalo_seg)
 
 for i in range(num_medidas):
-	datos=primera_funcion()
-	segunda_funcion(idExp,datos)
-	time.sleep(interavalo_seg)
+    datos=primer_funcion.funcion_uno()
+    segunda_funcion.escribe(idExp,datos)
+    print('Termino la iteracion: '+str(i))
+    time.sleep(interavalo_seg)
+print('Salio del For')
+#sys.exit()
+return 0
