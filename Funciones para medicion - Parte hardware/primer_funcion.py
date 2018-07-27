@@ -35,6 +35,7 @@ def funcion_uno():
             datos.append(-1000)
             
     ph =  mediciones.medir_ph()
+    #ph=-69        
     datos.append(ph) # ver que esto funcione
 
     hum_amb, temp_amb = mediciones.medir_amb(11)
