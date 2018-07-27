@@ -4,7 +4,7 @@ import glob
 import pyfirmata
 import time
 import Adafruit_DHT
-def medir_temperatura( id_sensor):
+def medir_temperatura(id_sensor):
 
 	#la onda aca es que pasandome la el sensor que quiere medir yo le devuelvo el valor que tiene
 	os.system('modprobe w1-gpio')
@@ -12,9 +12,10 @@ def medir_temperatura( id_sensor):
 	# Deberiamos cargar este vector con cada ID correspondiente de los sensores
 	#Cargamos la ruta donde se encuentra nuestro sensor.
 	ruta_sensores = '/sys/bus/w1/devices/'
-	Carpeta_Sensor = glob.glob( ruta_sensores + id_sensor)
-
+	Carpeta_Sensor = glob.glob( ruta_sensores + id_sensor)[0]
+	print(Carpeta_Sensor)
 	fSensor = open(Carpeta_Sensor + '/w1_slave', 'r')
+	
 	linSensor = fSensor.readlines()
 	fSensor.close()
 
@@ -25,8 +26,6 @@ def medir_temperatura( id_sensor):
 		strTemp = linSensor[1][posTemp+2:]
 		# Calculamos la temperatura real
 		temperatura =  float(strTemp) / 1000.0
-	else:
-		temperatura = 'error'
 
 	return temperatura
 
@@ -34,7 +33,7 @@ def medir_ph( id_sensor_temperatura):
 	# Me devuelve un array de dos valores. Primero el valor de temperatura. Segundo el valor de pH
 
 	calibration=21.7   ### VER SI ESTE VALOR NO CONVIENE PASARLO POR PARAMETRO osea VER COMO VAMOS A MANEJAR LA CALIBRACION
-	board=pyfirmata.Arduino("/dev/ttyACM2") #Puerto serial x el q la raspi lee el arduino, cambia con las conexiones
+	board=pyfirmata.Arduino("/dev/ttyACM0") #Puerto serial x el q la raspi lee el arduino, cambia con las conexiones
 	pin0=board.get_pin('a:0:i')
 
 	iterator = pyfirmata.util.Iterator(board)
@@ -62,7 +61,7 @@ def medir_ph( id_sensor_temperatura):
 
 	phVol=avgValue*5.0/6
 	phValue=-5.7 * phVol + calibration
-	Valores.append( phValue )
+	
 	return medir_temperatura(id_sensor_temperatura), phValue
 
 def medir_amb(tipo_sensor):

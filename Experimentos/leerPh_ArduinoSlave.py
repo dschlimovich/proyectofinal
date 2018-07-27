@@ -2,7 +2,7 @@ import pyfirmata
 import time
 
 calibration=21.7
-board=pyfirmata.Arduino("/dev/ttyACM2") #Puerto serial x el q la raspi lee el arduino, cambia con las conexiones
+board=pyfirmata.Arduino("/dev/ttyACM0") #Puerto serial x el q la raspi lee el arduino, cambia con las conexiones
 pin0=board.get_pin('a:0:i')
 
 iterator = pyfirmata.util.Iterator(board)
