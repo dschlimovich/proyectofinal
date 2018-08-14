@@ -11,7 +11,7 @@ Create Table Maceracion(
 
 Create Table Experimento(
 	id int NOT NULL AUTO_INCREMENT,
-	fecha date,
+	fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
 	maceracion int,
 	duracion_min int,
 	intervaloMedicionTemp_seg FLOAT,
