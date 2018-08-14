@@ -14,7 +14,8 @@ Create Table Experimento(
 	fecha date,
 	maceracion int,
 	duracion_min int,
-	intervaloMedicion_seg FLOAT,
+	intervaloMedicionTemp_seg FLOAT,
+	intervaloMedicionPH_seg FLOAT,
 	PRIMARY KEY (id),
 	FOREIGN KEY (maceracion) REFERENCES Maceracion(id)
 );
