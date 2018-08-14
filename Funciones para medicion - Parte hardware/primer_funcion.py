@@ -3,7 +3,7 @@
 import os.path
 import mediciones
 
-def funcion_uno():
+def funcion_uno(mido_ph):
     # en mediciones tengo las 3 funciones: medir_temperatura, medir_ph, medir_amb
     # en &datos tengo que insertar los valores.
     datos = []
@@ -34,8 +34,11 @@ def funcion_uno():
         else:
             datos.append(-1000)
             
-    ph =  mediciones.medir_ph()
-    #ph=-69        
+    if( mido_ph ):
+        ph =  mediciones.medir_ph()
+    else:
+        ph = -1
+            
     datos.append(ph) # ver que esto funcione
 
     hum_amb, temp_amb = mediciones.medir_amb(11)
