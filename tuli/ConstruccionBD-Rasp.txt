@@ -34,5 +34,5 @@ Create Table SensedValues(
 	humity FLOAT,
 	pH FLOAT,
 	PRIMARY KEY(id),
-	FOREIGN KEY (id_ exp) REFERENCES Experimento(id)
+	FOREIGN KEY (id_exp) REFERENCES Experimento(id)
 );
