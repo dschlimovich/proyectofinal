@@ -15,7 +15,7 @@ intervalo_ph=int(sys.argv[4]) # en segundos pero multiplo de el intervalo de tem
 #--------------------------------------------
 
 num_medidas=math.trunc((duracion_min * 60) / intervalo_temp)
-contador_pH = int (intervalo_ph / intervalo_temp)
+contador = int (intervalo_ph / intervalo_temp)
 # el contador va decreciendo hasta que es 0, ahi realiza las mediciones de ph.
 
 for i in range(num_medidas):
