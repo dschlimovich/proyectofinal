@@ -35,9 +35,9 @@ def funcion_uno(mido_ph):
             datos.append(-1000)
             
     if( mido_ph ):
-		ph =  mediciones.medir_ph()
-	else:
-		ph = -1
+        ph =  mediciones.medir_ph()
+    else:
+        ph = -1
             
     datos.append(ph) # ver que esto funcione
 
