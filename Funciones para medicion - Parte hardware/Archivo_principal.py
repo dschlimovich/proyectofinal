@@ -19,16 +19,16 @@ contador = int (intervalo_ph / intervalo_temp)
 # el contador va decreciendo hasta que es 0, ahi realiza las mediciones de ph.
 
 for i in range(num_medidas):
-    contador = contador - 1
+	contador = contador - 1
 	if (contador == 0):
 		datos = primer_funcion.funcion_uno(1)
 		contador = int (intervalo_ph / intervalo_temp)
 	else:
 		datos=primer_funcion.funcion_uno(0)
 	
-    segunda_funcion.escribe(idExp,datos)
-    #print('Termino la iteracion: '+str(i))
-    time.sleep(intervalo_temp)
+	segunda_funcion.escribe(idExp,datos)
+	#print('Termino la iteracion: '+str(i))
+	time.sleep(intervalo_temp)
 #print('Salio del For')
 
 
