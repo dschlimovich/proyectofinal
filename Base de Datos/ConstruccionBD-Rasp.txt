@@ -29,6 +29,7 @@ Create Table SensedValues(
 	temp2 FLOAT,
 	temp3 FLOAT,
 	temp4 FLOAT,
+	temp5 FLOAT,
 	tempPh FLOAT,
 	tempAmb FLOAT,
 	humity FLOAT,
