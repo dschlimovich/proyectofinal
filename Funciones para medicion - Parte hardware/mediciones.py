@@ -34,6 +34,8 @@ def medir_ph():
         # Me devuelve un array de dos valores. Primero el valor de temperatura. Segundo el valor de pH
 
         calibration=21.7   ### VER SI ESTE VALOR NO CONVIENE PASARLO POR PARAMETRO osea VER COMO VAMOS A MANEJAR LA CALIBRACION
+        if (not os.path.isdir("/dev/ttyACM0")):
+            return -2
         board=pyfirmata.Arduino("/dev/ttyACM0") #Puerto serial x el q la raspi lee el arduino, cambia con las conexiones
         pin0=board.get_pin('a:0:i')
 
