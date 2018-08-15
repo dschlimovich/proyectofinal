@@ -20,18 +20,18 @@ class CdataBase {
 	
 	
 	
-	//public function existePersona(){echo "fun existe Persona";return 1;}
-	public function pruebaAPI(){
+	/* public function pruebaAPI(){
 		//echo "Aca tmb entra pruebaApi<br>";
 		$sql="SELECT * FROM `SensedValues";
 		$results = $this->conn->query($sql);
 		$data=[];
 		$json = array();
-		/*if ($results->num_rows > 0) {
-			while($row = $results->fetch_assoc()) {
-				echo($row);
-            }
-        }*/
+//	    if ($results->num_rows > 0) {
+//			while($row = $results->fetch_assoc()) {
+//				echo($row);
+//        }
+
+
         foreach($results as $result) {
         	echo "aca tmb entra";
             if ($result !=NULL) {
@@ -64,22 +64,7 @@ class CdataBase {
             else {echo "<br/>No hay más datos: <br/>".$result;}
 
         }
-		/*if ($result->num_rows > 0) {
-			while($row = $result->fetch_assoc()) {
-				$json['id'] = $row['id'];
-        		$json['nombre'] = $row['nombre'];
-        		$json['apellido'] = $row['apellido'];
-        		$json['nrodoc'] = $row['nrodoc'];
-				$json['dni'] = $row['nrodoc'];
-        		$data[] = $json;
-			}
-		}
-		$ret="";
-		if(json_encode($data,0,250)){
-			$ret= json_encode($data,0,4000);
-		}else{
-			echo "[Error en la construccion del Json Nro".json_last_error()." ]";
-		}*/
+
 	return 0;
 	}
 
@@ -89,7 +74,7 @@ class CdataBase {
      * @param $intMedTemp_seg
      * @param $intMedPH_seg
      */
-    public function nuevaExp($nombreMacerac, $dur_min, $intMedTemp_seg, $intMedPH_seg){
+    public function nuevaExp($nombreMacerac, $dur_min, $intMedTemp_seg, $intMedPH_seg){//Si no se le pasan variables todas las querys FALLAN y last_id=0
     	//---------Nueva Maceracion-----------
         $sql="INSERT IGNORE INTO Maceracion(nombre) VALUES ('".$nombreMacerac."')"; //INSERTA en maceracion esta maceracion, si no existe.
         $results = $this->conn->query($sql);
@@ -106,50 +91,45 @@ class CdataBase {
     }
 
     public function getSensedValues($idExp,$ArrayID){
-        $ArrayID_as_string = implode( ',', $ArrayID ); // e.g, "1,3,17,202"
-        $sql = "SELECT * from SensedValues where `id` NOT IN (".$arr_as_string.")";
-        $resultado = $this->conn->query($sql);
+        if(empty($ArrayID)){
+            $sql="SELECT * FROM SensedValues WHERE id_exp=".$idExp;}
+        else {
+            $ArrayID_as_string = implode(',', $ArrayID); // e.g, "1,3,17,202"
+            $sql = "SELECT * FROM SensedValues WHERE id_exp =".$idExp." AND `id` NOT IN (".$ArrayID_as_string.")";
+        }
+        $resultados = $this->conn->query($sql);
 
+        $data=[];
+        $json = array();
+        if ($resultados->num_rows > 0) {
+            while($row = $resultados->fetch_assoc()) {
+                $json['id'] = $row['id'];
+                $json['id_exp'] = $row['id_exp'];
+                $json['fechayhora'] = $row['fechayhora'];
+                $json['temp1'] = $row['temp1'];
+                $json['temp2'] = $row['temp2'];
+                $json['temp3'] = $row['temp3'];
+                $json['temp4'] = $row['temp4'];
+                $json['temp5'] = $row['temp5'];
+                $json['tempPh'] = $row['tempPh'];
+                $json['tempAmb'] = $row['tempAmb'];
+                $json['humity'] = $row['humity'];
+                $json['pH'] = $row['pH'];
+
+                $data[] = $json;//Pushea el json en el arreglo data (arreglo de jsons)
+            }
+        }
+        //$ret=""; //Para el caso de q no pase la validacion del if devuelve una cadena vacía
+        $ret= json_encode($data);
+
+        /*if(json_encode($data,0,250)){//NI IDEA DE COMO FUNCIONA ESTA VALIDACION
+            $ret= json_encode($data,0,4000);
+        }else{
+            echo "[Error en la construccion del Json Nro".json_last_error()." ]";
+        }*/
+        return $ret;
     }
-
-/*	public function getLastIdInsert(){
-		$rta=-1;
-		$sql="SELECT LAST_INSERT_ID() id";
-
-		//echo $sql;
-		$retorno=-1;
-		$result = $this->conn->query($sql);
-		if ($result->num_rows > 0) {
-			$row = $result->fetch_assoc();
-			$retorno= $row["id"];
-			//echo "[echo GET LAST INSERT id=".$retorno."]";echo nl2br(" \n ");
-		}else{
-			//echo "[no anda GET LAST INSERT]";echo nl2br(" \n ");
-			$retorno = -1;
-		}
-		return $retorno;
-	}*/
-	/*public function getInstituciones(){
-		$sql="SELECT ins.id, ins.nombre from instituciones ins ORDER by ins.nombre";
-		$result = $this->conn->query($sql);
-		$data=[];
-		$json = array();
-		if ($result->num_rows > 0) {
-			while($row = $result->fetch_assoc()) {
-				$json['id'] = $row['id'];
-        		$json['nombre'] = $row['nombre'];
-        		$data[] = $json;
-			}
-		}
-		$ret="";
-		if(json_encode($data,0,250)){
-			$ret= json_encode($data,0,4000);
-		}else{
-			echo "[Error en la construccion del Json Nro".json_last_error()." ]";
-		}
-	return $ret;
-	}	*/
-	/*public function getUnidadesAcademicas(){
+   	/*public function getUnidadesAcademicas(){
 		$sql="SELECT ua.id, ua.nombre from unidades_academicas ua ORDER by ua.nombre";
 		$result = $this->conn->query($sql);
 		$data=[];
