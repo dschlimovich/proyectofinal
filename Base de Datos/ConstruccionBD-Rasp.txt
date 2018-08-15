@@ -5,7 +5,8 @@ use maceraciones;
 Create Table Maceracion(
 	id int NOT NULL AUTO_INCREMENT,
 	nombre varchar(255),
-	PRIMARY KEY (id) 
+	PRIMARY KEY (id),
+	UNIQUE (nombre) 
 );
 
 
