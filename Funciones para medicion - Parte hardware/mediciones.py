@@ -78,4 +78,7 @@ def medir_amb(tipo_sensor):
         #tipo de sensor es 11 o 22
         #humidity,temperature = Adafruit_DHT.read_retry(22,21)
         humidity,temperature = Adafruit_DHT.read_retry(tipo_sensor,21)
-        return humidity,temperature
+        if humidity is not None and temperature is not None:
+            return humidity,temperature
+        else:
+            return -1,-10000
