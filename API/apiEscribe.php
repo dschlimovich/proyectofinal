@@ -30,12 +30,14 @@ echo $idExpJson;// Si el id = 0 quiere decir q no insertó nada
 //----------------ACA EJECUTA EL ARCHIVO PYTHON-------------------------
 $idExp=1;
 if($idExp!=0){
-    $ruta = "~/Desktop/ProyectoFinal/Funciones\ para\ medicion\ -\ Parte\ hardware/Archivo_principal.py";
+//    $ruta = "~/Desktop/ProyectoFinal/Funciones\ para\ medicion\ -\ Parte\ hardware/Archivo_principal.py";
+    $ruta = "/home/pi/Desktop/ProyectoFinal/Funciones\ para\ medicion\ -\ Parte\ hardware/Archivo_principal.py";
     //$salida = shell_exec("python3 " . $ruta . " " . $idExp . " " . $duracion_min . " " . $intervaloMedicionTemp_seg . " " . $intervaloMedicionPH_seg);
-    $salida = shell_exec("python3 " . $ruta . " " . 1 . " " . 1 . " " . 30 . " " . 30);
-    echo "El comando es: "."python3 " . $ruta . " " . 1 . " " . 1 . " " . 30 . " " . 30;
+    $salida = exec("sudo python3 " . $ruta . " " . 2 . " " . 1 . " " . 30 . " " . 30 . " 2>&1");
+    //echo "El comando es: "."python3 " . $ruta . " " . 1 . " " . 1 . " " . 30 . " " . 30 . "<br>";
+    echo $salida."<br>";
     if(is_null($salida))
-     echo "FALLO EL COMANDO";
+        echo "FALLO EL COMANDO";
     else
      echo "Ejecucion Exitosa";
 }
