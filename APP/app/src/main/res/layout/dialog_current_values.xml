@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvDialogCurrentTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temperatura: "
+        android:layout_margin="2dp"/>
+
+    <TextView
+        android:id="@+id/tvDialogCurrentPh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="pH: "
+        android:layout_margin="2dp"/>
+
+    <TextView
+        android:id="@+id/tvDialogCurrentTempEnviroment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temp. Ambiente: "
+        android:layout_margin="2dp"/>
+
+    <TextView
+        android:id="@+id/tvDialogCurrentHumidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Humedad: "
+        android:layout_margin="2dp"/>
+
+    <TextView
+        android:id="@+id/tvDialogCurrentSecondTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2da Temperatura: "
+        android:layout_margin="2dp"/>
+
+</LinearLayout>
