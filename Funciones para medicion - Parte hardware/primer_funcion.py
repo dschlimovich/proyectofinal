@@ -35,15 +35,15 @@ def funcion_uno(mido_ph):
             datos.append(-1000)
             
     if( mido_ph ):
-        ph =  mediciones.medir_ph()
+        # ph =  mediciones.medir_ph()
     else:
         ph = -1
             
     datos.append(ph) # ver que esto funcione
 
-    hum_amb, temp_amb = mediciones.medir_amb(22)
+    #hum_amb, temp_amb = mediciones.medir_amb(22)
 
-    datos.append(hum_amb)
-    datos.append(temp_amb)
+    #datos.append(hum_amb)
+    #datos.append(temp_amb)
 
     return datos

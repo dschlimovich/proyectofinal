@@ -26,7 +26,7 @@ for i in range(num_medidas):
 	else:
 		datos=primer_funcion.funcion_uno(0)
 	
-	segunda_funcion.escribe(idExp,datos)
+#	segunda_funcion.escribe(idExp,datos) #Funcion q escribe en la BD
 	#print('Termino la iteracion: '+str(i))
 	time.sleep(intervalo_temp)
 #print('Salio del For')
