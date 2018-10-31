@@ -22,11 +22,11 @@ def funcion_uno(mido_ph):
     
     ruta_sensor = []
     ruta_sensor.append('28-000008e280f3')
-    # ruta_sensor.append('28-000008e44af9')
-    # ruta_sensor.append('28-000008e3a29b')
-    # ruta_sensor.append('28-00000901cc93')
-    # ruta_sensor.append('28-000008e44df6')
-    # ruta_sensor.append('28-000008e270f2') #posicion 6 es para pH
+    ruta_sensor.append('28-000008e44af9')
+    ruta_sensor.append('28-000008e3a29b')
+    ruta_sensor.append('28-00000901cc93')
+    ruta_sensor.append('28-000008e44df6')
+    ruta_sensor.append('28-000008e270f2') #posicion 6 es para pH
     
     for i in range(0,6):
         if os.path.isdir(ruta_sensores + ruta_sensor[i]):
