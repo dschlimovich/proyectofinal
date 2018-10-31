@@ -29,7 +29,7 @@ for i in range(num_medidas):
 #	segunda_funcion.escribe(idExp,datos) #Funcion q escribe en la BD
 	#print('Termino la iteracion: '+str(i))
 	time.sleep(intervalo_temp)
-#print('Salio del For')
+print('Devuelvo algo')
 
 
 #sys.exit()
