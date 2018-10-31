@@ -15,7 +15,7 @@ $intervaloMedicionTemp_seg = $objJson->{'intervaloMedicionTemp_seg'};
 $intervaloMedicionPH_seg = $objJson->{'intervaloMedicionPH_seg'};
 //---------------------------------------------------------------
 
-echo $nombre;
+//echo $nombre;
 //------------------INSERTA NUEVA EXPERIENCIA--------------------
 //$idExp=$db->nuevaExp('NEGROPUTO', 10, 30, 30);//EXP HARDCODEADA
 //echo "El id de experiencia es: ".$idExp."<br>";
@@ -26,7 +26,7 @@ $idExp = $db->nuevaExp($nombre, $duracion_min, $intervaloMedicionTemp_seg, $inte
 $json = array();
 $json['idExp'] = $idExp;
 $idExpJson = json_encode($json);
-echo $idExpJson;// Si el id = 0 quiere decir q no insertó nada
+//echo $idExpJson;// Si el id = 0 quiere decir q no insertó nada
 //----------------------------------------------------------------------------
 
 
@@ -37,10 +37,10 @@ if($idExp!=0){
 //    $ruta = "~/Desktop/ProyectoFinal/Funciones\ para\ medicion\ -\ Parte\ hardware/Archivo_principal.py";
     $ruta = "/home/pi/Desktop/ProyectoFinal/Funciones\ para\ medicion\ -\ Parte\ hardware/Archivo_principal.py";
     
-    $salida = shell_exec("python3 " . $ruta . " " . $idExp . " " . $duracion_min . " " . $intervaloMedicionTemp_seg . " " . $intervaloMedicionPH_seg);
+    $salida = shell_exec("sudo python3 " . $ruta . " " . $idExp . " " . $duracion_min . " " . $intervaloMedicionTemp_seg . " " . $intervaloMedicionPH_seg);
     
     echo "El comando es: "."python3 " . $ruta . " " . $idExp . " " . $duracion_min . " " . $intervaloMedicionTemp_seg . " " . $intervaloMedicionPH_seg . "<br>";
-    //echo $salida."<br>"; 
+    echo $salida."<br>"; 
     if(is_null($salida))
         echo "FALLO EL COMANDO";
     else
