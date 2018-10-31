@@ -44,7 +44,7 @@ def funcion_uno(mido_ph):
 
     hum_amb, temp_amb = mediciones.medir_amb(11)
 
-    #datos.append(hum_amb)
-    #datos.append(temp_amb)
+    datos.append(hum_amb)
+    datos.append(temp_amb)
 
     return datos
