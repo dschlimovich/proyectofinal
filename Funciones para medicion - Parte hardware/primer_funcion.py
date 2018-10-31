@@ -41,7 +41,7 @@ def funcion_uno(mido_ph):
             
     datos.append(ph) # ver que esto funcione
 
-    hum_amb, temp_amb = mediciones.medir_amb(11)
+    hum_amb, temp_amb = mediciones.medir_amb(22)
 
     datos.append(hum_amb)
     datos.append(temp_amb)
