@@ -14,6 +14,14 @@ public class Mash {
         this.plan = plan;
     }
 
+    public List<Experience> getExperiences() {
+        return experiences;
+    }
+
+    public void setExperiences(List<Experience> experiences) {
+        this.experiences = experiences;
+    }
+
     public int getId() {
         return id;
     }
