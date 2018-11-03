@@ -11,12 +11,19 @@ $db= new CdataBase("pi","raspberry");
 
 //$ArrayID=$objJson['ArrayID']; //Array o lista con los ids q ya tiene la app
 
-$TempandPh=$db->getTempandPh();
 
 
+$ruta = "/home/pi/Desktop/ProyectoFinal/Funciones\ para\ medicion\ -\ Parte\ hardware/getTemPh.py";
+    
+$salida = shell_exec("sudo python3 " . $ruta);
+
+var_dump($salida);
 
 
-echo $TempandPh;
+echo $salida;
+
+
+//echo $TempandPh;
 
 
 //------------------------------------------------------------------------------
