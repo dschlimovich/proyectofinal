@@ -4,6 +4,7 @@ import os.path
 import mediciones
 
 def funcion_uno(mido_ph):
+    # No en todas las iteraciones se mide ph, "mido_ph" es un booleando q dice si en esta tanda de medicion se mide ph.
     # en mediciones tengo las 3 funciones: medir_temperatura, medir_ph, medir_amb
     # en &datos tengo que insertar los valores.
     datos = []
