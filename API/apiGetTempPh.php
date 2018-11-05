@@ -17,10 +17,23 @@ $ruta = "/home/pi/Desktop/ProyectoFinal/Funciones\ para\ medicion\ -\ Parte\ har
     
 $salida = shell_exec("sudo python3 " . $ruta);
 
-var_dump($salida);
+//var_dump($salida);
 
 
-echo $salida;
+
+$trimmed = trim($salida, " \n");
+$pos = strpos($trimmed, '&'); // Encuentra la posicion donde esta el &
+
+$temp = substr($trimmed, 0, $pos); //Start and length
+$ph = substr($trimmed, $pos + 1,strlen($salida) - $pos);
+
+ $json = array();
+ $json['Temp'] = $temp;
+ $json['pH'] = $ph;
+
+$ret=json_encode($json);
+
+echo $ret;
 
 
 //echo $TempandPh;
