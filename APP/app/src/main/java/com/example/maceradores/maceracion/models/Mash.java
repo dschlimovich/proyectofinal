@@ -8,6 +8,13 @@ public class Mash {
     private List<MeasureValues> plan;
     private List<Experience> experiences;
 
+    public Mash(int id, String name, List<MeasureValues> plan, List<Experience> experiences) {
+        this.id = id;
+        this.name = name;
+        this.plan = plan;
+        this.experiences = experiences;
+    }
+
     public Mash(int id, String name, List<MeasureValues> plan) {
         this.id = id;
         this.name = name;
