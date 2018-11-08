@@ -8,6 +8,11 @@ public class Mash {
     private List<MeasureInterval> plan;
     private List<Experience> experiences;
 
+    public Mash(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Mash(int id, String name, List<MeasureInterval> plan, List<Experience> experiences) {
         this.id = id;
         this.name = name;
