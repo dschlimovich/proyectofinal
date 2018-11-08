@@ -18,13 +18,13 @@ salida=make_string(datos)
 print(salida)
 def concat( cadena, valor):
 # funcion para que concatene la cadena //valor// al final de la cadena
-if (cadena == ""):
-	return valor
-return cadena + "&" + valor
+	if (cadena == ""):
+		return valor
+	return cadena + "&" + valor
 
 def make_string(datos):
-cadena = ""
-for valor in datos:
-	valorString=str(valor)
-	cadena = concat(cadena, valorString)
-return cadena
+	cadena = ""
+	for valor in datos:
+		valorString=str(valor)
+		cadena = concat(cadena, valorString)
+	return cadena
