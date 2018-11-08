@@ -1,6 +1,6 @@
 <?php
 // imaginate que recibis una cadena
-$salida = "temp1&temp2&temp3&temp4&temp5&tempPh&pH&humity&tempAmb]";
+//$salida = "temp1&temp2&temp3&temp4&temp5&tempPh&pH&humity&tempAmb]";
 $keys = array(
     1 => "Temp1",
     2 => "Temp2",
@@ -22,7 +22,7 @@ foreach ($keys as $key){
 	
 	if( pos === false){ //en la documentacion explican porque es triple = (===)
 		//ya saque todos y queda el ultimo valor.
-		json[$key] = trimmed;
+		json[$key] = $trimmed;
 	} 
 	else {
 		// si encontro al & asi que tengo que amputar el valor de la cadena y insertarlo en el json-

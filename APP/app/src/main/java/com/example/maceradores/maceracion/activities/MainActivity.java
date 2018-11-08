@@ -16,12 +16,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.RetrofitGsonContainer.TempPh;
 import com.example.maceradores.maceracion.adapters.MashListAdapter;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
+import com.example.maceradores.maceracion.retrofitInterface.Api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     //Variables del modelo
@@ -87,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAlertCurrentValues(){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Valores Actuales");
 
@@ -102,18 +113,53 @@ public class MainActivity extends AppCompatActivity {
         String secondTemperature = "-";
         // TODO obtener valores de los sensores a traves de la API
         //Ahora tenemos que obtener las referencias y cargarlas
-        TextView tvCurrentTemperature = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentTemperature);
-        TextView tvCurrentPh = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentPh);
-        TextView tvCurrentTempEnv = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentTempEnviroment);
-        TextView tvCurrentHumidity = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentHumidity);
-        TextView tvCurrentSecondTemperature = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentSecondTemperature);
+        final TextView tvCurrentTemperature = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentTemperature);
+        final TextView tvCurrentPh = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentPh);
+        final TextView tvCurrentTempEnv = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentTempEnviroment);
+        final TextView tvCurrentHumidity = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentHumidity);
+        final TextView tvCurrentSecondTemperature = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentSecondTemperature);
 
-        //agrego los valores obtenidos a los textviews
-        tvCurrentTemperature.append(temperature);
-        tvCurrentPh.append(ph);
-        tvCurrentTempEnv.append(tempEnviroment);
-        tvCurrentHumidity.append(humidity);
-        tvCurrentSecondTemperature.append(secondTemperature);
+        //FIX DEL WAITING TIME para que sea de 1 minuto
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(240, TimeUnit.SECONDS)
+                .writeTimeout(240, TimeUnit.SECONDS)
+                .build();
+        //Luego lo agrego a la llamada de Retrofit
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        Api api = retrofit.create(Api.class);
+        Call<TempPh> call = api.getTempPh();
+
+        call.enqueue(new Callback<TempPh>() {
+            @Override
+            public void onResponse(Call<TempPh> call, Response<TempPh> response) {
+                TempPh tempPh = response.body();
+                //agrego los valores obtenidos a los textviews
+                tvCurrentTemperature.append(tempPh.getTemp1());
+                tvCurrentPh.append(tempPh.getPh());
+                tvCurrentTempEnv.append(tempPh.getTempAmb());
+                tvCurrentHumidity.append(tempPh.getPh());
+                tvCurrentSecondTemperature.append(tempPh.getTemp5());
+
+//                String temperature = tempPh.getTemp();
+//
+//                mTextView.setText("La temperatura es: " + temperature);
+
+            }
+
+            @Override
+            public void onFailure(Call<TempPh> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
 
         //agrego boton para cerrar el dialogo
         builder.setPositiveButton("LISTO", new DialogInterface.OnClickListener() {
