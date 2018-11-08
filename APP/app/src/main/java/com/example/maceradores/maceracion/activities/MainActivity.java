@@ -18,9 +18,7 @@ import android.widget.Toast;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.MashListAdapter;
 import com.example.maceradores.maceracion.models.Mash;
-import com.example.maceradores.maceracion.models.MeasureValues;
-
-import org.w3c.dom.Text;
+import com.example.maceradores.maceracion.models.MeasureInterval;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List<Mash> hardcodeMashList() {
-        final MeasureValues measureAux = new MeasureValues(70, 70, 5.4f, 60, 2,2);
-        final List<MeasureValues> listAux = new ArrayList<MeasureValues>(){{ add(measureAux);}};
+        final MeasureInterval measureAux = new MeasureInterval(70, 70, 5.4f, 60, 2,2);
+        final List<MeasureInterval> listAux = new ArrayList<MeasureInterval>(){{ add(measureAux);}};
         return new ArrayList<Mash>(){{
            add(new Mash(0, "Mash 1", listAux));
             add(new Mash(0, "Mash 2", listAux));

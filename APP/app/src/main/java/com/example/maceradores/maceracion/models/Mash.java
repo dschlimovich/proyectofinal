@@ -5,17 +5,17 @@ import java.util.List;
 public class Mash {
     private int id;
     private String name;
-    private List<MeasureValues> plan;
+    private List<MeasureInterval> plan;
     private List<Experience> experiences;
 
-    public Mash(int id, String name, List<MeasureValues> plan, List<Experience> experiences) {
+    public Mash(int id, String name, List<MeasureInterval> plan, List<Experience> experiences) {
         this.id = id;
         this.name = name;
         this.plan = plan;
         this.experiences = experiences;
     }
 
-    public Mash(int id, String name, List<MeasureValues> plan) {
+    public Mash(int id, String name, List<MeasureInterval> plan) {
         this.id = id;
         this.name = name;
         this.plan = plan;
@@ -45,11 +45,11 @@ public class Mash {
         this.name = name;
     }
 
-    public List<MeasureValues> getPlan() {
+    public List<MeasureInterval> getPlan() {
         return plan;
     }
 
-    public void setPlan(List<MeasureValues> plan) {
+    public void setPlan(List<MeasureInterval> plan) {
         this.plan = plan;
     }
 }
