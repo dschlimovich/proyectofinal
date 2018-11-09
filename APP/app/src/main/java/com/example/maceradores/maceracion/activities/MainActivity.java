@@ -1,6 +1,11 @@
 package com.example.maceradores.maceracion.activities;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.provider.BaseColumns;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +23,7 @@ import android.widget.Toast;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.RetrofitGsonContainer.TempPh;
 import com.example.maceradores.maceracion.adapters.MashListAdapter;
+import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
@@ -171,4 +177,68 @@ public class MainActivity extends AppCompatActivity {
 
         builder.create().show();
     }
-}
+
+    private void testBD(){
+        // Make a method which write and read from the database.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //Ahora puedo escribir en la base de datos,
+        ContentValues values = new ContentValues();
+        values.put("nombre", "test SQLite");
+        values.put( "tipo", "simple");
+        values.put( "frecMedTemp", 1);
+        values.put("frecMedPh", 2);
+
+        long newRowId = db.insert("Maceracion", null, values);
+
+        // cuenta la leyenda que en newRowId tengo el id del ultimo valor insertado.
+        if( newRowId != -1){
+            Toast.makeText(this, "Inserto sin problemas", Toast.LENGTH_SHORT).show();
+            // si lo inserto, veamos que pueda obtener lo que acabo de insertar.
+            db = dbHelper.getReadableDatabase();
+            // Define a projection that specifies which columns from the database
+            // you will actually use after this query.
+            String[] projection = {
+                    "id",
+                    "nombre",
+                    "tipo"
+            };
+
+            // Filter results WHERE "title" = 'My Title'
+            String selection = "id = ?";
+            String[] selectionArgs = { String.valueOf(newRowId)};
+
+            Cursor cursor = db.query("Maceracion", projection, selection, selectionArgs, null, null, null);
+
+            List itemNames = new ArrayList<>();
+            while(cursor.moveToNext()) {
+                long itemName = cursor.getLong(
+                        cursor.getColumnIndexOrThrow("nombre"));
+                itemNames.add(itemName);
+            }
+            cursor.close();
+
+            if(itemNames.size() > 0){
+                Toast.makeText(this, itemNames.get(0).toString(), Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this, "No pudo leer el valor recien insertado", Toast.LENGTH_SHORT).show();
+            }
+             //me quedaría eliminarlo para que quede limpia la bd
+            int cant_eliminados = db.delete("Maceracion", selection, selectionArgs);
+            if( cant_eliminados == 1){
+                Toast.makeText(this, "Eliminado correctamente", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this, "No se elimino nada", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else {
+            Toast.makeText(this, "Hubo problemas", Toast.LENGTH_SHORT).show();
+        }
+
+        //al final tengo que cerrar la base de datos. En verdad esto iria en el metodo onDestroy
+        dbHelper.close();
+
+    }
+} //end MainActivity
