@@ -20,17 +20,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //Tabla Maceracion - se agrega el tipo de maceracion: Simple, Escalonada o Decoccion.
         // además se incorpora los tiempos de medicion correspondientes a la temperatura y pH
         // Si fueramos pro le agregariamos la constraint para indicar que el tiempo del pH
-        // debe ser mayor a 2 minutos y ser multiplo del de temperatura.
+        // debe ser mayor a 2 minutos (120) y ser multiplo del de temperatura.
         db.execSQL( "CREATE TABLE Maceracion (id INTEGER PRIMARY KEY," +
                 "nombre VARCHAR(190) UNIQUE," +
-                "tipo VARCHAR(16)," +
-                "frecMedTemp INTEGER, " +
-                "frecMedPh INTEGER)");
+                "tipo VARCHAR(64)," +
+                "intervaloMedTemp INTEGER, " +
+                "intervaloMedPh INTEGER)");
 
         // Tabla Intervalo - Maceraciones complejas llevan muchos intervalos de medicion.
         db.execSQL("CREATE TABLE Intervalo(" +
                 "id INTEGER PRIMARY KEY, " +
-                "duracion INTEGER," +  //deberia ser un flotante?
+                "duracion INTEGER," +  //minutos. deberia ser un flotante?
                 "temperatura FLOAT, " +
                 "ph FLOAT," +
                 "tempDecoccion FLOAT, " +
