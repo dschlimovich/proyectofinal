@@ -11,7 +11,7 @@ def concat( cadena, valor):
         return valor
     else:
         cadena.join("&")
-        cadena.join("valor")
+        cadena.join(valor)
     return cadena
 
 def make_string(datos):
