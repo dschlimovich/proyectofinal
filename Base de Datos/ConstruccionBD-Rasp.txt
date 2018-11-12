@@ -3,14 +3,14 @@ use maceraciones;
 
 
 Create Table Maceracion(
-	id int NOT NULL AUTO_INCREMENT,
+	id int NOT NULL,
 	nombre varchar(190) UNIQUE,
 	PRIMARY KEY (id)
 );
 
 
 Create Table Experimento(
-	id int NOT NULL AUTO_INCREMENT,
+	id int NOT NULL,
 	fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
 	maceracion int,
 	duracion_min int,
@@ -22,7 +22,7 @@ Create Table Experimento(
 
 
 Create Table SensedValues(
-	id INT NOT NULL AUTO_INCREMENT,
+	id INT NOT NULL,
 	id_exp INT,
 	fechayhora DATETIME DEFAULT CURRENT_TIMESTAMP,
 	temp1 FLOAT,
