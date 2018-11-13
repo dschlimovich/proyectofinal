@@ -2,6 +2,7 @@ package com.example.maceradores.maceracion.activities;
 
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
@@ -16,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -88,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
                 showAlertCurrentValues();
             }
         });
-    }
+
+    } //end OnCreate
 
     private List<Mash> hardcodeMashList() {
         final MeasureInterval measureAux = new MeasureInterval(70, 70, 5.4f, 60, 2,2);
@@ -105,6 +108,22 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_main_activity, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.addNewMash:
+                // if clickeo add new mash, should appears a new activity for planning it.
+                //Toast.makeText(this, "Click agregar maceracion", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, PlanningActivity.class);
+                // si es necesario pasar algun parametro con putExtra.
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
     private void showAlertCurrentValues(){
@@ -185,10 +204,10 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         //Ahora puedo escribir en la base de datos,
         ContentValues values = new ContentValues();
-        values.put("nombre", "test SQLite");
+        values.put("nombre", "test SQLite"); //el nombre tiene la clausula unique
         values.put( "tipo", "simple");
-        values.put( "frecMedTemp", 1);
-        values.put("frecMedPh", 2);
+        values.put( "intervaloMedTemp", 1);
+        values.put("intervaloMedPh", 2);
 
         long newRowId = db.insert("Maceracion", null, values);
 
@@ -213,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
             List itemNames = new ArrayList<>();
             while(cursor.moveToNext()) {
-                long itemName = cursor.getLong(
+                String itemName = cursor.getString(
                         cursor.getColumnIndexOrThrow("nombre"));
                 itemNames.add(itemName);
             }

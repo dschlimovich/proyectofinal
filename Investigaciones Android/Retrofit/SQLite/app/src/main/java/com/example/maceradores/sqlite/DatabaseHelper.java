@@ -1,9 +1,9 @@
-package com.example.maceradores.maceracion.db;
+package com.example.maceradores.sqlite;
+
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "maceraciones";
@@ -20,17 +20,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //Tabla Maceracion - se agrega el tipo de maceracion: Simple, Escalonada o Decoccion.
         // además se incorpora los tiempos de medicion correspondientes a la temperatura y pH
         // Si fueramos pro le agregariamos la constraint para indicar que el tiempo del pH
-        // debe ser mayor a 2 minutos (120) y ser multiplo del de temperatura.
+        // debe ser mayor a 2 minutos y ser multiplo del de temperatura.
         db.execSQL( "CREATE TABLE Maceracion (id INTEGER PRIMARY KEY," +
-                "nombre VARCHAR(190) UNIQUE," +
-                "tipo VARCHAR(64)," +
-                "intervaloMedTemp INTEGER, " +
-                "intervaloMedPh INTEGER)");
+                "nombre VARCHAR(190)," +
+                "tipo VARCHAR(16)," +
+                "frecMedTemp INTEGER, " +
+                "frecMedPh INTEGER)");
 
         // Tabla Intervalo - Maceraciones complejas llevan muchos intervalos de medicion.
         db.execSQL("CREATE TABLE Intervalo(" +
                 "id INTEGER PRIMARY KEY, " +
-                "duracion INTEGER," +  //minutos. deberia ser un flotante?
+                "duracion INTEGER," +  //deberia ser un flotante?
                 "temperatura FLOAT, " +
                 "ph FLOAT," +
                 "tempDecoccion FLOAT, " +
@@ -50,10 +50,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Tabla Experimento. A diferencia de la del raspberry se saco lo de las mediciones y
         // se agrego el tema de la densidad obtenida.
         db.execSQL("CREATE TABLE Experimento (id INTEGER PRIMARY KEY, " +
-                        " fecha DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                        " densidad FLOAT," +
-                        " maceracion INTEGER, "+
-                        " FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");
+                " fecha DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                " densidad FLOAT," +
+                " maceracion INTEGER, "+
+                " FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");
 
         // Tabla SensedValues -
 
