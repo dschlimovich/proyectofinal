@@ -6,6 +6,7 @@ public class Mash {
     private int id;
     private String name;
     private List<MeasureInterval> plan;
+    private List<Grain> grains;
     private List<Experiment> experiments;
 
     public Mash(int id, String name) {
@@ -56,5 +57,13 @@ public class Mash {
 
     public void setPlan(List<MeasureInterval> plan) {
         this.plan = plan;
+    }
+
+    public List<Grain> getGrains() {
+        return grains;
+    }
+
+    public void setGrains(List<Grain> grains) {
+        this.grains = grains;
     }
 }
