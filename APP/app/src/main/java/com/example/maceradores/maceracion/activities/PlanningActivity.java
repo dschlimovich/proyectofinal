@@ -1,6 +1,7 @@
 package com.example.maceradores.maceracion.activities;
 
 import android.content.DialogInterface;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,18 +26,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlanningActivity extends AppCompatActivity {
-
+    //Buttons
     Button buttonAddGrain;
+    FloatingActionButton fab;
+
+    //Container
     ListView listGrains;
-    List<Grain> grains;
     GrainListAdapter grainListAdapter;
+
+    //Data to Show
+    List<Grain> grains;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning);
-
-        // como pregunto si vino desde intent desde mainactivity?
         // por ahora supongo que aca llega desde el mainactivity.
 
         Spinner spinner = (Spinner) findViewById(R.id.spinnerTiposMaceracion);
@@ -48,6 +52,7 @@ public class PlanningActivity extends AppCompatActivity {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+        // List of Grains
         grains = new ArrayList<Grain>();
         grains.add(new Grain("Prueba", 0.5f, 0.5f));
         listGrains = (ListView) findViewById(R.id.listViewGrains);
@@ -55,8 +60,7 @@ public class PlanningActivity extends AppCompatActivity {
         listGrains.setAdapter(grainListAdapter);
         registerForContextMenu(this.listGrains);
 
-
-        //Toast.makeText(this, spinner.getSelectedItemId() + "", Toast.LENGTH_SHORT).show();
+        //Add grain
         buttonAddGrain = findViewById(R.id.buttonAddGrain);
         buttonAddGrain.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +69,20 @@ public class PlanningActivity extends AppCompatActivity {
             }
         });
 
+        //Add measure Interval
+        fab = (FloatingActionButton) findViewById(R.id.fabAddMeasureInterval);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAlertDialogAddMeasureInterval();
+            }
+        });
+
     } //end onCreate
+
+    private void showAlertDialogAddMeasureInterval() {
+        //
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -109,8 +126,6 @@ public class PlanningActivity extends AppCompatActivity {
         builder.setPositiveButton("AGREGAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //obtener valores y crear un objeto grano.
-                //Toast.makeText(PlanningActivity.this, grainName.getText().toString(), Toast.LENGTH_SHORT).show();
                 String name = grainName.getText().toString().trim();
                 float quantity = Float.valueOf(grainQuantity.getText().toString());
                 float yield = Float.valueOf(grainYield.getText().toString());
