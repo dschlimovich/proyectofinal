@@ -2,6 +2,7 @@ package com.example.maceradores.maceracion.activities;
 
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
@@ -109,7 +110,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.addNewMash:
                 // if clickeo add new mash, should appears a new activity for planning it.
-                Toast.makeText(this, "Click agregar maceracion", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Click agregar maceracion", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, PlanningActivity.class);
+                // si es necesario pasar algun parametro con putExtra.
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Maceracion</string>
+    <string-array name="tiposMaceracion">
+        <item>Simple</item>
+        <item>Escalonada</item>
+        <item>Decoccion Simple</item>
+        <item>Decoccion Doble</item>
+        <item>Decoccion Triple</item>
+    </string-array>
 </resources>
