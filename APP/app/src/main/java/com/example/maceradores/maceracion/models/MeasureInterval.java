@@ -3,20 +3,46 @@ package com.example.maceradores.maceracion.models;
 public class MeasureInterval {
     private int order;
     private float mainTemperature;
+    private float mainTemperatureDeviation;
     private float secondTemperature; //this is for "decocción"
+    private float secondTemperatureDeviation;
     private float pH;
+    private float phDeviation;
     private int duration; //would it be float?
-    private int periodMeasureTemperature;
-    private int periodMeasurePh;
 
-    public MeasureInterval(int order, float mainTemperature, float secondTemperature, float pH, int duration, int periodMeasureTemperature, int periodMeasurePh) {
+    public MeasureInterval(int order, float mainTemperature, float mainTemperatureDeviation, float secondTemperature, float secondTemperatureDeviation, float pH, float phDeviation, int duration) {
         this.order = order;
         this.mainTemperature = mainTemperature;
+        this.mainTemperatureDeviation = mainTemperatureDeviation;
         this.secondTemperature = secondTemperature;
+        this.secondTemperatureDeviation = secondTemperatureDeviation;
         this.pH = pH;
+        this.phDeviation = phDeviation;
         this.duration = duration;
-        this.periodMeasureTemperature = periodMeasureTemperature;
-        this.periodMeasurePh = periodMeasurePh;
+    }
+
+    public float getMainTemperatureDeviation() {
+        return mainTemperatureDeviation;
+    }
+
+    public void setMainTemperatureDeviation(float mainTemperatureDeviation) {
+        this.mainTemperatureDeviation = mainTemperatureDeviation;
+    }
+
+    public float getSecondTemperatureDeviation() {
+        return secondTemperatureDeviation;
+    }
+
+    public void setSecondTemperatureDeviation(float secondTemperatureDeviation) {
+        this.secondTemperatureDeviation = secondTemperatureDeviation;
+    }
+
+    public float getPhDeviation() {
+        return phDeviation;
+    }
+
+    public void setPhDeviation(float phDeviation) {
+        this.phDeviation = phDeviation;
     }
 
     public int getOrder() {
@@ -59,19 +85,4 @@ public class MeasureInterval {
         this.duration = duration;
     }
 
-    public int getPeriodMeasureTemperature() {
-        return periodMeasureTemperature;
-    }
-
-    public void setPeriodMeasureTemperature(int periodMeasureTemperature) {
-        this.periodMeasureTemperature = periodMeasureTemperature;
-    }
-
-    public int getPeriodMeasurePh() {
-        return periodMeasurePh;
-    }
-
-    public void setPeriodMeasurePh(int periodMeasurePh) {
-        this.periodMeasurePh = periodMeasurePh;
-    }
 }

@@ -8,6 +8,9 @@ public class Mash {
     private List<MeasureInterval> plan;
     private List<Grain> grains;
     private List<Experiment> experiments;
+    private int periodMeasureTemperature;
+    private int periodMeasurePh;
+
 
     public Mash(int id, String name) {
         this.id = id;
@@ -25,6 +28,16 @@ public class Mash {
         this.id = id;
         this.name = name;
         this.plan = plan;
+    }
+
+    public Mash(int id, String name, List<MeasureInterval> plan, List<Grain> grains, List<Experiment> experiments, int periodMeasureTemperature, int periodMeasurePh) {
+        this.id = id;
+        this.name = name;
+        this.plan = plan;
+        this.grains = grains;
+        this.experiments = experiments;
+        this.periodMeasureTemperature = periodMeasureTemperature;
+        this.periodMeasurePh = periodMeasurePh;
     }
 
     public List<Experiment> getExperiments() {
@@ -65,5 +78,21 @@ public class Mash {
 
     public void setGrains(List<Grain> grains) {
         this.grains = grains;
+    }
+
+    public int getPeriodMeasureTemperature() {
+        return periodMeasureTemperature;
+    }
+
+    public void setPeriodMeasureTemperature(int periodMeasureTemperature) {
+        this.periodMeasureTemperature = periodMeasureTemperature;
+    }
+
+    public int getPeriodMeasurePh() {
+        return periodMeasurePh;
+    }
+
+    public void setPeriodMeasurePh(int periodMeasurePh) {
+        this.periodMeasurePh = periodMeasurePh;
     }
 }
