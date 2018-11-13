@@ -6,18 +6,18 @@ public class Mash {
     private int id;
     private String name;
     private List<MeasureInterval> plan;
-    private List<Experience> experiences;
+    private List<Experiment> experiments;
 
     public Mash(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Mash(int id, String name, List<MeasureInterval> plan, List<Experience> experiences) {
+    public Mash(int id, String name, List<MeasureInterval> plan, List<Experiment> experiments) {
         this.id = id;
         this.name = name;
         this.plan = plan;
-        this.experiences = experiences;
+        this.experiments = experiments;
     }
 
     public Mash(int id, String name, List<MeasureInterval> plan) {
@@ -26,12 +26,12 @@ public class Mash {
         this.plan = plan;
     }
 
-    public List<Experience> getExperiences() {
-        return experiences;
+    public List<Experiment> getExperiments() {
+        return experiments;
     }
 
-    public void setExperiences(List<Experience> experiences) {
-        this.experiences = experiences;
+    public void setExperiments(List<Experiment> experiments) {
+        this.experiments = experiments;
     }
 
     public int getId() {

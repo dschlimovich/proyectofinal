@@ -81,7 +81,39 @@ public class PlanningActivity extends AppCompatActivity {
     } //end onCreate
 
     private void showAlertDialogAddMeasureInterval() {
-        //
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Nueva etapa");
+
+        View addIntervalView = LayoutInflater.from(this).inflate(R.layout.dialog_add_measure_interval, null);
+        builder.setView(addIntervalView);
+
+        //Necesito todas las referencias a los editText.
+        EditText duration = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalDuration);
+        EditText temperature = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperature);
+        EditText temperatureDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDeviation);
+        EditText ph = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalPh);
+        EditText phDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalPhDeviation);
+        EditText tempDecoccion = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccion);
+        EditText tempDecoccionDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccionDeviation);
+
+        builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Aca debo tomar los valores y usarlos para llenar un IntervalMeasure.
+                // public MeasureInterval(int order, float mainTemperature, float secondTemperature, float pH, int duration, int periodMeasureTemperature, int periodMeasurePh)
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.create().show();
+
     }
 
     @Override
