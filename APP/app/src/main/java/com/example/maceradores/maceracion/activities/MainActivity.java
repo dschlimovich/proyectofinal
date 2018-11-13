@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     } //end OnCreate
 
     private List<Mash> hardcodeMashList() {
-        final MeasureInterval measureAux = new MeasureInterval(70, 70, 5.4f, 60, 2,2);
+        final MeasureInterval measureAux = new MeasureInterval(1,70, 70, 5.4f, 60, 2,2);
         final List<MeasureInterval> listAux = new ArrayList<MeasureInterval>(){{ add(measureAux);}};
         return new ArrayList<Mash>(){{
            add(new Mash(0, "Mash 1", listAux));
