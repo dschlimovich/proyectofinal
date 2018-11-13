@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
 
 
         //añadir un alertDialog al fab con los valores actuales de los sensores.
@@ -110,20 +115,16 @@ public class MainActivity extends AppCompatActivity {
         View currentValuesView = LayoutInflater.from(this).inflate(R.layout.dialog_current_values, null);
         builder.setView(currentValuesView);
 
-        //Obtenemos los valores que se van a mostrar en el alert dialog.
-        //HARDCODE
-        String temperature = "68°C";
-        String ph = "5.4";
-        String tempEnviroment = "20°C";
-        String humidity = "88%";
-        String secondTemperature = "-";
-        // TODO obtener valores de los sensores a traves de la API
-        //Ahora tenemos que obtener las referencias y cargarlas
-        final TextView tvCurrentTemperature = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentTemperature);
-        final TextView tvCurrentPh = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentPh);
-        final TextView tvCurrentTempEnv = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentTempEnviroment);
-        final TextView tvCurrentHumidity = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentHumidity);
-        final TextView tvCurrentSecondTemperature = (TextView) currentValuesView.findViewById(R.id.tvDialogCurrentSecondTemperature);
+        //Ahora tenemos que obtener las referencia y cargarla
+        final TextView tvCurrentValues = (TextView) currentValuesView.findViewById(R.id.tv_current_values);
+        //Obtengo la referencia al progressbar
+        //ProgressBar
+        final ProgressBar mLoadingIndicator = (ProgressBar) currentValuesView.findViewById(R.id.pb_loading_indicator);
+
+
+        //Muestro el Progressbar y oculto el texto
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+        tvCurrentValues.setVisibility(View.INVISIBLE);
 
         //FIX DEL WAITING TIME para que sea de 1 minuto
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -131,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
                 .readTimeout(240, TimeUnit.SECONDS)
                 .writeTimeout(240, TimeUnit.SECONDS)
                 .build();
-        //Luego lo agrego a la llamada de Retrofit
 
+        //Luego lo agrego a la llamada de Retrofit
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Api.BASE_URL)
@@ -148,15 +149,15 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<TempPh> call, Response<TempPh> response) {
                 TempPh tempPh = response.body();
                 //agrego los valores obtenidos a los textviews
-                tvCurrentTemperature.append(tempPh.getTemp1());
-                tvCurrentPh.append(tempPh.getPh());
-                tvCurrentTempEnv.append(tempPh.getTempAmb());
-                tvCurrentHumidity.append(tempPh.getPh());
-                tvCurrentSecondTemperature.append(tempPh.getTemp5());
+                tvCurrentValues.append("Temperatura: " + tempPh.getTemp1() + "\n");
+                tvCurrentValues.append("pH: " + tempPh.getPh() + "\n");
+                tvCurrentValues.append("Temp. Ambiente: " + tempPh.getTempAmb() + "\n");
+                tvCurrentValues.append("Humedad Ambiente: " + tempPh.getHumidity() + "\n");
+                tvCurrentValues.append("Segunda Temp: " + tempPh.getTemp5() + "\n");
 
-//                String temperature = tempPh.getTemp();
-//
-//                mTextView.setText("La temperatura es: " + temperature);
+                //Oculto el ProgressBar y muestro el Texto
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                tvCurrentValues.setVisibility(View.VISIBLE);
 
             }
 
@@ -241,4 +242,5 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.close();
 
     }
+
 } //end MainActivity
