@@ -1,6 +1,7 @@
 package com.example.maceradores.maceracion.models;
 
 public class MeasureInterval {
+    private int order;
     private float mainTemperature;
     private float secondTemperature; //this is for "decocción"
     private float pH;
@@ -8,13 +9,22 @@ public class MeasureInterval {
     private int periodMeasureTemperature;
     private int periodMeasurePh;
 
-    public MeasureInterval(float mainTemperature, float secondTemperature, float pH, int duration, int periodMeasureTemperature, int periodMeasurePh) {
+    public MeasureInterval(int order, float mainTemperature, float secondTemperature, float pH, int duration, int periodMeasureTemperature, int periodMeasurePh) {
+        this.order = order;
         this.mainTemperature = mainTemperature;
         this.secondTemperature = secondTemperature;
         this.pH = pH;
         this.duration = duration;
         this.periodMeasureTemperature = periodMeasureTemperature;
         this.periodMeasurePh = periodMeasurePh;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     public float getMainTemperature() {
