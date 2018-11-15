@@ -14,10 +14,8 @@ class CdataBase {
 		$this->Conexion();
 		//mysql_set_charset('utf8');
 	}
-	
-	/**=============================================================**/                                   
 
-    public function nuevaExp($nombreMacerac, $dur_min, $intMedTemp_seg, $intMedPH_seg){//Si no se le pasan variables todas las querys FALLAN y last_id=0
+    public function nuevaExp($nombreMacerac,$idExp, $dur_min, $intMedTemp_seg, $intMedPH_seg){//Si no se le pasan variables todas las querys FALLAN y last_id=0
     	//---------Nueva Maceracion-----------
         $sql="INSERT IGNORE INTO Maceracion(nombre) VALUES ('".$nombreMacerac."')"; //INSERTA en maceracion esta maceracion, si no existe.
         $results = $this->conn->query($sql);
@@ -27,15 +25,15 @@ class CdataBase {
         $fila=mysqli_fetch_array($resultado); //Obtengo la primer fila del arreglo, x mas q sea solo un valor, tengo q hacerlo
         $idMaceracion = $fila['id'];
 
-        $sql="INSERT INTO Experimento(maceracion,duracion_min,intervaloMedicionTemp_seg,intervaloMedicionPH_seg) VALUES (".$idMaceracion.",".$dur_min.",".$intMedTemp_seg.",".$intMedPH_seg.")"; //INSERTA en maceracion esta maceracion, si no existe.
+        $sql="INSERT INTO Experimento(id,maceracion,duracion_min,intervaloMedicionTemp_seg,intervaloMedicionPH_seg) VALUES (".$idExp.",".$idMaceracion.",".$dur_min.",".$intMedTemp_seg.",".$intMedPH_seg.")"; //INSERTA en maceracion esta maceracion, si no existe.
         $results = $this->conn->query($sql);
-        $last_id = $this->conn->insert_id; //Obtengo el id de la ultima inserción, en este caso la experiencia nueva
-        return $last_id;
+        //$last_id = $this->conn->insert_id; //Obtengo el id de la ultima inserción, en este caso la experiencia nueva
+        //return $last_id;
+        return 0;
     }
 
     public function getSensedValues($idExp,$ArrayID){
-    	//echo "<br> SensedValues";
-        if(empty($ArrayID)){
+    	if(empty($ArrayID)){
             $sql="SELECT * FROM SensedValues WHERE id_exp=".$idExp;}
         else {
             $sql = "SELECT * FROM SensedValues WHERE id_exp =".$idExp." AND `id` NOT IN (".$ArrayID.")";
@@ -63,12 +61,12 @@ class CdataBase {
             }
         }
         
-        
         $ret= json_encode($data);
-       
+        
         return $ret;
     }
    	
+
 	public function Conexion(){
 		//echo "Hasta aca llego<br>";
 		$this->conn=new mysqli($this->servername,$this->username,$this->password,$this->dbname);
@@ -84,5 +82,6 @@ class CdataBase {
 		$this->conn->close();
 	}
 
-} 
+	
+}
 ?>
