@@ -38,6 +38,13 @@ public class MeasureInterval {
         this.order = this.order - 1;
     }
 
+    public String getDescription(){
+        return "Duración: " + this.duration + "minutos\n" +
+                "Temperatura: " + this.mainTemperature + "°C ± " + this.mainTemperatureDeviation + "\n" +
+                "pH: " + this.pH + " ± " + this.phDeviation + "\n" +
+                "Temperatura Decocción: " + this.secondTemperature + "°C ± " + this.secondTemperatureDeviation + "\n";
+    }
+
     // Getters & Setters
     public float getMainTemperatureDeviation() {
         return mainTemperatureDeviation;

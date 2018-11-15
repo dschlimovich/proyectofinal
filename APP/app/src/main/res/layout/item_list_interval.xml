@@ -12,49 +12,14 @@
         android:id="@+id/textViewIntervalOrder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 
-    <!--> Duración de la etapa </!-->
+    <!--> Detalle </!-->
     <TextView
-        android:id="@+id/textViewIntervalDuration"
+        android:id="@+id/textViewIntervalDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Duración: "/>
-
-    <!--> Temperatura Principal Formato: °C +- Desvío</!-->
-    <TextView
-        android:id="@+id/textViewIntervalTemperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Temperatura: "/>
-
-    <!--> pH Formato: n° +- Desvío</!-->
-    <TextView
-        android:id="@+id/textViewIntervalPh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="pH: "/>
-
-    <!--> Temperatura Decoccion Formato: °C +- Desvío</!-->
-    <TextView
-        android:id="@+id/textViewIntervalTemperatureDecoccion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Temperatura Decocción: "/>
-
-    <!--> Cantidad de agua a agregar</!-->
-    <TextView
-        android:id="@+id/textViewIntervalAmountWater"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cant. de Agua a Agregar: "/>
-
-    <!--> Temperatura Agua a agregar</!-->
-    <TextView
-        android:id="@+id/textViewIntervalTemperatureWater"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Temperatura del agua: "/>
+        android:text=""/>
 
 
 </android.support.v7.widget.CardView>
