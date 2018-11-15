@@ -65,7 +65,7 @@ public class PlanningActivity extends AppCompatActivity {
 
         // List of Grains
         grains = new ArrayList<Grain>();
-        grains.add(new Grain("Prueba", 0.5f, 0.5f));
+        //grains.add(new Grain("Prueba", 0.5f, 0.5f));
         listGrains = (ListView) findViewById(R.id.listViewGrains);
         grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
         listGrains.setAdapter(grainListAdapter);
