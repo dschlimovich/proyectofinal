@@ -47,4 +47,3 @@ if($idExp!=0){
      echo "Ejecucion Exitosa";
 }
  ?>	
-
