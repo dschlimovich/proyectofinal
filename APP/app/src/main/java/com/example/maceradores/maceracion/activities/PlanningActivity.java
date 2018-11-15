@@ -5,6 +5,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.GrainListAdapter;
+import com.example.maceradores.maceracion.adapters.IntervalListAdapter;
 import com.example.maceradores.maceracion.models.Grain;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
@@ -36,6 +39,10 @@ public class PlanningActivity extends AppCompatActivity {
     //Container
     ListView listGrains;
     GrainListAdapter grainListAdapter;
+
+    RecyclerView listsIntervals;
+    RecyclerView.LayoutManager layoutManager;
+    IntervalListAdapter intervalListAdapter;
 
     //Data
     List<MeasureInterval> intervals;
@@ -63,6 +70,21 @@ public class PlanningActivity extends AppCompatActivity {
         grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
         listGrains.setAdapter(grainListAdapter);
         registerForContextMenu(this.listGrains);
+
+        // List of intervals
+        intervals = new ArrayList<MeasureInterval>();
+        intervals.add(new MeasureInterval(1,1,1,1,1,1,1,1));
+        layoutManager = new LinearLayoutManager(this);
+        intervalListAdapter = new IntervalListAdapter(intervals, R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(MeasureInterval interval, int position) {
+                Toast.makeText(PlanningActivity.this, "Intervalo Clickeado", Toast.LENGTH_SHORT).show();
+            }
+        });
+        listsIntervals = (RecyclerView) findViewById(R.id.recyclerViewIntervalPlanning);
+        listsIntervals.setAdapter(intervalListAdapter);
+        listsIntervals.setLayoutManager(layoutManager);
+        //listsIntervals.setHasFixedSize(true);
 
         //Add grain
         buttonAddGrain = findViewById(R.id.buttonAddGrain);
