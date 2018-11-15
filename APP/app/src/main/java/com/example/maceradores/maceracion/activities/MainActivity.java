@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put("nombre", "test SQLite"); //el nombre tiene la clausula unique
         values.put( "tipo", "simple");
+        values.put("volumen", 1);
         values.put( "intervaloMedTemp", 1);
         values.put("intervaloMedPh", 2);
 
