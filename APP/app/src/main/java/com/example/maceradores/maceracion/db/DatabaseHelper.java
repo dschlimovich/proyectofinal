@@ -24,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL( "CREATE TABLE Maceracion (id INTEGER PRIMARY KEY," +
                 "nombre VARCHAR(190) UNIQUE," +
                 "tipo VARCHAR(64)," +
+                "volumen FLOAT,"+
                 "intervaloMedTemp INTEGER, " +
                 "intervaloMedPh INTEGER)");
 

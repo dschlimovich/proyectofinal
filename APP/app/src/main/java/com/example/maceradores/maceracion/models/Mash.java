@@ -9,6 +9,7 @@ public class Mash {
     private List<MeasureInterval> plan;
     private List<Grain> grains;
     private List<Experiment> experiments;
+    private float volumen;
     private int periodMeasureTemperature;
     private int periodMeasurePh;
 
@@ -136,5 +137,13 @@ public class Mash {
 
     public void setPeriodMeasurePh(int periodMeasurePh) {
         this.periodMeasurePh = periodMeasurePh;
+    }
+
+    public float getVolumen() {
+        return volumen;
+    }
+
+    public void setVolumen(float volumen) {
+        this.volumen = volumen;
     }
 }
