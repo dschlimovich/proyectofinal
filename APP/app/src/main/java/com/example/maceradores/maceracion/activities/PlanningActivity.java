@@ -33,20 +33,20 @@ import java.util.List;
 
 public class PlanningActivity extends AppCompatActivity {
     //Buttons
-    Button buttonAddGrain;
-    FloatingActionButton fab;
+    private Button buttonAddGrain;
+    private FloatingActionButton fab;
 
     //Container
-    ListView listGrains;
-    GrainListAdapter grainListAdapter;
+    private ListView listGrains;
+    private GrainListAdapter grainListAdapter;
 
-    RecyclerView listsIntervals;
-    RecyclerView.LayoutManager layoutManager;
-    IntervalListAdapter intervalListAdapter;
+    private RecyclerView listsIntervals;
+    private RecyclerView.LayoutManager layoutManager;
+    private IntervalListAdapter intervalListAdapter;
 
     //Data
-    List<MeasureInterval> intervals;
-    List<Grain> grains;
+    private List<MeasureInterval> intervals;
+    private List<Grain> grains;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,6 @@ public class PlanningActivity extends AppCompatActivity {
 
         // List of intervals
         intervals = new ArrayList<MeasureInterval>();
-        intervals.add(new MeasureInterval(1,1,1,1,1,1,1,1));
         layoutManager = new LinearLayoutManager(this);
         intervalListAdapter = new IntervalListAdapter(intervals, R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
             @Override
@@ -96,12 +95,12 @@ public class PlanningActivity extends AppCompatActivity {
         });
 
         //Add measure Interval
-        this.intervals = new ArrayList<MeasureInterval>();
         fab = (FloatingActionButton) findViewById(R.id.fabAddMeasureInterval);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAlertDialogAddMeasureInterval();
+                //intervalListAdapter.notifyDataSetChanged();
             }
         });
 
@@ -143,8 +142,8 @@ public class PlanningActivity extends AppCompatActivity {
                 );
 
                 //Ahora tengo que agregarlo a la lista de intervalos
-                intervals.add(interval);
-                dialog.dismiss();
+                addInterval(interval);
+
             }
         });
 
@@ -220,5 +219,10 @@ public class PlanningActivity extends AppCompatActivity {
         });
 
         builder.create().show();
+    }
+
+    private void addInterval(MeasureInterval interval){
+        this.intervals.add(interval);
+        this.intervalListAdapter.notifyDataSetChanged();
     }
 } //end Activity

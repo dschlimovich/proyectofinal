@@ -39,7 +39,7 @@ public class MeasureInterval {
     }
 
     public String getDescription(){
-        return "Duración: " + this.duration + "minutos\n" +
+        return "Duración: " + this.duration + " minutos\n" +
                 "Temperatura: " + this.mainTemperature + "°C ± " + this.mainTemperatureDeviation + "\n" +
                 "pH: " + this.pH + " ± " + this.phDeviation + "\n" +
                 "Temperatura Decocción: " + this.secondTemperature + "°C ± " + this.secondTemperatureDeviation + "\n";
