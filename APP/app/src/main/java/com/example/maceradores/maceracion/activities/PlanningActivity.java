@@ -16,11 +16,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.GrainListAdapter;
 import com.example.maceradores.maceracion.models.Grain;
+import com.example.maceradores.maceracion.models.Mash;
+import com.example.maceradores.maceracion.models.MeasureInterval;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +38,7 @@ public class PlanningActivity extends AppCompatActivity {
     GrainListAdapter grainListAdapter;
 
     //Data
-    // From this activity i need to obtain a new Mash, with its corrsponding plannification.
-
+    List<MeasureInterval> intervals;
     List<Grain> grains;
 
     @Override
@@ -72,6 +74,7 @@ public class PlanningActivity extends AppCompatActivity {
         });
 
         //Add measure Interval
+        this.intervals = new ArrayList<MeasureInterval>();
         fab = (FloatingActionButton) findViewById(R.id.fabAddMeasureInterval);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,20 +92,36 @@ public class PlanningActivity extends AppCompatActivity {
         View addIntervalView = LayoutInflater.from(this).inflate(R.layout.dialog_add_measure_interval, null);
         builder.setView(addIntervalView);
 
+        //le pongo el numerito de etapa que iria a agregar.
+        TextView numberInterval = (TextView) addIntervalView.findViewById(R.id.textViewNumberInterval);
+        numberInterval.append(String.valueOf(intervals.size() + 1));
+
         //Necesito todas las referencias a los editText.
-        EditText duration = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalDuration);
-        EditText temperature = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperature);
-        EditText temperatureDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDeviation);
-        EditText ph = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalPh);
-        EditText phDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalPhDeviation);
-        EditText tempDecoccion = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccion);
-        EditText tempDecoccionDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccionDeviation);
+        final EditText duration = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalDuration);
+        final EditText temperature = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperature);
+        final EditText temperatureDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDeviation);
+        final EditText ph = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalPh);
+        final EditText phDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalPhDeviation);
+        final EditText tempDecoccion = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccion);
+        final EditText tempDecoccionDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccionDeviation);
 
         builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Aca debo tomar los valores y usarlos para llenar un IntervalMeasure.
-                //
+                //public MeasureInterval(float mainTemperature, float mainTemperatureDeviation, float secondTemperature, float secondTemperatureDeviation, float pH, float phDeviation, int duration)
+                MeasureInterval interval = new MeasureInterval(
+                        Float.valueOf(temperature.getText().toString().trim()),
+                        Float.valueOf(temperatureDeviation.getText().toString().trim()),
+                        Float.valueOf(tempDecoccion.getText().toString().trim()),
+                        Float.valueOf(tempDecoccionDeviation.getText().toString().trim()),
+                        Float.valueOf(ph.getText().toString().trim()),
+                        Float.valueOf(phDeviation.getText().toString().trim()),
+                        Integer.valueOf(duration.getText().toString().trim())
+                );
+
+                //Ahora tengo que agregarlo a la lista de intervalos
+                intervals.add(interval);
                 dialog.dismiss();
             }
         });

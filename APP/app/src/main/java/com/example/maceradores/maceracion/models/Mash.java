@@ -1,5 +1,6 @@
 package com.example.maceradores.maceracion.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Mash {
@@ -103,7 +104,14 @@ public class Mash {
     }
 
     public void setPlan(List<MeasureInterval> plan) {
-        this.plan = plan;
+        // setteo los ordenes de la lista para que queden de manera creciente.
+
+        this.plan = new ArrayList<MeasureInterval>();
+
+        for(int i= 0; i < plan.size(); i++){
+            addMeasureInterval(plan.get(i));
+        }
+        //this.plan = plan;
     }
 
     public List<Grain> getGrains() {
