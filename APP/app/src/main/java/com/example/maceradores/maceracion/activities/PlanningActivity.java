@@ -34,7 +34,9 @@ public class PlanningActivity extends AppCompatActivity {
     ListView listGrains;
     GrainListAdapter grainListAdapter;
 
-    //Data to Show
+    //Data
+    // From this activity i need to obtain a new Mash, with its corrsponding plannification.
+
     List<Grain> grains;
 
     @Override
@@ -100,7 +102,7 @@ public class PlanningActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Aca debo tomar los valores y usarlos para llenar un IntervalMeasure.
-                // public MeasureInterval(int order, float mainTemperature, float secondTemperature, float pH, int duration, int periodMeasureTemperature, int periodMeasurePh)
+                //
                 dialog.dismiss();
             }
         });

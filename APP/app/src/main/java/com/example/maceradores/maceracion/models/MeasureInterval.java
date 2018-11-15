@@ -10,8 +10,20 @@ public class MeasureInterval {
     private float phDeviation;
     private int duration; //would it be time or quantity of measures?
 
+    //Constructos
     public MeasureInterval(int order, float mainTemperature, float mainTemperatureDeviation, float secondTemperature, float secondTemperatureDeviation, float pH, float phDeviation, int duration) {
         this.order = order;
+        this.mainTemperature = mainTemperature;
+        this.mainTemperatureDeviation = mainTemperatureDeviation;
+        this.secondTemperature = secondTemperature;
+        this.secondTemperatureDeviation = secondTemperatureDeviation;
+        this.pH = pH;
+        this.phDeviation = phDeviation;
+        this.duration = duration;
+    }
+
+    public MeasureInterval(float mainTemperature, float mainTemperatureDeviation, float secondTemperature, float secondTemperatureDeviation, float pH, float phDeviation, int duration) {
+        // Without set of order.
         this.mainTemperature = mainTemperature;
         this.mainTemperatureDeviation = mainTemperatureDeviation;
         this.secondTemperature = secondTemperature;

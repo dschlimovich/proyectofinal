@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         final List<MeasureInterval> listAux = new ArrayList<MeasureInterval>(){{ add(measureAux);}};
         return new ArrayList<Mash>(){{
            add(new Mash(0, "Mash 1", listAux));
-            add(new Mash(0, "Mash 2", listAux));
+           add(new Mash(0, "Mash 2", listAux));
         }};
     }
 

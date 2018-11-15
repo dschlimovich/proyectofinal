@@ -11,6 +11,7 @@ public class Mash {
     private int periodMeasureTemperature;
     private int periodMeasurePh;
 
+    // Constructors
 
     public Mash(int id, String name) {
         this.id = id;
@@ -40,6 +41,15 @@ public class Mash {
         this.periodMeasurePh = periodMeasurePh;
     }
 
+    //Own methods
+    public void addMeasureInterval( MeasureInterval i){
+        // I supose that this interval doesn't have the field order.
+        // then i assigned the length of the list plus one.
+        i.setOrder( this.plan.size() + 1 );
+        plan.add(i);
+    }
+
+    // Getters & Setters
     public List<Experiment> getExperiments() {
         return experiments;
     }
