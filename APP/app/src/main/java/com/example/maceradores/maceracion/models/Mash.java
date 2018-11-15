@@ -49,6 +49,30 @@ public class Mash {
         plan.add(i);
     }
 
+    public void removeMeasureInterval(int position){
+        // i need to reset the order and delete interval.
+        if( position > plan.size() || position < 0){
+            //si le erro con los numeritos que no haga nada.
+            return;
+        }
+        boolean finded = false;
+        int it = plan.size() - 1; // arranco por el utlimo
+        while(finded){
+            if( it == position){
+                // lo encontre y lo elimino.
+                plan.remove(it);
+                finded = true;
+            }
+            else{
+                //agarro lo que esta en it y le resto uno al orden.
+                plan.get(it).decrementOrder();
+                // y sigo con el proximo.
+                it --;
+            }
+        } //end while
+
+    }
+
     // Getters & Setters
     public List<Experiment> getExperiments() {
         return experiments;

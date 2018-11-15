@@ -33,6 +33,12 @@ public class MeasureInterval {
         this.duration = duration;
     }
 
+    //Own Method.
+    public void decrementOrder(){
+        this.order = this.order - 1;
+    }
+
+    // Getters & Setters
     public float getMainTemperatureDeviation() {
         return mainTemperatureDeviation;
     }
