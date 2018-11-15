@@ -8,7 +8,7 @@ public class MeasureInterval {
     private float secondTemperatureDeviation;
     private float pH;
     private float phDeviation;
-    private int duration; //would it be float?
+    private int duration; //would it be time or quantity of measures?
 
     public MeasureInterval(int order, float mainTemperature, float mainTemperatureDeviation, float secondTemperature, float secondTemperatureDeviation, float pH, float phDeviation, int duration) {
         this.order = order;
