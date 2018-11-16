@@ -5,37 +5,50 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.GrainListAdapter;
+import com.example.maceradores.maceracion.adapters.IntervalListAdapter;
 import com.example.maceradores.maceracion.models.Grain;
+import com.example.maceradores.maceracion.models.Mash;
+import com.example.maceradores.maceracion.models.MeasureInterval;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlanningActivity extends AppCompatActivity {
     //Buttons
-    Button buttonAddGrain;
-    FloatingActionButton fab;
+    private Button buttonAddGrain;
+    private FloatingActionButton fab;
 
     //Container
-    ListView listGrains;
-    GrainListAdapter grainListAdapter;
+    private ListView listGrains;
+    private GrainListAdapter grainListAdapter;
 
-    //Data to Show
-    List<Grain> grains;
+    private RecyclerView listsIntervals;
+    private RecyclerView.LayoutManager layoutManager;
+    private IntervalListAdapter intervalListAdapter;
+
+    //Data
+    private List<MeasureInterval> intervals;
+    private List<Grain> grains;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +67,25 @@ public class PlanningActivity extends AppCompatActivity {
 
         // List of Grains
         grains = new ArrayList<Grain>();
-        grains.add(new Grain("Prueba", 0.5f, 0.5f));
+        //grains.add(new Grain("Prueba", 0.5f, 0.5f));
         listGrains = (ListView) findViewById(R.id.listViewGrains);
         grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
         listGrains.setAdapter(grainListAdapter);
         registerForContextMenu(this.listGrains);
+
+        // List of intervals
+        intervals = new ArrayList<MeasureInterval>();
+        layoutManager = new LinearLayoutManager(this);
+        intervalListAdapter = new IntervalListAdapter(intervals, R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(MeasureInterval interval, int position) {
+                Toast.makeText(PlanningActivity.this, "Intervalo Clickeado", Toast.LENGTH_SHORT).show();
+            }
+        });
+        listsIntervals = (RecyclerView) findViewById(R.id.recyclerViewIntervalPlanning);
+        listsIntervals.setAdapter(intervalListAdapter);
+        listsIntervals.setLayoutManager(layoutManager);
+        //listsIntervals.setHasFixedSize(true);
 
         //Add grain
         buttonAddGrain = findViewById(R.id.buttonAddGrain);
@@ -75,10 +102,72 @@ public class PlanningActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showAlertDialogAddMeasureInterval();
+                //intervalListAdapter.notifyDataSetChanged();
             }
         });
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
     } //end onCreate
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar_planning_activity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.acceptPlannification:
+                //Si acepto la planificación tengo que definir:
+                // el nombre de la maceracion que voy a agregar.
+                // y los tiempos de medicion temperatura y pH.
+                //necesitaria otro alert dialog.
+                showAlertDialogFinishPlanning();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void showAlertDialogFinishPlanning() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Guardar Maceración");
+
+        View finishPlanningView = LayoutInflater.from(this).inflate(R.layout.dialog_finish_planning, null);
+        builder.setView(finishPlanningView);
+        // Necesito las referecias a los editText
+        final EditText nombre = (EditText) finishPlanningView.findViewById(R.id.editTextFinishPlanningName);
+        final EditText medTemp = (EditText) finishPlanningView.findViewById(R.id.editTextFinishPlanningMedTemp);
+        final EditText medPh = (EditText) finishPlanningView.findViewById(R.id.editTextFinishPlanningMedPh);
+
+        builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Este es el momento donde debería crear el mash.
+                // Me robo los valores de los edit text
+                String nameMash = nombre.getText().toString().trim();
+                int peridoMedicionTemp = Integer.valueOf(medTemp.getText().toString().trim());
+                int peridoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
+
+                //Agrego el Mash a la base de datos.
+                Toast.makeText(PlanningActivity.this, nameMash, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.create().show();
+
+    }
 
     private void showAlertDialogAddMeasureInterval() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -87,21 +176,37 @@ public class PlanningActivity extends AppCompatActivity {
         View addIntervalView = LayoutInflater.from(this).inflate(R.layout.dialog_add_measure_interval, null);
         builder.setView(addIntervalView);
 
+        //le pongo el numerito de etapa que iria a agregar.
+        TextView numberInterval = (TextView) addIntervalView.findViewById(R.id.textViewNumberInterval);
+        numberInterval.append(String.valueOf(intervals.size() + 1));
+
         //Necesito todas las referencias a los editText.
-        EditText duration = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalDuration);
-        EditText temperature = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperature);
-        EditText temperatureDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDeviation);
-        EditText ph = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalPh);
-        EditText phDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalPhDeviation);
-        EditText tempDecoccion = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccion);
-        EditText tempDecoccionDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccionDeviation);
+        final EditText duration = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalDuration);
+        final EditText temperature = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperature);
+        final EditText temperatureDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDeviation);
+        final EditText ph = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalPh);
+        final EditText phDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalPhDeviation);
+        final EditText tempDecoccion = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccion);
+        final EditText tempDecoccionDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccionDeviation);
 
         builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Aca debo tomar los valores y usarlos para llenar un IntervalMeasure.
-                // public MeasureInterval(int order, float mainTemperature, float secondTemperature, float pH, int duration, int periodMeasureTemperature, int periodMeasurePh)
-                dialog.dismiss();
+                //public MeasureInterval(float mainTemperature, float mainTemperatureDeviation, float secondTemperature, float secondTemperatureDeviation, float pH, float phDeviation, int duration)
+                MeasureInterval interval = new MeasureInterval(
+                        Float.valueOf(temperature.getText().toString().trim()),
+                        Float.valueOf(temperatureDeviation.getText().toString().trim()),
+                        Float.valueOf(tempDecoccion.getText().toString().trim()),
+                        Float.valueOf(tempDecoccionDeviation.getText().toString().trim()),
+                        Float.valueOf(ph.getText().toString().trim()),
+                        Float.valueOf(phDeviation.getText().toString().trim()),
+                        Integer.valueOf(duration.getText().toString().trim())
+                );
+
+                //Ahora tengo que agregarlo a la lista de intervalos
+                addInterval(interval);
+
             }
         });
 
@@ -178,4 +283,9 @@ public class PlanningActivity extends AppCompatActivity {
 
         builder.create().show();
     }
-} //end Activity
+
+    private void addInterval(MeasureInterval interval){
+        this.intervals.add(interval);
+        this.intervalListAdapter.notifyDataSetChanged();
+    }
+} //end PlanningActivity

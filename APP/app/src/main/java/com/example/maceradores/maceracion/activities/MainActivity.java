@@ -91,15 +91,9 @@ public class MainActivity extends AppCompatActivity {
     } //end OnCreate
 
     private List<Mash> hardcodeMashList() {
-        final MeasureInterval measureAux = new MeasureInterval(1,
-                70, 2,
-                60, 2,
-                5.4f,0.1f,
-                20);
-        final List<MeasureInterval> listAux = new ArrayList<MeasureInterval>(){{ add(measureAux);}};
         return new ArrayList<Mash>(){{
-           add(new Mash(0, "Mash 1", listAux));
-            add(new Mash(0, "Mash 2", listAux));
+           add(new Mash(0, "Mash 1"));
+           add(new Mash(0, "Mash 2"));
         }};
     }
 
@@ -207,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put("nombre", "test SQLite"); //el nombre tiene la clausula unique
         values.put( "tipo", "simple");
+        values.put("volumen", 1);
         values.put( "intervaloMedTemp", 1);
         values.put("intervaloMedPh", 2);
 

@@ -24,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL( "CREATE TABLE Maceracion (id INTEGER PRIMARY KEY," +
                 "nombre VARCHAR(190) UNIQUE," +
                 "tipo VARCHAR(64)," +
+                "volumen FLOAT,"+
                 "intervaloMedTemp INTEGER, " +
                 "intervaloMedPh INTEGER)");
 
@@ -42,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE Grano(" +
                 "id INTEGER PRIMARY KEY, " +
                 "nombre VARCHAR(190), " +
-                "porcentaje FLOAT, " +
+                "cantidad FLOAT, " +
                 "rendimiento FLOAT, " +
                 "maceracion INTEGER," +
                 "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");

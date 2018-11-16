@@ -1,5 +1,6 @@
 package com.example.maceradores.maceracion.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Mash {
@@ -8,9 +9,12 @@ public class Mash {
     private List<MeasureInterval> plan;
     private List<Grain> grains;
     private List<Experiment> experiments;
+    private float volumen;
+    private float densidadObjetivo;
     private int periodMeasureTemperature;
     private int periodMeasurePh;
 
+    // Constructors
 
     public Mash(int id, String name) {
         this.id = id;
@@ -40,6 +44,39 @@ public class Mash {
         this.periodMeasurePh = periodMeasurePh;
     }
 
+    //Own methods
+    public void addMeasureInterval( MeasureInterval i){
+        // I supose that this interval doesn't have the field order.
+        // then i assigned the length of the list plus one.
+        i.setOrder( this.plan.size() + 1 );
+        plan.add(i);
+    }
+
+    public void removeMeasureInterval(int position){
+        // i need to reset the order and delete interval.
+        if( position > plan.size() || position < 0){
+            //si le erro con los numeritos que no haga nada.
+            return;
+        }
+        boolean finded = false;
+        int it = plan.size() - 1; // arranco por el utlimo
+        while(finded){
+            if( it == position){
+                // lo encontre y lo elimino.
+                plan.remove(it);
+                finded = true;
+            }
+            else{
+                //agarro lo que esta en it y le resto uno al orden.
+                plan.get(it).decrementOrder();
+                // y sigo con el proximo.
+                it --;
+            }
+        } //end while
+
+    }
+
+    // Getters & Setters
     public List<Experiment> getExperiments() {
         return experiments;
     }
@@ -69,7 +106,14 @@ public class Mash {
     }
 
     public void setPlan(List<MeasureInterval> plan) {
-        this.plan = plan;
+        // setteo los ordenes de la lista para que queden de manera creciente.
+
+        this.plan = new ArrayList<MeasureInterval>();
+
+        for(int i= 0; i < plan.size(); i++){
+            addMeasureInterval(plan.get(i));
+        }
+        //this.plan = plan;
     }
 
     public List<Grain> getGrains() {
@@ -94,5 +138,13 @@ public class Mash {
 
     public void setPeriodMeasurePh(int periodMeasurePh) {
         this.periodMeasurePh = periodMeasurePh;
+    }
+
+    public float getVolumen() {
+        return volumen;
+    }
+
+    public void setVolumen(float volumen) {
+        this.volumen = volumen;
     }
 }

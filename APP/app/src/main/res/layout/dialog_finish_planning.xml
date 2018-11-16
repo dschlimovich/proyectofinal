@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--> Edit Text para que ponga el nombre</!-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre Maceración: "/>
+        <EditText
+            android:id="@+id/editTextFinishPlanningName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!--> Medición temperatura</!-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medición Temperatura(seg): "/>
+        <EditText
+            android:id="@+id/editTextFinishPlanningMedTemp"
+            android:layout_width="wrap_content"
+            android:ems="3"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!--> Medición pH</!-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medición pH(seg): "/>
+        <EditText
+            android:id="@+id/editTextFinishPlanningMedPh"
+            android:layout_width="wrap_content"
+            android:ems="3"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -10,6 +10,7 @@ public class MeasureInterval {
     private float phDeviation;
     private int duration; //would it be time or quantity of measures?
 
+    //Constructos
     public MeasureInterval(int order, float mainTemperature, float mainTemperatureDeviation, float secondTemperature, float secondTemperatureDeviation, float pH, float phDeviation, int duration) {
         this.order = order;
         this.mainTemperature = mainTemperature;
@@ -21,6 +22,30 @@ public class MeasureInterval {
         this.duration = duration;
     }
 
+    public MeasureInterval(float mainTemperature, float mainTemperatureDeviation, float secondTemperature, float secondTemperatureDeviation, float pH, float phDeviation, int duration) {
+        // Without set of order.
+        this.mainTemperature = mainTemperature;
+        this.mainTemperatureDeviation = mainTemperatureDeviation;
+        this.secondTemperature = secondTemperature;
+        this.secondTemperatureDeviation = secondTemperatureDeviation;
+        this.pH = pH;
+        this.phDeviation = phDeviation;
+        this.duration = duration;
+    }
+
+    //Own Method.
+    public void decrementOrder(){
+        this.order = this.order - 1;
+    }
+
+    public String getDescription(){
+        return "Duración: " + this.duration + " minutos\n" +
+                "Temperatura: " + this.mainTemperature + "°C ± " + this.mainTemperatureDeviation + "\n" +
+                "pH: " + this.pH + " ± " + this.phDeviation + "\n" +
+                "Temperatura Decocción: " + this.secondTemperature + "°C ± " + this.secondTemperatureDeviation + "\n";
+    }
+
+    // Getters & Setters
     public float getMainTemperatureDeviation() {
         return mainTemperatureDeviation;
     }
