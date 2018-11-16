@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="5dp"
     android:orientation="vertical">
 
     <TextView
@@ -15,7 +16,7 @@
         android:layout_height="wrap_content"
         android:hint="Insertar el nombre aqui"/>
     <TextView
-        android:text="Cantidad (kg) a utilizar en la receta"
+        android:text="Cantidad (%) a utilizar en la receta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -23,10 +24,11 @@
         android:id="@+id/editTextGrainQuantity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="0.9 = 90%"
         android:inputType="numberDecimal"/>
 
     <TextView
-        android:text="Rendimiento Teorico"
+        android:text="Extracto Potencial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -34,6 +36,7 @@
         android:id="@+id/editTextGrainYield"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="30 = 1,030 * 0,1kg/lt"
         android:inputType="numberDecimal"/>
 
 </LinearLayout>

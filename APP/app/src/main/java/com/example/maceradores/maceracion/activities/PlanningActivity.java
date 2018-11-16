@@ -2,6 +2,7 @@ package com.example.maceradores.maceracion.activities;
 
 import android.content.DialogInterface;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -54,6 +55,7 @@ public class PlanningActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning);
+
         // por ahora supongo que aca llega desde el mainactivity.
 
         Spinner spinner = (Spinner) findViewById(R.id.spinnerTiposMaceracion);
@@ -79,7 +81,10 @@ public class PlanningActivity extends AppCompatActivity {
         intervalListAdapter = new IntervalListAdapter(intervals, R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
             @Override
             public void onItemClick(MeasureInterval interval, int position) {
-                Toast.makeText(PlanningActivity.this, "Intervalo Clickeado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PlanningActivity.this, "Intervalo Borrado", Toast.LENGTH_SHORT).show();
+                intervals.remove(position);
+                //intervalListAdapter.notifyItemRemoved(position);
+                intervalListAdapter.notifyDataSetChanged();
             }
         });
         listsIntervals = (RecyclerView) findViewById(R.id.recyclerViewIntervalPlanning);
@@ -171,7 +176,7 @@ public class PlanningActivity extends AppCompatActivity {
 
     private void showAlertDialogAddMeasureInterval() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Nueva etapa");
+        builder.setTitle("Nuevo Intervalo");
 
         View addIntervalView = LayoutInflater.from(this).inflate(R.layout.dialog_add_measure_interval, null);
         builder.setView(addIntervalView);
@@ -271,7 +276,6 @@ public class PlanningActivity extends AppCompatActivity {
                 grains.add(grain);
 
                 grainListAdapter.notifyDataSetChanged();
-                dialog.dismiss();
             }
         });
         builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {

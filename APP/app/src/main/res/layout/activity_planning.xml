@@ -4,95 +4,101 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="5dp"
     tools:context=".activities.PlanningActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
-        <!--> Eleccion tipo de Maceracion</!-->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tipo de Maceracion:   "/>
-
-            <Spinner
-                android:id="@+id/spinnerTiposMaceracion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-            </Spinner>
-
-        </LinearLayout>
-        <!--> Volumen deseado a producir</!-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Volumen(en litros): "/>
-            <EditText
-                android:id="@+id/editTextVolumen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="3"
-                android:inputType="numberDecimal" />
-        </LinearLayout>
-        <!--> Densidad objetivo a producir</!-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Densidad objetivo: "/>
-            <EditText
-                android:id="@+id/editTextDensidad"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="3"
-                android:inputType="numberDecimal" />
-        </LinearLayout>
-        <!--> Granos a utilizar</!-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
+            <!--> Eleccion tipo de Maceracion</!-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tipo de Maceracion:   "/>
+
+                <Spinner
+                    android:id="@+id/spinnerTiposMaceracion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                </Spinner>
+
+            </LinearLayout>
+            <!--> Volumen deseado a producir</!-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Volumen(en litros): "/>
+                <EditText
+                    android:id="@+id/editTextVolumen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="3"
+                    android:inputType="numberDecimal" />
+            </LinearLayout>
+            <!--> Densidad objetivo a producir</!-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Densidad objetivo: "/>
+                <EditText
+                    android:id="@+id/editTextDensidad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="3"
+                    android:inputType="numberDecimal" />
+            </LinearLayout>
+            <!--> Granos a utilizar</!-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="GRANOS A UTILIZAR"/>
+                <ListView
+                    android:id="@+id/listViewGrains"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </ListView>
+                <Button
+                    android:layout_gravity="end"
+                    android:id="@+id/buttonAddGrain"
+                    android:text="AGREGAR GRANO"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"/>
+            </LinearLayout>
+            <!--> Etapas </!-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GRANOS A UTILIZAR"/>
-            <ListView
-                android:id="@+id/listViewGrains"
+                android:layout_gravity="center_horizontal"
+                android:text="INTERVALOS"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewIntervalPlanning"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </ListView>
-            <Button
-                android:layout_gravity="end"
-                android:id="@+id/buttonAddGrain"
-                android:text="AGREGAR GRANO"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"/>
-
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
-        <!--> Etapas </!-->
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewIntervalPlanning"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
-    </LinearLayout>
+
 
     <android.support.design.widget.FloatingActionButton
         android:src= "@mipmap/ic_plus"
