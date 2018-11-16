@@ -3,7 +3,6 @@
 include "CdataBase.php";
 $db= new CdataBase("pi","raspberry");
 
-
 $ruta = "/home/pi/Desktop/ProyectoFinal/Funciones\ para\ medicion\ -\ Parte\ hardware/getTemPh.py";
     
 $salida = shell_exec("sudo python3 " . $ruta);
@@ -25,7 +24,6 @@ $keys = array(
 
 $trimmed = trim($salida, " \n"); //supongo que esto le saca el utltimo caracter
 $json = array();
-
 //suponiendo que foreach arranca desde el primer valor y sigue hasta el ultimo avanzando de a uno
 foreach ($keys as $key){
 	//obtengo la primer posicion de &
@@ -49,6 +47,4 @@ foreach ($keys as $key){
 $ret=json_encode($json);
 
 echo $ret;
- 
-
- ?>
+?>
