@@ -10,6 +10,7 @@ public class Mash {
     private List<Grain> grains;
     private List<Experiment> experiments;
     private float volumen;
+    private float densidadObjetivo;
     private int periodMeasureTemperature;
     private int periodMeasurePh;
 

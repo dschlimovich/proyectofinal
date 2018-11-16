@@ -43,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE Grano(" +
                 "id INTEGER PRIMARY KEY, " +
                 "nombre VARCHAR(190), " +
-                "porcentaje FLOAT, " +
+                "cantidad FLOAT, " +
                 "rendimiento FLOAT, " +
                 "maceracion INTEGER," +
                 "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");
