@@ -65,7 +65,7 @@
             <Button
                 android:layout_gravity="end"
                 android:id="@+id/buttonAddGrain"
-                android:text="AGREGAR"
+                android:text="AGREGAR GRANO"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"/>
