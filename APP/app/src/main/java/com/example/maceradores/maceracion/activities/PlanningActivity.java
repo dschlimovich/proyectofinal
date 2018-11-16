@@ -136,14 +136,24 @@ public class PlanningActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Guardar Maceración");
 
-        //View addIntervalView = LayoutInflater.from(this).inflate(R.layout.dialog_add_measure_interval, null);
-        //builder.setView(addIntervalView);
-
-
+        View finishPlanningView = LayoutInflater.from(this).inflate(R.layout.dialog_finish_planning, null);
+        builder.setView(finishPlanningView);
+        // Necesito las referecias a los editText
+        final EditText nombre = (EditText) finishPlanningView.findViewById(R.id.editTextFinishPlanningName);
+        final EditText medTemp = (EditText) finishPlanningView.findViewById(R.id.editTextFinishPlanningMedTemp);
+        final EditText medPh = (EditText) finishPlanningView.findViewById(R.id.editTextFinishPlanningMedPh);
 
         builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                // Este es el momento donde debería crear el mash.
+                // Me robo los valores de los edit text
+                String nameMash = nombre.getText().toString().trim();
+                int peridoMedicionTemp = Integer.valueOf(medTemp.getText().toString().trim());
+                int peridoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
+
+                //Agrego el Mash a la base de datos.
+                Toast.makeText(PlanningActivity.this, nameMash, Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -278,4 +288,4 @@ public class PlanningActivity extends AppCompatActivity {
         this.intervals.add(interval);
         this.intervalListAdapter.notifyDataSetChanged();
     }
-} //end Activity
+} //end PlanningActivity

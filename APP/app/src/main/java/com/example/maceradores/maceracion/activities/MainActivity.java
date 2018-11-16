@@ -67,8 +67,7 @@ public class MainActivity extends AppCompatActivity {
         rvAdapter = new MashListAdapter(mashList, R.layout.item_list_mash, new MashListAdapter.onItemClickListener() {
             @Override
             public void onItemClick(Mash mash, int position) {
-                Toast.makeText(Mai
-                        nActivity.this, mash.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, mash.getName(), Toast.LENGTH_SHORT).show();
             }
         });
         layoutManager = new LinearLayoutManager(this);
