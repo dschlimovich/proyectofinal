@@ -47,7 +47,10 @@ public class PlanningActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private IntervalListAdapter intervalListAdapter;
 
-    //Data
+    //Data - Fields to create the new mash.
+    private String type;
+    private float volume;
+    private float density;
     private List<MeasureInterval> intervals;
     private List<Grain> grains;
 
@@ -70,7 +73,7 @@ public class PlanningActivity extends AppCompatActivity {
         // List of Grains
         grains = new ArrayList<Grain>();
         //grains.add(new Grain("Prueba", 0.5f, 0.5f));
-        listGrains = (ListView) findViewById(R.id.listViewGrains);
+        listGrains = (ListView) findViewById(R.id.listViewPlanningGrains);
         grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
         listGrains.setAdapter(grainListAdapter);
         registerForContextMenu(this.listGrains);
@@ -93,7 +96,7 @@ public class PlanningActivity extends AppCompatActivity {
         //listsIntervals.setHasFixedSize(true);
 
         //Add grain
-        buttonAddGrain = findViewById(R.id.buttonAddGrain);
+        buttonAddGrain = findViewById(R.id.buttonPlanningAddGrain);
         buttonAddGrain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,10 +129,15 @@ public class PlanningActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.acceptPlannification:
-                //Si acepto la planificación tengo que definir:
-                // el nombre de la maceracion que voy a agregar.
-                // y los tiempos de medicion temperatura y pH.
-                //necesitaria otro alert dialog.
+                //Me robo los valores de los editText correspondientes a volumen y densidad.
+                EditText volumePlanning = findViewById(R.id.editTextPlanningVolumen);
+                EditText densityPlanning = findViewById(R.id.editTextPlanningDensidad);
+                this.volume = Float.valueOf(volumePlanning.getText().toString().trim());
+                this.density = Float.valueOf(densityPlanning.getText().toString().trim());
+                //y el correspondiente al tipo de maceracion.
+                Spinner spinner = findViewById(R.id.spinnerTiposMaceracion);
+                this.type = spinner.getSelectedItem().toString().trim();
+
                 showAlertDialogFinishPlanning();
                 return true;
             default:
@@ -155,9 +163,19 @@ public class PlanningActivity extends AppCompatActivity {
                 // Este es el momento donde debería crear el mash.
                 // Me robo los valores de los edit text
                 String nameMash = nombre.getText().toString().trim();
-                int peridoMedicionTemp = Integer.valueOf(medTemp.getText().toString().trim());
-                int peridoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
+                int periodoMedicionTemp = Integer.valueOf(medTemp.getText().toString().trim());
+                int periodoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
+                // In theory, i have all fields to create a new Mash.
+                Mash newMash = new Mash(nameMash);
+                newMash.setTipo(PlanningActivity.this.type);
+                newMash.setPlan(PlanningActivity.this.intervals);
+                newMash.setGrains(PlanningActivity.this.grains);
+                newMash.setVolumen(PlanningActivity.this.volume);
+                newMash.setDensidadObjetivo(PlanningActivity.this.density);
+                newMash.setPeriodMeasureTemperature(periodoMedicionTemp);
+                newMash.setPeriodMeasurePh(periodoMedicionPh);
 
+                //At this moment, i need to insert this new mash in the database
                 //Agrego el Mash a la base de datos.
                 Toast.makeText(PlanningActivity.this, nameMash, Toast.LENGTH_SHORT).show();
 

@@ -25,6 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "nombre VARCHAR(190) UNIQUE," +
                 "tipo VARCHAR(64)," +
                 "volumen FLOAT,"+
+                "densidadObjetivo FLOAT,"+
                 "intervaloMedTemp INTEGER, " +
                 "intervaloMedPh INTEGER)");
 
@@ -44,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY, " +
                 "nombre VARCHAR(190), " +
                 "cantidad FLOAT, " +
-                "rendimiento FLOAT, " +
+                "extractoPotencial FLOAT, " +
                 "maceracion INTEGER," +
                 "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");
 

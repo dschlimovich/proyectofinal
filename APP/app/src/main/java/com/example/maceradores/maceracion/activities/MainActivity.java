@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Mash> hardcodeMashList() {
         return new ArrayList<Mash>(){{
-           add(new Mash(0, "Mash 1"));
-           add(new Mash(0, "Mash 2"));
+           add(new Mash("Mash 1"));
+           add(new Mash("Mash 2"));
         }};
     }
 

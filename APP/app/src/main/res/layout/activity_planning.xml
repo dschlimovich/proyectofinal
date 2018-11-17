@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:text="Volumen(en litros): "/>
                 <EditText
-                    android:id="@+id/editTextVolumen"
+                    android:id="@+id/editTextPlanningVolumen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="3"
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:text="Densidad objetivo: "/>
                 <EditText
-                    android:id="@+id/editTextDensidad"
+                    android:id="@+id/editTextPlanningDensidad"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="3"
@@ -74,13 +74,13 @@
                     android:layout_gravity="center_horizontal"
                     android:text="GRANOS A UTILIZAR"/>
                 <ListView
-                    android:id="@+id/listViewGrains"
+                    android:id="@+id/listViewPlanningGrains"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 </ListView>
                 <Button
                     android:layout_gravity="end"
-                    android:id="@+id/buttonAddGrain"
+                    android:id="@+id/buttonPlanningAddGrain"
                     android:text="AGREGAR GRANO"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

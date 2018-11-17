@@ -6,6 +6,7 @@ import java.util.List;
 public class Mash {
     private int id;
     private String name;
+    private String tipo;
     private List<MeasureInterval> plan;
     private List<Grain> grains;
     private List<Experiment> experiments;
@@ -16,8 +17,7 @@ public class Mash {
 
     // Constructors
 
-    public Mash(int id, String name) {
-        this.id = id;
+    public Mash(String name) {
         this.name = name;
     }
 
@@ -77,6 +77,15 @@ public class Mash {
     }
 
     // Getters & Setters
+
+    public float getDensidadObjetivo() {
+        return densidadObjetivo;
+    }
+
+    public void setDensidadObjetivo(float densidadObjetivo) {
+        this.densidadObjetivo = densidadObjetivo;
+    }
+
     public List<Experiment> getExperiments() {
         return experiments;
     }
@@ -146,5 +155,13 @@ public class Mash {
 
     public void setVolumen(float volumen) {
         this.volumen = volumen;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }
