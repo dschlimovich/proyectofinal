@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
@@ -13,6 +14,8 @@ public class ExperimentActivity extends AppCompatActivity {
     private int idMash;
 
     //UI
+    private RecyclerView recyclerView;
+
     private FloatingActionButton fab;
 
 
