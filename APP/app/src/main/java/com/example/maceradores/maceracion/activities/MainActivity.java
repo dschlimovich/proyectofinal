@@ -62,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Mostrar todos los tipos de maceraciones que tiene planficado el buen hombre.
-        mashList = hardcodeMashList();
+        //mashList = hardcodeMashList();
+        mashList = getAllMash();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewMash);
         rvAdapter = new MashListAdapter(mashList, R.layout.item_list_mash, new MashListAdapter.onItemClickListener() {
             @Override
@@ -89,6 +90,34 @@ public class MainActivity extends AppCompatActivity {
         });
 
     } //end OnCreate
+
+    private List<Mash> getAllMash() {
+        List<Mash> resultados = new ArrayList<Mash>();
+        // tengo que hacer una consulta SQL.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                "nombre"
+        };
+        //String selection = "id = ?";
+        //String[] selectionArgs = { String.valueOf(newRowId)};
+
+        Cursor cursor = db.query("Maceracion", projection, null, null, null, null, null);
+
+        //List itemNames = new ArrayList<>();
+        while(cursor.moveToNext()) {
+            String itemName = cursor.getString(
+                    cursor.getColumnIndexOrThrow("nombre"));
+            resultados.add(new Mash(itemName));
+            //itemNames.add(itemName);
+        }
+        cursor.close();
+
+        return resultados;
+    }
 
     private List<Mash> hardcodeMashList() {
         return new ArrayList<Mash>(){{

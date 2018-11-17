@@ -1,6 +1,9 @@
 package com.example.maceradores.maceracion.activities;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +30,7 @@ import android.widget.Toast;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.GrainListAdapter;
 import com.example.maceradores.maceracion.adapters.IntervalListAdapter;
+import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Grain;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
@@ -166,6 +170,7 @@ public class PlanningActivity extends AppCompatActivity {
                 int periodoMedicionTemp = Integer.valueOf(medTemp.getText().toString().trim());
                 int periodoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
                 // In theory, i have all fields to create a new Mash.
+                /*
                 Mash newMash = new Mash(nameMash);
                 newMash.setTipo(PlanningActivity.this.type);
                 newMash.setPlan(PlanningActivity.this.intervals);
@@ -173,12 +178,30 @@ public class PlanningActivity extends AppCompatActivity {
                 newMash.setVolumen(PlanningActivity.this.volume);
                 newMash.setDensidadObjetivo(PlanningActivity.this.density);
                 newMash.setPeriodMeasureTemperature(periodoMedicionTemp);
-                newMash.setPeriodMeasurePh(periodoMedicionPh);
+                newMash.setPeriodMeasurePh(periodoMedicionPh); */
 
                 //At this moment, i need to insert this new mash in the database
-                //Agrego el Mash a la base de datos.
-                Toast.makeText(PlanningActivity.this, nameMash, Toast.LENGTH_SHORT).show();
+                DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                //Ahora puedo escribir en la base de datos,
+                ContentValues values = new ContentValues();
+                values.put( "nombre", nameMash); //el nombre tiene la clausula unique
+                values.put( "tipo", PlanningActivity.this.type);
+                values.put( "volumen", PlanningActivity.this.volume);
+                values.put( "densidadObjetivo", PlanningActivity.this.density);
+                values.put( "intervaloMedTemp", periodoMedicionTemp);
+                values.put( "intervaloMedPh", periodoMedicionPh);
 
+                long newRowId = db.insert("Maceracion", null, values);
+
+                // cuenta la leyenda que en newRowId tengo el id del ultimo valor insertado.
+                if( newRowId != -1){
+                    Toast.makeText(PlanningActivity.this, "Inserto sin problemas", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(PlanningActivity.this, "Problemas al insertar", Toast.LENGTH_SHORT).show();
+                }
+                // chequeamos si me toma los cambios.
+                startActivity(new Intent(PlanningActivity.this, MainActivity.class));
             }
         });
 

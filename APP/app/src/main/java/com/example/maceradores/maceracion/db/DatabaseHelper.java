@@ -21,7 +21,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // además se incorpora los tiempos de medicion correspondientes a la temperatura y pH
         // Si fueramos pro le agregariamos la constraint para indicar que el tiempo del pH
         // debe ser mayor a 2 minutos (120) y ser multiplo del de temperatura.
-        db.execSQL( "CREATE TABLE Maceracion (id INTEGER PRIMARY KEY," +
+        db.execSQL( "CREATE TABLE Maceracion ("+
+                "id INTEGER PRIMARY KEY," +
                 "nombre VARCHAR(190) UNIQUE," +
                 "tipo VARCHAR(64)," +
                 "volumen FLOAT,"+
@@ -34,8 +35,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY, " +
                 "duracion INTEGER," +  //minutos. deberia ser un flotante?
                 "temperatura FLOAT, " +
+                "desvioTemperatura FLOAT,"+
                 "ph FLOAT," +
+                "desvioPh FLOAT,"+
                 "tempDecoccion FLOAT, " +
+                "desvioTempDecoccion FLOAT,"+
                 "maceracion INTEGER, " +
                 "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");
 
