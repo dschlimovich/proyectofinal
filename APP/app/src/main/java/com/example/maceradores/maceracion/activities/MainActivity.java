@@ -83,7 +83,10 @@ public class MainActivity extends AppCompatActivity {
         rvAdapter = new MashListAdapter(mashList, R.layout.item_list_mash, new MashListAdapter.onItemClickListener() {
             @Override
             public void onItemClick(Mash mash, int position) {
-                Toast.makeText(MainActivity.this, "" + mash.getId(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, ExperimentActivity.class);
+                intent.putExtra("idMash", mash.getId());
+                intent.putExtra("nameMash", mash.getName());
+                startActivity(intent);
             }
         });
         layoutManager = new LinearLayoutManager(this);
