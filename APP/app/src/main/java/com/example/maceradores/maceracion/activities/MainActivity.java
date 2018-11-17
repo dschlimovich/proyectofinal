@@ -60,25 +60,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //Mostrar todos los tipos de maceraciones que tiene planficado el buen hombre.
-        //mashList = hardcodeMashList();
-        mashList = getAllMash();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewMash);
-        rvAdapter = new MashListAdapter(mashList, R.layout.item_list_mash, new MashListAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(Mash mash, int position) {
-                Toast.makeText(MainActivity.this, mash.getName(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setAdapter(rvAdapter);
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-
 
         //añadir un alertDialog al fab con los valores actuales de los sensores.
         fab = (FloatingActionButton) findViewById(R.id.fabCurrentValues);
@@ -91,6 +73,27 @@ public class MainActivity extends AppCompatActivity {
 
     } //end OnCreate
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // aca hago la consulta a la base de datos y la muestro en el recycler.
+        mashList = getAllMash();
+
+        rvAdapter = new MashListAdapter(mashList, R.layout.item_list_mash, new MashListAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(Mash mash, int position) {
+                Toast.makeText(MainActivity.this, "" + mash.getId(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setAdapter(rvAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
     private List<Mash> getAllMash() {
         List<Mash> resultados = new ArrayList<Mash>();
         // tengo que hacer una consulta SQL.
@@ -100,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
+                "id",
                 "nombre"
         };
         //String selection = "id = ?";
@@ -111,7 +115,11 @@ public class MainActivity extends AppCompatActivity {
         while(cursor.moveToNext()) {
             String itemName = cursor.getString(
                     cursor.getColumnIndexOrThrow("nombre"));
-            resultados.add(new Mash(itemName));
+            int id = cursor.getInt(
+                    cursor.getColumnIndexOrThrow("id")
+            );
+
+            resultados.add(new Mash(id, itemName));
             //itemNames.add(itemName);
         }
         cursor.close();
@@ -119,12 +127,6 @@ public class MainActivity extends AppCompatActivity {
         return resultados;
     }
 
-    private List<Mash> hardcodeMashList() {
-        return new ArrayList<Mash>(){{
-           add(new Mash("Mash 1"));
-           add(new Mash("Mash 2"));
-        }};
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -21,6 +21,11 @@ public class Mash {
         this.name = name;
     }
 
+    public Mash(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Mash(int id, String name, List<MeasureInterval> plan, List<Experiment> experiments) {
         this.id = id;
         this.name = name;

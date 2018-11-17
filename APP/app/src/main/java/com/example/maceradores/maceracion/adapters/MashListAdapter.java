@@ -48,6 +48,7 @@ public class MashListAdapter extends RecyclerView.Adapter<MashListAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.tvNameMash = (TextView) itemView.findViewById(R.id.tvItemListMash);
+
         }
 
         public void bind(final Mash mash, final onItemClickListener listener) {
