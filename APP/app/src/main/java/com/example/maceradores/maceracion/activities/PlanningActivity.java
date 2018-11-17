@@ -111,6 +111,7 @@ public class PlanningActivity extends AppCompatActivity {
             }
         });
 
+        //Ocultar el teclado cuando arranca el activity... es bastante molesto
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
     } //end onCreate
@@ -263,16 +264,16 @@ public class PlanningActivity extends AppCompatActivity {
 
         final EditText grainName = (EditText) addGrainView.findViewById(R.id.editTextGrainName);
         final EditText grainQuantity = (EditText) addGrainView.findViewById(R.id.editTextGrainQuantity);
-        final EditText grainYield = (EditText) addGrainView.findViewById(R.id.editTextGrainYield);
+        final EditText grainExtractPotential = (EditText) addGrainView.findViewById(R.id.editTextGrainExtractPotential);
 
         builder.setPositiveButton("AGREGAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name = grainName.getText().toString().trim();
                 float quantity = Float.valueOf(grainQuantity.getText().toString());
-                float yield = Float.valueOf(grainYield.getText().toString());
+                float extractPotential = Float.valueOf(grainExtractPotential.getText().toString());
 
-                Grain grain = new Grain(name, quantity, yield);
+                Grain grain = new Grain(name, quantity, extractPotential);
                 grains.add(grain);
 
                 grainListAdapter.notifyDataSetChanged();

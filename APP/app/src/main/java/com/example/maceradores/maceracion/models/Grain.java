@@ -3,12 +3,12 @@ package com.example.maceradores.maceracion.models;
 public class Grain {
     private String name;
     private float quantity;
-    private float yield;
+    private float extractPotential;
 
-    public Grain(String name, float quantity, float yield) {
+    public Grain(String name, float quantity, float extractPotential) {
         this.name = name;
         this.quantity = quantity;
-        this.yield = yield;
+        this.extractPotential = extractPotential;
     }
 
     public String getName() {
@@ -27,11 +27,11 @@ public class Grain {
         this.quantity = quantity;
     }
 
-    public float getYield() {
-        return yield;
+    public float getExtractPotential() {
+        return extractPotential;
     }
 
-    public void setYield(float yield) {
-        this.yield = yield;
+    public void setExtractPotential(float extractPotential) {
+        this.extractPotential = extractPotential;
     }
 }

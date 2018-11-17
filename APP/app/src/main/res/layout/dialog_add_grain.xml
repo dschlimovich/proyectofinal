@@ -33,7 +33,7 @@
         android:layout_height="wrap_content" />
 
     <EditText
-        android:id="@+id/editTextGrainYield"
+        android:id="@+id/editTextGrainExtractPotential"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="30 = 1,030 * 0,1kg/lt"

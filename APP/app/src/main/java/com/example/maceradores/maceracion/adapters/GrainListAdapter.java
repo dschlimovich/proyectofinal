@@ -47,7 +47,7 @@ public class GrainListAdapter extends BaseAdapter {
         TextView grainDetail = (TextView) convertView.findViewById(R.id.textViewGrainDetail);
         String detail = this.grainList.get(position).getName() + "\t porcentaje: " +
                 String.valueOf(this.grainList.get(position).getQuantity()) + "\t extracto: " +
-                String.valueOf(this.grainList.get(position).getYield());
+                String.valueOf(this.grainList.get(position).getExtractPotential());
 
         grainDetail.setText(detail);
 
