@@ -1,17 +1,19 @@
 package com.example.maceradores.maceracion.models;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Experiment {
     private int id;
-    private Date date; //todo review formate date
+    private String date; //todo review formate date
     private List<SensedValues> sensedValuesList;
 
-    public Experiment(int id, Date date, List<SensedValues> sensedValuesList) {
+    public Experiment(int id, String date) {
         this.id = id;
         this.date = date;
-        this.sensedValuesList = sensedValuesList;
+        this.sensedValuesList = new ArrayList<SensedValues>();
     }
 
     public int getId() {
@@ -22,11 +24,11 @@ public class Experiment {
         this.id = id;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
