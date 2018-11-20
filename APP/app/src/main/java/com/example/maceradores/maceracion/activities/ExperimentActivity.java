@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ExpandableListAdapter;
 import android.widget.Toast;
 
@@ -70,6 +71,7 @@ public class ExperimentActivity extends AppCompatActivity {
         values.put( "maceracion", 1);
         long newRowId = db.insert("Experimento", null, values);
         Toast.makeText(this, "Inserto un valor", Toast.LENGTH_SHORT).show();
+        dbHelper.close();
     }
 
     @Override
@@ -122,6 +124,7 @@ public class ExperimentActivity extends AppCompatActivity {
             //Toast.makeText(this, fecha, Toast.LENGTH_SHORT).show();
         }
         cursor.close();
+        dbHelper.close();
         return resultados;
     } //end getAllExperiments
 
@@ -129,7 +132,47 @@ public class ExperimentActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_bar_experiments_activity, menu);
         return super.onCreateOptionsMenu(menu);
+    } //end onCreateOptionsMenu
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.deleteMash:
+                    deleteMash();
+                return true;
+            case R.id.seePlanification:
+                Toast.makeText(this, "Ir al panel para ver planificacion", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.staticsAllExperiments:
+                Toast.makeText(this, "Ver la estadistica completa de la maceracion", Toast.LENGTH_SHORT).show();
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
     }
 
+    private void deleteMash() {
+        //tengo que eliminar todos los datos y tengo que mandar al main activity.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        //elimino primero todos los experimentos. Despues la maceracion
 
+        String selection = "maceracion = ?";
+        String[] selectionArgs = { String.valueOf(this.idMash)};
+
+        int cant = db.delete("Experimento", selection, selectionArgs);
+        //Toast.makeText(this, "" + cant + " experimentos elimados", Toast.LENGTH_SHORT).show();
+
+        //Ahora elimino la maceracion y vuelvo al main activity
+        selection = "id = ?";
+        selectionArgs = new String[] { String.valueOf(this.idMash)};
+        cant = db.delete("Maceracion", "id = ?",selectionArgs );
+        if (cant == 1)
+        Toast.makeText(this, "Maceración eliminada", Toast.LENGTH_SHORT).show();
+
+        dbHelper.close();
+
+        startActivity(new Intent(ExperimentActivity.this, MainActivity.class));
+        }
 }//end ExperimentActivity
