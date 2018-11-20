@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.ExpandableListAdapter;
 import android.widget.Toast;
 
@@ -121,5 +123,13 @@ public class ExperimentActivity extends AppCompatActivity {
         }
         cursor.close();
         return resultados;
+    } //end getAllExperiments
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar_experiments_activity, menu);
+        return super.onCreateOptionsMenu(menu);
     }
+
+
 }//end ExperimentActivity
