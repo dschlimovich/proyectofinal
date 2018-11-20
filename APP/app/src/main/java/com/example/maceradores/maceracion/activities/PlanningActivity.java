@@ -204,8 +204,8 @@ public class PlanningActivity extends AppCompatActivity {
                         grainValues = new ContentValues();
                         grainValues.put("nombre", grains.get(i).getName());
                         grainValues.put("cantidad", grains.get(i).getQuantity());
-                        grainValues.put("extractoPotenicial", grains.get(i).getExtractPotential());
-                        grainValues.put("maceracion", newMashId);
+                        grainValues.put("extractoPotencial", grains.get(i).getExtractPotential());
+                        //grainValues.put("maceracion", newMashId);
 
                         long newGrainId = db.insert("Grano",null, grainValues );
                         if(newGrainId == -1){
