@@ -100,7 +100,7 @@ public class ExperimentActivity extends AppCompatActivity {
         //String selection = "id = ?";
         String[] selectionArgs = { String.valueOf(this.idMash)};
 
-        Cursor cursor = db.rawQuery("SELECT E.id, E.fecha FROM Experimento AS E INNER JOIN Maceracion AS M ON E.maceracion = M.id WHERE M.id = ? ORDER BY E.fecha DESC", selectionArgs);
+        Cursor cursor = db.rawQuery("SELECT E.id AS 'id', strftime('%d/%m/%Y %H:%M', E.fecha) AS 'fecha' FROM Experimento AS E INNER JOIN Maceracion AS M ON E.maceracion = M.id WHERE M.id = ? ORDER BY E.fecha DESC", selectionArgs);
 
         //List itemNames = new ArrayList<>();
         while(cursor.moveToNext()) {
