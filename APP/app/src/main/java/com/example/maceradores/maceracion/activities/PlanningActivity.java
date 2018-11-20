@@ -184,23 +184,59 @@ public class PlanningActivity extends AppCompatActivity {
                 DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 //Ahora puedo escribir en la base de datos,
-                ContentValues values = new ContentValues();
-                values.put( "nombre", nameMash); //el nombre tiene la clausula unique
-                values.put( "tipo", PlanningActivity.this.type);
-                values.put( "volumen", PlanningActivity.this.volume);
-                values.put( "densidadObjetivo", PlanningActivity.this.density);
-                values.put( "intervaloMedTemp", periodoMedicionTemp);
-                values.put( "intervaloMedPh", periodoMedicionPh);
+                ContentValues mashValues = new ContentValues();
+                mashValues.put( "nombre", nameMash); //el nombre tiene la clausula unique
+                mashValues.put( "tipo", PlanningActivity.this.type);
+                mashValues.put( "volumen", PlanningActivity.this.volume);
+                mashValues.put( "densidadObjetivo", PlanningActivity.this.density);
+                mashValues.put( "intervaloMedTemp", periodoMedicionTemp);
+                mashValues.put( "intervaloMedPh", periodoMedicionPh);
 
-                long newRowId = db.insert("Maceracion", null, values);
+                long newMashId = db.insert("Maceracion", null, mashValues);
 
                 // cuenta la leyenda que en newRowId tengo el id del ultimo valor insertado.
-                if( newRowId != -1){
-                    Toast.makeText(PlanningActivity.this, "Inserto sin problemas", Toast.LENGTH_SHORT).show();
+                if( newMashId != -1){
+                    //Toast.makeText(PlanningActivity.this, "Inserto sin problemas", Toast.LENGTH_SHORT).show();
+                    // Si inserto la maceración, tengo que insertar ademas los granos y las etapas de medicion.
+                    // Comencemos por los granos.
+                    ContentValues grainValues;
+                    for(int i = 0; i < grains.size(); i++){
+                        grainValues = new ContentValues();
+                        grainValues.put("nombre", grains.get(i).getName());
+                        grainValues.put("cantidad", grains.get(i).getQuantity());
+                        grainValues.put("extractoPotenicial", grains.get(i).getExtractPotential());
+                        grainValues.put("maceracion", newMashId);
+
+                        long newGrainId = db.insert("Grano",null, grainValues );
+                        if(newGrainId == -1){
+                            Toast.makeText(PlanningActivity.this, "Hubo problemas insertando este grano", Toast.LENGTH_SHORT).show();
+                        }
+                    } // end fir agregado de granos.
+
+                    //Ahora agregamos los intervalos de medicion.
+                    ContentValues intervalValues;
+                    for( int i = 0; i < intervals.size(); i++){
+                        intervalValues = new ContentValues();
+
+                        intervalValues.put("duracion", intervals.get(i).getDuration());
+                        intervalValues.put("temperatura", intervals.get(i).getMainTemperature());
+                        intervalValues.put("desvioTemperatura", intervals.get(i).getMainTemperatureDeviation());
+                        intervalValues.put("ph", intervals.get(i).getpH());
+                        intervalValues.put("desvioPh", intervals.get(i).getPhDeviation());
+                        intervalValues.put("tempDecoccion", intervals.get(i).getSecondTemperature());
+                        intervalValues.put("desvioTempDecoccion", intervals.get(i).getSecondTemperatureDeviation());
+                        intervalValues.put("maceracion", newMashId);
+
+                        long newIntervalId = db.insert("Intervalo", null, intervalValues);
+                        if(newIntervalId == -1)
+                            Toast.makeText(PlanningActivity.this, "Problemas insertando intervalo", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
                     Toast.makeText(PlanningActivity.this, "Problemas al insertar", Toast.LENGTH_SHORT).show();
                 }
                 // chequeamos si me toma los cambios.
+                dbHelper.close();
                 startActivity(new Intent(PlanningActivity.this, MainActivity.class));
             }
         });
