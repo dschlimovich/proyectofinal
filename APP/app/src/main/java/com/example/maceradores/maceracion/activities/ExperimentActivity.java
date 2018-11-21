@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import java.util.List;
 public class ExperimentActivity extends AppCompatActivity {
     // Data
     private int idMash;
+    private String nameMash;
     private List<Experiment> experimentList;
 
     //UI
@@ -45,33 +47,48 @@ public class ExperimentActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent.hasExtra("idMash")){
-            //Toast.makeText(ExperimentActivity.this, "" + intent.getIntExtra("idMash", -1), Toast.LENGTH_SHORT).show();
             this.idMash = intent.getIntExtra("idMash", -1);
-            //insertExperiment(idMash);
         }
         else{
             startActivity(new Intent(ExperimentActivity.this, MainActivity.class));
         }
         if(intent.hasExtra("nameMash")){
-            setTitle(intent.getStringExtra("nameMash"));
+            this.nameMash = intent.getStringExtra("nameMash");
+            setTitle(this.nameMash);
         }
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewMash);
 
         fab = (FloatingActionButton) findViewById(R.id.fabCurrentValues);
         fab.setImageResource(android.R.drawable.ic_media_play);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Creo un nuevo experimento
+                // y llamo al activity de medicion con el id
+                // de esta ultima insercion
+                long newExperimentId = insertNewExperiment(idMash);
+                Toast.makeText(ExperimentActivity.this, "ID Experimento: " + newExperimentId, Toast.LENGTH_SHORT).show();
+
+                //probemos hacer una llamada al mismo activiy.
+                Intent intent = new Intent(ExperimentActivity.this, ExperimentActivity.class);
+                intent.putExtra("idMash", idMash);
+                intent.putExtra("nameMash", nameMash);
+                startActivity(intent);
+                //TODO change to the MeasureActivity.
+
+            }
+        });
     }
 
-    private void insertExperiment(int idMash) {
+    private long insertNewExperiment(int idMash) {
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //Ahora puedo escribir en la base de datos,
-        ContentValues values = new ContentValues();
-        values.put("densidad", 1); //el nombre tiene la clausula unique
-        values.put( "maceracion", 1);
-        long newRowId = db.insert("Experimento", null, values);
-        Toast.makeText(this, "Inserto un valor", Toast.LENGTH_SHORT).show();
+        ContentValues experimentValues = new ContentValues();
+        experimentValues.put("maceracion", idMash);
+        long newExperimentId = db.insert("Experimento", null, experimentValues);
         dbHelper.close();
+        return newExperimentId;
     }
 
     @Override
@@ -108,9 +125,6 @@ public class ExperimentActivity extends AppCompatActivity {
 
         //List itemNames = new ArrayList<>();
         while(cursor.moveToNext()) {
-            //señor problemon que no me guarde las fechas.
-            //Long prueba = cursor.getLong(cursor.getColumnIndexOrThrow("fecha")); //doesnt work-
-            //int columnas = cursor.getColumnCount();
             int id = cursor.getInt(
                     cursor.getColumnIndexOrThrow("id")
             );
@@ -119,10 +133,7 @@ public class ExperimentActivity extends AppCompatActivity {
             );
 
             resultados.add(new Experiment(id, fecha));
-
-            //Toast.makeText(this, "Cara de puto", Toast.LENGTH_SHORT).show();
-            //Toast.makeText(this, fecha, Toast.LENGTH_SHORT).show();
-        }
+        } // end while
         cursor.close();
         dbHelper.close();
         return resultados;
