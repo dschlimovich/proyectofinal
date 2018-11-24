@@ -33,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Tabla Intervalo - Maceraciones complejas llevan muchos intervalos de medicion.
         db.execSQL("CREATE TABLE Intervalo(" +
                 "id INTEGER PRIMARY KEY, " +
+                "orden INTEGER,"+
                 "duracion INTEGER," +  //minutos. deberia ser un flotante?
                 "temperatura FLOAT, " +
                 "desvioTemperatura FLOAT,"+

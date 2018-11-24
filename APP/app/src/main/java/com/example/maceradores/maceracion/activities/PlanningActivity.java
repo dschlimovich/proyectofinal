@@ -3,7 +3,10 @@ package com.example.maceradores.maceracion.activities;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.icu.util.Measure;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -44,6 +47,9 @@ public class PlanningActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
     //Container
+    Spinner spinner;
+    ArrayAdapter<CharSequence> adapterSpinner;
+
     private ListView listGrains;
     private GrainListAdapter grainListAdapter;
 
@@ -63,20 +69,141 @@ public class PlanningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning);
 
-        // por ahora supongo que aca llega desde el mainactivity.
+        chargeUI();
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinnerTiposMaceracion);
+        // If i receive an intent, i need to charge with the data and block the elements of UI.
+        Intent intent = getIntent();
+        if(intent.hasExtra("idMash")){
+            int idMash = intent.getIntExtra("idMash", -1);
+            fillUI(idMash);
+            // tengo que deshabilitar el boton del action bar.
+            Toast.makeText(this, "No toques el boton del Action Bar", Toast.LENGTH_SHORT).show();
+        }
+
+
+    } //end onCreate
+
+    private void fillUIMash(int idMash, SQLiteDatabase db ){
+        // Filter results WHERE "title" = 'My Title'
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Maceracion", null, selection, selectionArgs, null, null, null);
+        if( cursor.moveToFirst()){
+            // primero pongo el titulo con el nombre de la maceracion
+            String nameMash = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
+            setTitle("Planificación " + nameMash);
+
+            //tipo de maceracion : spinner.
+            type = cursor.getString(cursor.getColumnIndexOrThrow("tipo"));
+            int spinnerPosition = adapterSpinner.getPosition(type);
+            spinner.setSelection(spinnerPosition);
+
+            // volumen
+            volume = cursor.getFloat(cursor.getColumnIndexOrThrow("volumen"));
+            EditText volumePlanning = findViewById(R.id.editTextPlanningVolumen);
+            volumePlanning.setText(String.valueOf(volume));
+
+            //densidad
+            density = cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo"));
+            EditText densityPlanning = findViewById(R.id.editTextPlanningDensidad);
+            densityPlanning.setText(String.valueOf(density));
+
+            // A los intervalos de medicion mandale saludos a cagaste. De la forma que lo plantemaos.
+            // no es facil mostrarlo.
+            // TODO Hacer algo para mostrar los intervalos de medición.
+
+            /*intervaloMedTemp INTEGER, " +
+            "intervaloMedPh INTEGER)");*/
+        }
+        cursor.close();
+    }
+    private void fillUIGrain(int idMash, SQLiteDatabase db){
+        // Granos
+        String selection = "maceracion = ?";
+        String [] selectionArgs = new String[] { String.valueOf(idMash)};
+        Cursor cursor = db.query("Grano", null, selection, selectionArgs, null, null, null);
+        // Puedo y seguramente voy a tener mas de un grano.
+        while(cursor.moveToNext()){
+            /* db.execSQL("CREATE TABLE Grano(" +
+                "id INTEGER PRIMARY KEY, " +
+                "nombre VARCHAR(190), " +
+                "cantidad FLOAT, " +
+                "extractoPotencial FLOAT, " +
+                "maceracion INTEGER," +
+                "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");*/
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
+            Float quantity = cursor.getFloat(cursor.getColumnIndexOrThrow("cantidad"));
+            Float extract = cursor.getFloat(cursor.getColumnIndexOrThrow("extractoPotencial"));
+             //con estos tres valores puedo crear el grano y agregarlo.
+            Grain grain = new Grain(name, quantity, extract);
+            grains.add(grain);
+        }//end while
+        grainListAdapter.notifyDataSetChanged();
+        cursor.close();
+    }
+    private void fillUIInterval( int idMash, SQLiteDatabase db){
+        //Intervalos.
+        String selection = "maceracion = ?";
+        String [] selectionArgs = new String[] { String.valueOf(idMash)};
+        Cursor cursor = db.query("Intervalo", null, selection, selectionArgs, null, null, null);
+        // Puedo tener mas de un intervalo. Hacemos un while.
+        while(cursor.moveToNext()){
+            /*         db.execSQL("CREATE TABLE Intervalo(" +
+                "id INTEGER PRIMARY KEY, " +
+                "duracion INTEGER," +  //minutos. deberia ser un flotante?
+                "temperatura FLOAT, " +
+                "desvioTemperatura FLOAT,"+
+                "ph FLOAT," +
+                "desvioPh FLOAT,"+
+                "tempDecoccion FLOAT, " +
+                "desvioTempDecoccion FLOAT,"+
+                "maceracion INTEGER, " +
+                "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");*/
+            int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duracion"));
+
+            float temperature = cursor.getFloat(cursor.getColumnIndexOrThrow("temperatura"));
+            float temperatureDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTemperatura"));
+
+            float ph = cursor.getFloat(cursor.getColumnIndexOrThrow("ph"));
+            float phDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioPh"));
+
+            float temperatureDecoccion = cursor.getFloat(cursor.getColumnIndexOrThrow("tempDecoccion"));
+            float temperatureDecoccionDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTempDecoccion"));
+
+            //con estos tres valores puedo crear el intervalo y agregarlo.
+            MeasureInterval interval = new MeasureInterval(temperature, temperatureDeviation, temperatureDecoccion, temperatureDecoccionDeviation, ph, phDeviation, duration);
+            intervals.add(interval);
+        }//end while
+        intervalListAdapter.notifyDataSetChanged();
+
+        cursor.close();
+    }
+
+    private void fillUI(int idMash) {
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        fillUIMash( idMash, db );
+        fillUIGrain(idMash, db);
+        fillUIInterval(idMash, db);
+
+        dbHelper.close();
+    }
+
+    private void chargeUI(){
+
+        spinner = (Spinner) findViewById(R.id.spinnerTiposMaceracion);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        adapterSpinner = ArrayAdapter.createFromResource(this,
                 R.array.tiposMaceracion, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        spinner.setAdapter(adapterSpinner);
 
         // List of Grains
         grains = new ArrayList<Grain>();
-        //grains.add(new Grain("Prueba", 0.5f, 0.5f));
         listGrains = (ListView) findViewById(R.id.listViewPlanningGrains);
         grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
         listGrains.setAdapter(grainListAdapter);
@@ -114,14 +241,13 @@ public class PlanningActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showAlertDialogAddMeasureInterval();
-                //intervalListAdapter.notifyDataSetChanged();
             }
         });
 
         //Ocultar el teclado cuando arranca el activity... es bastante molesto
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-    } //end onCreate
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

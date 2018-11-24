@@ -152,7 +152,11 @@ public class ExperimentActivity extends AppCompatActivity {
                     deleteMash();
                 return true;
             case R.id.seePlanification:
-                Toast.makeText(this, "Ir al panel para ver planificacion", Toast.LENGTH_SHORT).show();
+                // we should to show the planning activity with the values chargued.
+                // but if the are one or more experiments done, i shouldn't change the plannification.
+                Intent intent = new Intent(ExperimentActivity.this, PlanningActivity.class);
+                intent.putExtra("idMash", idMash);
+                startActivity(intent);
                 return true;
             case R.id.staticsAllExperiments:
                 Toast.makeText(this, "Ver la estadistica completa de la maceracion", Toast.LENGTH_SHORT).show();
