@@ -146,11 +146,12 @@ public class PlanningActivity extends AppCompatActivity {
         //Intervalos.
         String selection = "maceracion = ?";
         String [] selectionArgs = new String[] { String.valueOf(idMash)};
-        Cursor cursor = db.query("Intervalo", null, selection, selectionArgs, null, null, null);
+        Cursor cursor = db.query("Intervalo", null, selection, selectionArgs, null, null, "orden ASC");
         // Puedo tener mas de un intervalo. Hacemos un while.
         while(cursor.moveToNext()){
             /*         db.execSQL("CREATE TABLE Intervalo(" +
                 "id INTEGER PRIMARY KEY, " +
+                "orden INTEGER,"+
                 "duracion INTEGER," +  //minutos. deberia ser un flotante?
                 "temperatura FLOAT, " +
                 "desvioTemperatura FLOAT,"+
@@ -160,6 +161,7 @@ public class PlanningActivity extends AppCompatActivity {
                 "desvioTempDecoccion FLOAT,"+
                 "maceracion INTEGER, " +
                 "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");*/
+            int order = cursor.getInt(cursor.getColumnIndexOrThrow("orden"));
             int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duracion"));
 
             float temperature = cursor.getFloat(cursor.getColumnIndexOrThrow("temperatura"));
@@ -344,6 +346,7 @@ public class PlanningActivity extends AppCompatActivity {
                     for( int i = 0; i < intervals.size(); i++){
                         intervalValues = new ContentValues();
 
+                        intervalValues.put("orden", i+1); // como le quedo definido, los pongo en ese orden
                         intervalValues.put("duracion", intervals.get(i).getDuration());
                         intervalValues.put("temperatura", intervals.get(i).getMainTemperature());
                         intervalValues.put("desvioTemperatura", intervals.get(i).getMainTemperatureDeviation());
