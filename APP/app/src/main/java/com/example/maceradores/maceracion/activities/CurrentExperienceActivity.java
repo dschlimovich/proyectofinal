@@ -18,10 +18,15 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     private ViewPagerAdapter adapter;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_experience);
+        setToolbar();
+        setTabLayout();
+        setViewPager();
+        setListenerTabLayout(viewPager);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
@@ -39,6 +44,29 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     private void setViewPager(){
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager(),this,tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+    }
+
+    private void setListenerTabLayout (final ViewPager viewPager){
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                viewPager.setCurrentItem(position);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
     }
 
 
