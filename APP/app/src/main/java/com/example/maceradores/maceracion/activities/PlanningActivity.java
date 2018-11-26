@@ -1,5 +1,6 @@
 package com.example.maceradores.maceracion.activities;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,11 +21,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -45,6 +48,9 @@ public class PlanningActivity extends AppCompatActivity {
     //Buttons
     private Button buttonAddGrain;
     private FloatingActionButton fab;
+
+    //flag.
+    private boolean showMenu = true;
 
     //Container
     Spinner spinner;
@@ -78,10 +84,39 @@ public class PlanningActivity extends AppCompatActivity {
             fillUI(idMash);
             // tengo que deshabilitar el boton del action bar.
             Toast.makeText(this, "No toques el boton del Action Bar", Toast.LENGTH_SHORT).show();
+            blockUI();
         }
 
 
     } //end onCreate
+
+    private void blockUI() {
+        // I need to block all elements. or can i block the complete activity
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.framePlanning);
+        blockView(frameLayout);
+        // necesito bloquear el menu tambien...
+        this.showMenu = false;
+
+    }
+
+    private void blockView(View view){
+        if(view instanceof ViewGroup){
+            ViewGroup v = (ViewGroup) view;
+            for( int i=0; i < v.getChildCount(); i++){
+                if(v.getChildAt(i) instanceof Button || v.getChildAt(i) instanceof FloatingActionButton){
+                    v.removeView(v.getChildAt(i));
+                }else {
+                    blockView(v.getChildAt(i));
+                }
+            }
+            v.setEnabled(false);
+        } else {
+            //es un view pelado. Lo bloqueo a lo pampa-
+            //view.setEnabled(false);
+            view.setFocusable(false);
+            view.setClickable(false);
+        }
+    }
 
     private void fillUIMash(int idMash, SQLiteDatabase db ){
         // Filter results WHERE "title" = 'My Title'
@@ -253,8 +288,11 @@ public class PlanningActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.action_bar_planning_activity, menu);
-        return super.onCreateOptionsMenu(menu);
+        if( this.showMenu){
+            getMenuInflater().inflate(R.menu.action_bar_planning_activity, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+        return false;
     }
 
     @Override
