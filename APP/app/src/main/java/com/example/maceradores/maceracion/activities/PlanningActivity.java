@@ -83,7 +83,6 @@ public class PlanningActivity extends AppCompatActivity {
             int idMash = intent.getIntExtra("idMash", -1);
             fillUI(idMash);
             // tengo que deshabilitar el boton del action bar.
-            Toast.makeText(this, "No toques el boton del Action Bar", Toast.LENGTH_SHORT).show();
             blockUI();
         }
 
