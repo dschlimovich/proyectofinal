@@ -33,11 +33,12 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     private void setToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().show();
     }
 
     private void setTabLayout(){
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("MEDICIONES"));
+        tabLayout.addTab(tabLayout.newTab().setText("MEDICIONES"));//Esta tiene la posicion 0
         tabLayout.addTab(tabLayout.newTab().setText("ETAPAS"));
     }
 

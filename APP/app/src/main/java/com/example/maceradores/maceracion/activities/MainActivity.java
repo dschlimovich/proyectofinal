@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
 
-
         //añadir un alertDialog al fab con los valores actuales de los sensores.
         fab = (FloatingActionButton) findViewById(R.id.fabCurrentValues);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +91,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        setToolbar();
     } //end OnCreate
+
 
     private List<Mash> hardcodeMashList() {
         return new ArrayList<Mash>(){{
@@ -115,10 +120,20 @@ public class MainActivity extends AppCompatActivity {
                 // si es necesario pasar algun parametro con putExtra.
                 startActivity(intent);
                 return true;
+            case R.id.FollowMash:
+                Intent intent2 = new Intent(MainActivity.this, CurrentExperienceActivity.class);
+                startActivity(intent2);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
+    private void setToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_MainActivity);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().show();
     }
 
     private void showAlertCurrentValues(){

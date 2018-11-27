@@ -7,4 +7,10 @@
         app:showAsAction="ifRoom"
         android:icon="@mipmap/ic_plus"
         />
+    <item
+        android:title="Follow the Mash"
+        android:id="@+id/FollowMash"
+        app:showAsAction="ifRoom"
+        android:icon="@mipmap/ic_plus"
+        />
 </menu>

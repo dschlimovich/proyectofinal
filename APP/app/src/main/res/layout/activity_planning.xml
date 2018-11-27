@@ -7,6 +7,9 @@
     android:padding="5dp"
     tools:context=".activities.PlanningActivity">
 
+    <include
+        android:id="@+id/toolbar_planning"
+        layout="@layout/toolbar" />
 
         <LinearLayout
             android:layout_width="match_parent"
