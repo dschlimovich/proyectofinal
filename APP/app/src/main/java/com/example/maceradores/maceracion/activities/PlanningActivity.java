@@ -1,8 +1,11 @@
 package com.example.maceradores.maceracion.activities;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -20,11 +23,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -46,7 +51,13 @@ public class PlanningActivity extends AppCompatActivity {
     private Button buttonAddGrain;
     private FloatingActionButton fab;
 
+    //flag.
+    private boolean showMenu = true;
+
     //Container
+    Spinner spinner;
+    ArrayAdapter<CharSequence> adapterSpinner;
+
     private ListView listGrains;
     private GrainListAdapter grainListAdapter;
 
@@ -67,20 +78,171 @@ public class PlanningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning);
 
-        // por ahora supongo que aca llega desde el mainactivity.
+        chargeUI();
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinnerTiposMaceracion);
+        // If i receive an intent, i need to charge with the data and block the elements of UI.
+        Intent intent = getIntent();
+        if(intent.hasExtra("idMash")){
+            int idMash = intent.getIntExtra("idMash", -1);
+            fillUI(idMash);
+            // tengo que deshabilitar el boton del action bar.
+            blockUI();
+        }
+
+
+    } //end onCreate
+
+    private void blockUI() {
+        // I need to block all elements. or can i block the complete activity
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.framePlanning);
+        blockView(frameLayout);
+        // necesito bloquear el menu tambien...
+        this.showMenu = false;
+
+    }
+
+    private void blockView(View view){
+        if(view instanceof ViewGroup){
+            ViewGroup v = (ViewGroup) view;
+            for( int i=0; i < v.getChildCount(); i++){
+                if(v.getChildAt(i) instanceof Button || v.getChildAt(i) instanceof FloatingActionButton){
+                    v.removeView(v.getChildAt(i));
+                }else {
+                    blockView(v.getChildAt(i));
+                }
+            }
+            v.setEnabled(false);
+        } else {
+            //es un view pelado. Lo bloqueo a lo pampa-
+            //view.setEnabled(false);
+            view.setFocusable(false);
+            view.setClickable(false);
+        }
+    }
+
+    private void fillUIMash(int idMash, SQLiteDatabase db ){
+        // Filter results WHERE "title" = 'My Title'
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Maceracion", null, selection, selectionArgs, null, null, null);
+        if( cursor.moveToFirst()){
+            // primero pongo el titulo con el nombre de la maceracion
+            String nameMash = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
+            setTitle("Planificación " + nameMash);
+
+            //tipo de maceracion : spinner.
+            type = cursor.getString(cursor.getColumnIndexOrThrow("tipo"));
+            int spinnerPosition = adapterSpinner.getPosition(type);
+            spinner.setSelection(spinnerPosition);
+
+            // volumen
+            volume = cursor.getFloat(cursor.getColumnIndexOrThrow("volumen"));
+            EditText volumePlanning = findViewById(R.id.editTextPlanningVolumen);
+            volumePlanning.setText(String.valueOf(volume));
+
+            //densidad
+            density = cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo"));
+            EditText densityPlanning = findViewById(R.id.editTextPlanningDensidad);
+            densityPlanning.setText(String.valueOf(density));
+
+            // A los intervalos de medicion mandale saludos a cagaste. De la forma que lo plantemaos.
+            // no es facil mostrarlo.
+            // TODO Hacer algo para mostrar los intervalos de medición.
+
+            /*intervaloMedTemp INTEGER, " +
+            "intervaloMedPh INTEGER)");*/
+        }
+        cursor.close();
+    }
+    private void fillUIGrain(int idMash, SQLiteDatabase db){
+        // Granos
+        String selection = "maceracion = ?";
+        String [] selectionArgs = new String[] { String.valueOf(idMash)};
+        Cursor cursor = db.query("Grano", null, selection, selectionArgs, null, null, null);
+        // Puedo y seguramente voy a tener mas de un grano.
+        while(cursor.moveToNext()){
+            /* db.execSQL("CREATE TABLE Grano(" +
+                "id INTEGER PRIMARY KEY, " +
+                "nombre VARCHAR(190), " +
+                "cantidad FLOAT, " +
+                "extractoPotencial FLOAT, " +
+                "maceracion INTEGER," +
+                "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");*/
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
+            Float quantity = cursor.getFloat(cursor.getColumnIndexOrThrow("cantidad"));
+            Float extract = cursor.getFloat(cursor.getColumnIndexOrThrow("extractoPotencial"));
+             //con estos tres valores puedo crear el grano y agregarlo.
+            Grain grain = new Grain(name, quantity, extract);
+            grains.add(grain);
+        }//end while
+        grainListAdapter.notifyDataSetChanged();
+        cursor.close();
+    }
+    private void fillUIInterval( int idMash, SQLiteDatabase db){
+        //Intervalos.
+        String selection = "maceracion = ?";
+        String [] selectionArgs = new String[] { String.valueOf(idMash)};
+        Cursor cursor = db.query("Intervalo", null, selection, selectionArgs, null, null, "orden ASC");
+        // Puedo tener mas de un intervalo. Hacemos un while.
+        while(cursor.moveToNext()){
+            /*         db.execSQL("CREATE TABLE Intervalo(" +
+                "id INTEGER PRIMARY KEY, " +
+                "orden INTEGER,"+
+                "duracion INTEGER," +  //minutos. deberia ser un flotante?
+                "temperatura FLOAT, " +
+                "desvioTemperatura FLOAT,"+
+                "ph FLOAT," +
+                "desvioPh FLOAT,"+
+                "tempDecoccion FLOAT, " +
+                "desvioTempDecoccion FLOAT,"+
+                "maceracion INTEGER, " +
+                "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");*/
+            int order = cursor.getInt(cursor.getColumnIndexOrThrow("orden"));
+            int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duracion"));
+
+            float temperature = cursor.getFloat(cursor.getColumnIndexOrThrow("temperatura"));
+            float temperatureDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTemperatura"));
+
+            float ph = cursor.getFloat(cursor.getColumnIndexOrThrow("ph"));
+            float phDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioPh"));
+
+            float temperatureDecoccion = cursor.getFloat(cursor.getColumnIndexOrThrow("tempDecoccion"));
+            float temperatureDecoccionDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTempDecoccion"));
+
+            //con estos tres valores puedo crear el intervalo y agregarlo.
+            MeasureInterval interval = new MeasureInterval(temperature, temperatureDeviation, temperatureDecoccion, temperatureDecoccionDeviation, ph, phDeviation, duration);
+            intervals.add(interval);
+        }//end while
+        intervalListAdapter.notifyDataSetChanged();
+
+        cursor.close();
+    }
+
+    private void fillUI(int idMash) {
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        fillUIMash( idMash, db );
+        fillUIGrain(idMash, db);
+        fillUIInterval(idMash, db);
+
+        dbHelper.close();
+    }
+
+    private void chargeUI(){
+
+        spinner = (Spinner) findViewById(R.id.spinnerTiposMaceracion);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        adapterSpinner = ArrayAdapter.createFromResource(this,
                 R.array.tiposMaceracion, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        spinner.setAdapter(adapterSpinner);
 
         // List of Grains
         grains = new ArrayList<Grain>();
-        //grains.add(new Grain("Prueba", 0.5f, 0.5f));
         listGrains = (ListView) findViewById(R.id.listViewPlanningGrains);
         grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
         listGrains.setAdapter(grainListAdapter);
@@ -129,8 +291,11 @@ public class PlanningActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.action_bar_planning_activity, menu);
-        return super.onCreateOptionsMenu(menu);
+        if( this.showMenu){
+            getMenuInflater().inflate(R.menu.action_bar_planning_activity, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+        return false;
     }
 
     @Override
@@ -193,23 +358,60 @@ public class PlanningActivity extends AppCompatActivity {
                 DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 //Ahora puedo escribir en la base de datos,
-                ContentValues values = new ContentValues();
-                values.put( "nombre", nameMash); //el nombre tiene la clausula unique
-                values.put( "tipo", PlanningActivity.this.type);
-                values.put( "volumen", PlanningActivity.this.volume);
-                values.put( "densidadObjetivo", PlanningActivity.this.density);
-                values.put( "intervaloMedTemp", periodoMedicionTemp);
-                values.put( "intervaloMedPh", periodoMedicionPh);
+                ContentValues mashValues = new ContentValues();
+                mashValues.put( "nombre", nameMash); //el nombre tiene la clausula unique
+                mashValues.put( "tipo", PlanningActivity.this.type);
+                mashValues.put( "volumen", PlanningActivity.this.volume);
+                mashValues.put( "densidadObjetivo", PlanningActivity.this.density);
+                mashValues.put( "intervaloMedTemp", periodoMedicionTemp);
+                mashValues.put( "intervaloMedPh", periodoMedicionPh);
 
-                long newRowId = db.insert("Maceracion", null, values);
+                long newMashId = db.insert("Maceracion", null, mashValues);
 
                 // cuenta la leyenda que en newRowId tengo el id del ultimo valor insertado.
-                if( newRowId != -1){
-                    Toast.makeText(PlanningActivity.this, "Inserto sin problemas", Toast.LENGTH_SHORT).show();
+                if( newMashId != -1){
+                    //Toast.makeText(PlanningActivity.this, "Inserto sin problemas", Toast.LENGTH_SHORT).show();
+                    // Si inserto la maceración, tengo que insertar ademas los granos y las etapas de medicion.
+                    // Comencemos por los granos.
+                    ContentValues grainValues;
+                    for(int i = 0; i < grains.size(); i++){
+                        grainValues = new ContentValues();
+                        grainValues.put("nombre", grains.get(i).getName());
+                        grainValues.put("cantidad", grains.get(i).getQuantity());
+                        grainValues.put("extractoPotencial", grains.get(i).getExtractPotential());
+                        grainValues.put("maceracion", newMashId);
+
+                        long newGrainId = db.insert("Grano",null, grainValues );
+                        if(newGrainId == -1){
+                            Toast.makeText(PlanningActivity.this, "Hubo problemas insertando este grano", Toast.LENGTH_SHORT).show();
+                        }
+                    } // end fir agregado de granos.
+
+                    //Ahora agregamos los intervalos de medicion.
+                    ContentValues intervalValues;
+                    for( int i = 0; i < intervals.size(); i++){
+                        intervalValues = new ContentValues();
+
+                        intervalValues.put("orden", i+1); // como le quedo definido, los pongo en ese orden
+                        intervalValues.put("duracion", intervals.get(i).getDuration());
+                        intervalValues.put("temperatura", intervals.get(i).getMainTemperature());
+                        intervalValues.put("desvioTemperatura", intervals.get(i).getMainTemperatureDeviation());
+                        intervalValues.put("ph", intervals.get(i).getpH());
+                        intervalValues.put("desvioPh", intervals.get(i).getPhDeviation());
+                        intervalValues.put("tempDecoccion", intervals.get(i).getSecondTemperature());
+                        intervalValues.put("desvioTempDecoccion", intervals.get(i).getSecondTemperatureDeviation());
+                        intervalValues.put("maceracion", newMashId);
+
+                        long newIntervalId = db.insert("Intervalo", null, intervalValues);
+                        if(newIntervalId == -1)
+                            Toast.makeText(PlanningActivity.this, "Problemas insertando intervalo", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
                     Toast.makeText(PlanningActivity.this, "Problemas al insertar", Toast.LENGTH_SHORT).show();
                 }
                 // chequeamos si me toma los cambios.
+                dbHelper.close();
                 startActivity(new Intent(PlanningActivity.this, MainActivity.class));
             }
         });

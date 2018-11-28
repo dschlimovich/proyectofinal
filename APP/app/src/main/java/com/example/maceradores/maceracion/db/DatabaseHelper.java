@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "maceraciones";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DatabaseHelper( Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -33,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Tabla Intervalo - Maceraciones complejas llevan muchos intervalos de medicion.
         db.execSQL("CREATE TABLE Intervalo(" +
                 "id INTEGER PRIMARY KEY, " +
+                "orden INTEGER,"+
                 "duracion INTEGER," +  //minutos. deberia ser un flotante?
                 "temperatura FLOAT, " +
                 "desvioTemperatura FLOAT,"+
@@ -84,6 +85,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Borro las tablas
         db.execSQL("DROP TABLE IF EXISTS " + "Maceracion");
+        db.execSQL("DROP TABLE IF EXISTS " + "Intervalo");
+        db.execSQL("DROP TABLE IF EXISTS " + "Grano");
         db.execSQL("DROP TABLE IF EXISTS " + "Experimento");
         db.execSQL("DROP TABLE IF EXISTS " + "SensedValues");
         //las vuelvo a crear.

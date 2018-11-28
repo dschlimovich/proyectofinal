@@ -23,6 +23,7 @@
             android:name=".activities.PlanningActivity"
             android:label="Planificación" />
         <activity android:name=".activities.CurrentExperienceActivity"></activity>
+        <activity android:name=".activities.ExperimentActivity"></activity>
     </application>
 
 </manifest>
