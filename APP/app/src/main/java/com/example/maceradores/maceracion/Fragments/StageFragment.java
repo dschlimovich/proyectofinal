@@ -12,10 +12,10 @@ import com.example.maceradores.maceracion.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LapFragment extends Fragment {
+public class StageFragment extends Fragment {
 
 
-    public LapFragment() {
+    public StageFragment() {
         // Required empty public constructor
     }
 
@@ -24,7 +24,7 @@ public class LapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_lap, container, false);
+        return inflater.inflate(R.layout.fragment_stage, container, false);
     }
 
 }

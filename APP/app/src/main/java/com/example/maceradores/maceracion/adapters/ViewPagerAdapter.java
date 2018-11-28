@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.maceradores.maceracion.Fragments.LapFragment;
+import com.example.maceradores.maceracion.Fragments.StageFragment;
 import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 
 public class ViewPagerAdapter  extends FragmentPagerAdapter {
@@ -22,7 +22,7 @@ public class ViewPagerAdapter  extends FragmentPagerAdapter {
             case 0:
                 return new MeasureFragment();
             case 1:
-                return new LapFragment();
+                return new StageFragment();
             default:
                 return null;
         }
