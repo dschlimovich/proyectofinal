@@ -71,30 +71,18 @@ public class ExperimentActivity extends AppCompatActivity {
                 // Creo un nuevo experimento
                 // y llamo al activity de medicion con el id
                 // de esta ultima insercion
-                long newExperimentId = insertNewExperiment(idMash);
-                Toast.makeText(ExperimentActivity.this, "ID Experimento: " + newExperimentId, Toast.LENGTH_SHORT).show();
+                // TODO definir quien crea el experimento. El currentExperienceActivity o Experiment Activity
 
-                //probemos hacer una llamada al mismo activiy.
-                Intent intent = new Intent(ExperimentActivity.this, ExperimentActivity.class);
+
+                Intent intent = new Intent(ExperimentActivity.this, CurrentExperienceActivity.class);
                 intent.putExtra("idMash", idMash);
                 intent.putExtra("nameMash", nameMash);
                 startActivity(intent);
-                //TODO change to the MeasureActivity.
-
             }
         });
         setToolbar();
     }
 
-    private long insertNewExperiment(int idMash) {
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues experimentValues = new ContentValues();
-        experimentValues.put("maceracion", idMash);
-        long newExperimentId = db.insert("Experimento", null, experimentValues);
-        dbHelper.close();
-        return newExperimentId;
-    }
 
     @Override
     protected void onResume() {

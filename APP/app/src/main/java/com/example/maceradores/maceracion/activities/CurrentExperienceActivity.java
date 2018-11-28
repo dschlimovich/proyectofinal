@@ -1,5 +1,8 @@
 package com.example.maceradores.maceracion.activities;
 
+import android.content.ContentValues;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
@@ -7,9 +10,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
+import com.example.maceradores.maceracion.db.DatabaseHelper;
 
 public class CurrentExperienceActivity extends AppCompatActivity{
 
@@ -27,6 +32,25 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         setTabLayout();
         setViewPager();
         setListenerTabLayout(viewPager);
+
+        Intent intent = getIntent();
+        if( intent.hasExtra("idMash") && intent.hasExtra("nameMash")){
+            int idMash = intent.getIntExtra("idMash", 0);
+            long newExperimentId = insertNewExperiment(idMash);
+            setTitle("Medición " + intent.getStringExtra("nameMash"));
+        } else {
+            Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private long insertNewExperiment(int idMash) {
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues experimentValues = new ContentValues();
+        experimentValues.put("maceracion", idMash);
+        long newExperimentId = db.insert("Experimento", null, experimentValues);
+        dbHelper.close();
+        return newExperimentId;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
