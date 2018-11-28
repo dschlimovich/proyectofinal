@@ -230,6 +230,7 @@ public class PlanningActivity extends AppCompatActivity {
         dbHelper.close();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void chargeUI(){
 
         spinner = (Spinner) findViewById(R.id.spinnerTiposMaceracion);

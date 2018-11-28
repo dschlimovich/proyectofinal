@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     } //end OnCreate
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onResume() {
         super.onResume();
