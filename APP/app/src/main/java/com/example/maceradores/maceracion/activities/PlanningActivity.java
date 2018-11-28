@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -11,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -58,6 +61,7 @@ public class PlanningActivity extends AppCompatActivity {
     private List<MeasureInterval> intervals;
     private List<Grain> grains;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +124,7 @@ public class PlanningActivity extends AppCompatActivity {
 
         //Ocultar el teclado cuando arranca el activity... es bastante molesto
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
+        setToolbar();
     } //end onCreate
 
     @Override
@@ -149,7 +153,12 @@ public class PlanningActivity extends AppCompatActivity {
         }
 
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
+    private void setToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_planning);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().show();
+    }
     private void showAlertDialogFinishPlanning() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Guardar Maceración");

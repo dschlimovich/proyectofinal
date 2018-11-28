@@ -19,7 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:label="Planificación" android:name=".activities.PlanningActivity"></activity>
+        <activity
+            android:name=".activities.PlanningActivity"
+            android:label="Planificación" />
+        <activity android:name=".activities.CurrentExperienceActivity"></activity>
     </application>
 
 </manifest>
