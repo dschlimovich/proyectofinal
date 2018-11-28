@@ -186,15 +186,20 @@ public class ExperimentActivity extends AppCompatActivity {
         //elimino primero todos los experimentos. Despues la maceracion
 
         String selection = "maceracion = ?";
-        String[] selectionArgs = { String.valueOf(this.idMash)};
+        String [] selectionArgs = new String[] { String.valueOf(this.idMash)};
 
-        int cant = db.delete("Experimento", selection, selectionArgs);
-        //Toast.makeText(this, "" + cant + " experimentos elimados", Toast.LENGTH_SHORT).show();
+        db.delete("Experimento", selection, selectionArgs);
+
+        // Quito los granos
+        db.delete("Grano", selection, selectionArgs);
+
+        //Quito los intervalos de medicion
+        db.delete("Intervalo", selection, selectionArgs);
 
         //Ahora elimino la maceracion y vuelvo al main activity
         selection = "id = ?";
         selectionArgs = new String[] { String.valueOf(this.idMash)};
-        cant = db.delete("Maceracion", "id = ?",selectionArgs );
+        int cant = db.delete("Maceracion", selection, selectionArgs );
         if (cant == 1)
         Toast.makeText(this, "Maceración eliminada", Toast.LENGTH_SHORT).show();
 
