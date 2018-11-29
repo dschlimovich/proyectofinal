@@ -33,6 +33,7 @@ import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,8 +169,53 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().show();
     }
 
-    private void showAlertCurrentValues(){
+    private void executeNewMashExperiment(){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(240, TimeUnit.SECONDS)
+                .writeTimeout(240, TimeUnit.SECONDS)
+                .build();
 
+        //Luego lo agrego a la llamada de Retrofit
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        //------Build new JsonObject with Experiment to be send
+        //{ "nombre": "pepito","idExp":"1", "duracion_min": "1","intervaloMedicionTemp_seg":"15","intervaloMedicionPH_seg":"15" }
+        JsonObject NewExperiment= new JsonObject();
+        NewExperiment.addProperty("nombre","PruebaPOST");
+        NewExperiment.addProperty("idExp","69");
+        NewExperiment.addProperty("duracion_min","1");
+        NewExperiment.addProperty("intervaloMedicionTemp_seg","15");
+        NewExperiment.addProperty("intervaloMedicionPH_seg","15");
+
+        Api api = retrofit.create(Api.class);
+        Call<Void> call = api.postExperiment(NewExperiment);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+
+            }
+        });
+
+
+
+    }
+
+
+    private void showAlertCurrentValues(){
+        executeNewMashExperiment();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Valores Actuales");
 
