@@ -1,7 +1,10 @@
 package com.example.maceradores.maceracion.retrofitInterface;
 
+import com.example.maceradores.maceracion.RetrofitGsonContainer.SensedValuesContainer;
 import com.example.maceradores.maceracion.RetrofitGsonContainer.TempPh;
 import com.google.gson.JsonObject;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -17,4 +20,7 @@ public interface Api {
 
     @POST("apiEscribe.php")
     Call<Void> postExperiment(@Body JsonObject NewExperiment);
+
+    @POST("apiGet.php")
+    Call<List<SensedValuesContainer>> getSensedValues(@Body JsonObject jsonObject);
 }
