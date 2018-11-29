@@ -1,13 +1,10 @@
 package com.example.maceradores.maceracion.activities;
 
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
-import android.provider.BaseColumns;
-import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -27,11 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.RetrofitGsonContainer.SensedValuesContainer;
 import com.example.maceradores.maceracion.RetrofitGsonContainer.TempPh;
 import com.example.maceradores.maceracion.adapters.MashListAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Mash;
-import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
 import com.google.gson.JsonObject;
 
@@ -169,7 +166,47 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().show();
     }
 
-    private void executeNewMashExperiment(){
+
+    private List<SensedValuesContainer> getSensedValues(int idExp,String IdList){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(240, TimeUnit.SECONDS)
+                .writeTimeout(240, TimeUnit.SECONDS)
+                .build();
+
+        //Luego lo agrego a la llamada de Retrofit
+
+        final Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        //------Build new JsonObject with Experiment to be send
+        //{ "idExp": "31", "ArrayID": "" }
+        JsonObject jsonObject= new JsonObject();
+        jsonObject.addProperty("idExp","69");
+        jsonObject.addProperty("duracion_min","1");
+
+        Api api = retrofit.create(Api.class);
+        Call<List<SensedValuesContainer>> call = api.getSensedValues(jsonObject);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+    private void executeNewMashExperiment(String nombre, int idExp, int duracion_min, int intervaloMedicionTemp_seg,int intervaloMedicionPH_seg){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.MINUTES)
                 .readTimeout(240, TimeUnit.SECONDS)
@@ -188,11 +225,11 @@ public class MainActivity extends AppCompatActivity {
         //------Build new JsonObject with Experiment to be send
         //{ "nombre": "pepito","idExp":"1", "duracion_min": "1","intervaloMedicionTemp_seg":"15","intervaloMedicionPH_seg":"15" }
         JsonObject NewExperiment= new JsonObject();
-        NewExperiment.addProperty("nombre","PruebaPOST");
-        NewExperiment.addProperty("idExp","69");
-        NewExperiment.addProperty("duracion_min","1");
-        NewExperiment.addProperty("intervaloMedicionTemp_seg","15");
-        NewExperiment.addProperty("intervaloMedicionPH_seg","15");
+        NewExperiment.addProperty("nombre",nombre);
+        NewExperiment.addProperty("idExp",Integer.toString(idExp));
+        NewExperiment.addProperty("duracion_min",Integer.toString(duracion_min));
+        NewExperiment.addProperty("intervaloMedicionTemp_seg",Integer.toString(intervaloMedicionTemp_seg));
+        NewExperiment.addProperty("intervaloMedicionPH_seg",Integer.toString(intervaloMedicionPH_seg));
 
         Api api = retrofit.create(Api.class);
         Call<Void> call = api.postExperiment(NewExperiment);
@@ -215,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void showAlertCurrentValues(){
-        executeNewMashExperiment();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Valores Actuales");
 
