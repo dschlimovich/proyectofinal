@@ -42,6 +42,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         setTabLayout();
         setViewPager();
         setListenerTabLayout(viewPager);
+        //los fragments estan vacios porque aun no recibi ningun sensed values.
 
         // Saber de que maceración vine
         Intent intent = getIntent();
@@ -60,6 +61,8 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             } else {
                 //me guardo el id del experimento para obtener los sensed values despues.
                 this.idExp = newExperimentId;
+                // que mas necesito para empezar a medir. los intervalos de medicion.
+
             } //end if insert new experiment.
         } else {
             Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();

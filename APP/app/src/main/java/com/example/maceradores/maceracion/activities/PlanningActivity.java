@@ -71,6 +71,9 @@ public class PlanningActivity extends AppCompatActivity {
     private float density;
     private List<MeasureInterval> intervals;
     private List<Grain> grains;
+    private String nameMash;
+    private int periodoMedicionTemp;
+    private int periodoMedicionPh;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -365,74 +368,25 @@ public class PlanningActivity extends AppCompatActivity {
                         medPh.getText().toString().isEmpty()){
                     Toast.makeText(PlanningActivity.this, "No se guardo. Hay algun campo incompleto", Toast.LENGTH_SHORT).show();
                     //dialog.cancel();
-                } else{
-                    String nameMash = nombre.getText().toString().trim();
-                    int periodoMedicionTemp = Integer.valueOf(medTemp.getText().toString().trim());
-                    int periodoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
+                } else {
+                    //save values. Note the beautiful development without any violation
+                    PlanningActivity.this.nameMash = nombre.getText().toString().trim();
+                    PlanningActivity.this.periodoMedicionTemp = Integer.valueOf(medTemp.getText().toString().trim());
+                    PlanningActivity.this.periodoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
 
-
-                    //At this moment, i need to insert this new mash in the database
-                    DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-                    SQLiteDatabase db = dbHelper.getWritableDatabase();
-                    //Ahora puedo escribir en la base de datos,
-                    ContentValues mashValues = new ContentValues();
-                    mashValues.put( "nombre", nameMash); //el nombre tiene la clausula unique
-                    mashValues.put( "tipo", PlanningActivity.this.type);
-                    mashValues.put( "volumen", PlanningActivity.this.volume);
-                    mashValues.put( "densidadObjetivo", PlanningActivity.this.density);
-                    mashValues.put( "intervaloMedTemp", periodoMedicionTemp);
-                    mashValues.put( "intervaloMedPh", periodoMedicionPh);
-
-                    long newMashId = db.insert("Maceracion", null, mashValues);
-
-                    // cuenta la leyenda que en newRowId tengo el id del ultimo valor insertado.
-                    if( newMashId != -1){
-                        //Toast.makeText(PlanningActivity.this, "Inserto sin problemas", Toast.LENGTH_SHORT).show();
-                        // Si inserto la maceración, tengo que insertar ademas los granos y las etapas de medicion.
-                        // Comencemos por los granos.
-                        ContentValues grainValues;
-                        for(int i = 0; i < grains.size(); i++){
-                            grainValues = new ContentValues();
-                            grainValues.put("nombre", grains.get(i).getName());
-                            grainValues.put("cantidad", grains.get(i).getQuantity());
-                            grainValues.put("extractoPotencial", grains.get(i).getExtractPotential());
-                            grainValues.put("maceracion", newMashId);
-
-                            long newGrainId = db.insert("Grano",null, grainValues );
-                            if(newGrainId == -1){
-                                Toast.makeText(PlanningActivity.this, "Hubo problemas insertando este grano", Toast.LENGTH_SHORT).show();
-                            }
-                        } // end fir agregado de granos.
-
-                        //Ahora agregamos los intervalos de medicion.
-                        ContentValues intervalValues;
-                        for( int i = 0; i < intervals.size(); i++){
-                            intervalValues = new ContentValues();
-
-                            intervalValues.put("orden", i+1); // como le quedo definido, los pongo en ese orden
-                            intervalValues.put("duracion", intervals.get(i).getDuration());
-                            intervalValues.put("temperatura", intervals.get(i).getMainTemperature());
-                            intervalValues.put("desvioTemperatura", intervals.get(i).getMainTemperatureDeviation());
-                            intervalValues.put("ph", intervals.get(i).getpH());
-                            intervalValues.put("desvioPh", intervals.get(i).getPhDeviation());
-                            intervalValues.put("tempDecoccion", intervals.get(i).getSecondTemperature());
-                            intervalValues.put("desvioTempDecoccion", intervals.get(i).getSecondTemperatureDeviation());
-                            intervalValues.put("maceracion", newMashId);
-
-                            long newIntervalId = db.insert("Intervalo", null, intervalValues);
-                            if(newIntervalId == -1)
-                                Toast.makeText(PlanningActivity.this, "Problemas insertando intervalo", Toast.LENGTH_SHORT).show();
-                        }
-
+                    if( periodoMedicionPh < periodoMedicionTemp){
+                        // el sistema no lo permite.
+                        Toast.makeText(PlanningActivity.this, "El intervalo de medición de ph no puede ser menor que el intervalor de medición de temperatura.", Toast.LENGTH_SHORT).show();
+                    } else if(periodoMedicionPh % periodoMedicionTemp != 0){
+                        Toast.makeText(PlanningActivity.this, "El intervalo de medicion de ph debe ser multiplo del intervalo de medicion de temperatura", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(PlanningActivity.this, "Problemas al insertar", Toast.LENGTH_SHORT).show();
+                        //At this moment, i need to insert this new mash in the database
+                        insertnewPlanning();
+                        startActivity(new Intent(PlanningActivity.this, MainActivity.class));
                     }
-                    // chequeamos si me toma los cambios.
-                    dbHelper.close();
-                    startActivity(new Intent(PlanningActivity.this, MainActivity.class));
                 } //end if validate planning
             }
-        });
+        }); //end Accept Button
 
         builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
             @Override
@@ -443,7 +397,7 @@ public class PlanningActivity extends AppCompatActivity {
 
         builder.create().show();
 
-    }
+    } //end alert dialog
 
     private void showAlertDialogAddMeasureInterval() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -580,5 +534,66 @@ public class PlanningActivity extends AppCompatActivity {
     private void addInterval(MeasureInterval interval){
         this.intervals.add(interval);
         this.intervalListAdapter.notifyDataSetChanged();
+    }
+
+    private void insertnewPlanning(){
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //Ahora puedo escribir en la base de datos,
+        ContentValues mashValues = new ContentValues();
+        mashValues.put( "nombre", nameMash); //el nombre tiene la clausula unique
+        mashValues.put( "tipo", PlanningActivity.this.type);
+        mashValues.put( "volumen", PlanningActivity.this.volume);
+        mashValues.put( "densidadObjetivo", PlanningActivity.this.density);
+        mashValues.put( "intervaloMedTemp", periodoMedicionTemp);
+        mashValues.put( "intervaloMedPh", periodoMedicionPh);
+
+        long newMashId = db.insert("Maceracion", null, mashValues);
+
+        // cuenta la leyenda que en newRowId tengo el id del ultimo valor insertado.
+        if( newMashId != -1){
+            //Toast.makeText(PlanningActivity.this, "Inserto sin problemas", Toast.LENGTH_SHORT).show();
+            // Si inserto la maceración, tengo que insertar ademas los granos y las etapas de medicion.
+            // Comencemos por los granos.
+            ContentValues grainValues;
+            for(int i = 0; i < grains.size(); i++){
+                grainValues = new ContentValues();
+                grainValues.put("nombre", grains.get(i).getName());
+                grainValues.put("cantidad", grains.get(i).getQuantity());
+                grainValues.put("extractoPotencial", grains.get(i).getExtractPotential());
+                grainValues.put("maceracion", newMashId);
+
+                long newGrainId = db.insert("Grano",null, grainValues );
+                if(newGrainId == -1){
+                    Toast.makeText(PlanningActivity.this, "Hubo problemas insertando este grano", Toast.LENGTH_SHORT).show();
+                }
+            } // end fir agregado de granos.
+
+            //Ahora agregamos los intervalos de medicion.
+            ContentValues intervalValues;
+            for( int i = 0; i < intervals.size(); i++){
+                intervalValues = new ContentValues();
+
+                intervalValues.put("orden", i+1); // como le quedo definido, los pongo en ese orden
+                intervalValues.put("duracion", intervals.get(i).getDuration());
+                intervalValues.put("temperatura", intervals.get(i).getMainTemperature());
+                intervalValues.put("desvioTemperatura", intervals.get(i).getMainTemperatureDeviation());
+                intervalValues.put("ph", intervals.get(i).getpH());
+                intervalValues.put("desvioPh", intervals.get(i).getPhDeviation());
+                intervalValues.put("tempDecoccion", intervals.get(i).getSecondTemperature());
+                intervalValues.put("desvioTempDecoccion", intervals.get(i).getSecondTemperatureDeviation());
+                intervalValues.put("maceracion", newMashId);
+
+                long newIntervalId = db.insert("Intervalo", null, intervalValues);
+                if(newIntervalId == -1)
+                    Toast.makeText(PlanningActivity.this, "Problemas insertando intervalo", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            Toast.makeText(PlanningActivity.this, "Problemas al insertar", Toast.LENGTH_SHORT).show();
+        }
+        // chequeamos si me toma los cambios.
+        dbHelper.close();
+        Toast.makeText(this, "Maceración correctamente planificada", Toast.LENGTH_SHORT).show();
     }
 } //end PlanningActivity
