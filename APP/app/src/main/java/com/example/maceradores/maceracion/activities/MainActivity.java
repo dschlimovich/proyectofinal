@@ -14,6 +14,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        getSensedValues(69,"");
     } //end OnCreate
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -167,45 +169,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-//    private List<SensedValuesContainer> getSensedValues(int idExp,String IdList){
-//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                .connectTimeout(5, TimeUnit.MINUTES)
-//                .readTimeout(240, TimeUnit.SECONDS)
-//                .writeTimeout(240, TimeUnit.SECONDS)
-//                .build();
-//
-//        //Luego lo agrego a la llamada de Retrofit
-//
-//        final Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(Api.BASE_URL)
-//                .client(okHttpClient)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//
-//
-//        //------Build new JsonObject with Experiment to be send
-//        //{ "idExp": "31", "ArrayID": "" }
-//        JsonObject jsonObject= new JsonObject();
-//        jsonObject.addProperty("idExp","69");
-//        jsonObject.addProperty("duracion_min","1");
-//
-//        Api api = retrofit.create(Api.class);
-//        Call<List<SensedValuesContainer>> call = api.getSensedValues(jsonObject);
-//
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onResponse(Call call, Response response) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call call, Throwable t) {
-//                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
-//
-//    }
+    private void getSensedValues(int idExp,String IdList){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(240, TimeUnit.SECONDS)
+                .writeTimeout(240, TimeUnit.SECONDS)
+                .build();
+
+        //Luego lo agrego a la llamada de Retrofit
+
+        final Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        //------Build new JsonObject with Experiment to be send
+        //{ "idExp": "31", "ArrayID": "" }
+        JsonObject jsonObject= new JsonObject();
+        jsonObject.addProperty("idExp","69");
+        jsonObject.addProperty("duracion_min","1");
+
+        Api api = retrofit.create(Api.class);
+        Call<List<SensedValuesContainer>> call = api.getSensedValues(jsonObject);
+
+        call.enqueue(new Callback<List<SensedValuesContainer>>() {
+            @Override
+            public void onResponse(Call<List<SensedValuesContainer>> call, Response<List<SensedValuesContainer>> response) {
+                List<SensedValuesContainer> values = response.body();
+
+                for (SensedValuesContainer value : values){
+                    //{"id":"5","id_exp":"69","fechayhora":"2018-11-29 10:13:02","temp1":"-1000","temp2":"-1000","temp3":"-1000","temp4":"-1000","temp5":"-1000","tempPh":"-1000","tempAmb":"-10000","humity":"-1","pH":"-2"}
+                    Log.d("id",value.getId());
+                    Log.d("idExp",value.getId_exp());
+                    Log.d("fechayhora",value.getFechayhora());
+
+                    Log.d("Temp",value.getTemp1());
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
     private void executeNewMashExperiment(String nombre, int idExp, int duracion_min, int intervaloMedicionTemp_seg,int intervaloMedicionPH_seg){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.MINUTES)
