@@ -17,7 +17,10 @@ import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 
 public class CurrentExperienceActivity extends AppCompatActivity{
+    //Data
+    private int idMash;
 
+    //UI
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
@@ -35,9 +38,12 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
         Intent intent = getIntent();
         if( intent.hasExtra("idMash") && intent.hasExtra("nameMash")){
-            int idMash = intent.getIntExtra("idMash", 0);
-            long newExperimentId = insertNewExperiment(idMash);
+            idMash = intent.getIntExtra("idMash", 0);
             setTitle("Medición " + intent.getStringExtra("nameMash"));
+            long newExperimentId = insertNewExperiment(idMash);
+            if(newExperimentId == -1) {
+                Toast.makeText(this, "Error al insertar experiencia", Toast.LENGTH_SHORT).show();
+            }
         } else {
             Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
         }
