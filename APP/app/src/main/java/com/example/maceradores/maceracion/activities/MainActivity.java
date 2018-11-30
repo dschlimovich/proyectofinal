@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        getSensedValues(69,"");
+        //getSensedValues(69,"");
     } //end OnCreate
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
