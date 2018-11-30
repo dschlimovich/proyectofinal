@@ -17,10 +17,13 @@ import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Experiment;
 
+import java.util.Date;
+
 public class CurrentExperienceActivity extends AppCompatActivity{
     //Data
     private int idMash;
     private String nameMash;
+
 
     //UI
     private TabLayout tabLayout;

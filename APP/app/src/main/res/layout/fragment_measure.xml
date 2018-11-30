@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" Calculado: 68°C \t Desvío: 2°C \n Planificado: 68°C \t Alerta: +- 3°C"/>
+                android:text=" Calculado: 68°C \t\t\t Desvío: 2°C \n Planificado: 68°C \t\t Alerta: +- 3°C \n Sensor 1: 68°C \t\t\t Sensor 3: 68°C \n Sensor 2: 68°C \t\t\t Sensor 4: 68°C"/>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -55,7 +55,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" Actual: 5.4 \t Desvío: 0.1 \n Planificado: 5.5 \t Alerta: +- 0.2"/>
+                android:text=" Actual: 5.4 \t\t\t\t\t Desvío: 0.1 \n Planificado: 5.5 \t\t\t Alerta: +- 0.2 \n Temperatura de Medición: 25°C"/>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -81,7 +81,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" Alfa Amilasa: 80% \t Proteasa: 0% \n Beta Amilasa: 10% \t Beta Glucanasa: 0%"/>
+                android:text=" Alfa Amilasa: 80% \t\t Proteasa: 0% \n Beta Amilasa: 10% \t Beta Glucanasa: 0%"/>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -133,7 +133,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Actual: -°C \t Desvío: - \n Planificado: - \t Alerta: - "/>
+                android:text="Actual: -°C \t\t\t\t\t Desvío: - \n Planificado: - \t\t\t\t Alerta: - "/>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -166,7 +166,8 @@
                     android:text="Tiempo Transcurrido: "/>
                 <Chronometer
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:id="@+id/chronometer"/>
 
             </LinearLayout>
             <TextView
