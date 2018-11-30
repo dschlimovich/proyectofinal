@@ -15,10 +15,12 @@ import android.widget.Toast;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.models.Experiment;
 
 public class CurrentExperienceActivity extends AppCompatActivity{
     //Data
     private int idMash;
+    private String nameMash;
 
     //UI
     private TabLayout tabLayout;
@@ -39,10 +41,16 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         Intent intent = getIntent();
         if( intent.hasExtra("idMash") && intent.hasExtra("nameMash")){
             idMash = intent.getIntExtra("idMash", 0);
-            setTitle("Medición " + intent.getStringExtra("nameMash"));
+            nameMash = intent.getStringExtra("nameMash");
+            setTitle("Medición " + nameMash);
             long newExperimentId = insertNewExperiment(idMash);
             if(newExperimentId == -1) {
                 Toast.makeText(this, "Error al insertar experiencia", Toast.LENGTH_SHORT).show();
+                // Me vuelvo al activity que lista las experiencias
+                Intent intentError = new Intent(CurrentExperienceActivity.this, ExperimentActivity.class);
+                intentError.putExtra("idMash", idMash);
+                intentError.putExtra("nameMash", nameMash);
+                startActivity(intentError);
             }
         } else {
             Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
