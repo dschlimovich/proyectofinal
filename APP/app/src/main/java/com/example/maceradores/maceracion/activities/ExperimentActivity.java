@@ -92,8 +92,20 @@ public class ExperimentActivity extends AppCompatActivity {
 
         rvAdapter = new ExperimentListAdapter(experimentList, R.layout.item_list_mash, new ExperimentListAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(Experiment experiment, int position) {
+            public void onLongClickItem(Experiment experiment, int position) {
+                experimentList.remove(position);
+                rvAdapter.notifyItemRemoved(position);
+                // lo tengo que eliminar de la base de datos tambien.
+                DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                String selection = "id = ?";
+                String [] selectionArgs = new String[] { String.valueOf(experiment.getId())};
 
+                int cant = db.delete("Experimento", selection, selectionArgs);
+                if(cant == 1)
+                    Toast.makeText(ExperimentActivity.this, "Experimento eliminado", Toast.LENGTH_SHORT).show();
+
+                dbHelper.close();
             }
         });
         layoutManager = new LinearLayoutManager(this);
