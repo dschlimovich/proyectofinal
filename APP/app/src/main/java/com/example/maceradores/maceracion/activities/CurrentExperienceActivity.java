@@ -23,6 +23,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     //Data
     private int idMash;
     private String nameMash;
+    private long idExp;
 
 
     //UI
@@ -35,12 +36,14 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Setear el toolbar
         setContentView(R.layout.activity_current_experience);
         setToolbar();
         setTabLayout();
         setViewPager();
         setListenerTabLayout(viewPager);
 
+        // Saber de que maceración vine
         Intent intent = getIntent();
         if( intent.hasExtra("idMash") && intent.hasExtra("nameMash")){
             idMash = intent.getIntExtra("idMash", 0);
@@ -54,12 +57,16 @@ public class CurrentExperienceActivity extends AppCompatActivity{
                 intentError.putExtra("idMash", idMash);
                 intentError.putExtra("nameMash", nameMash);
                 startActivity(intentError);
-            }
+            } else {
+                //me guardo el id del experimento para obtener los sensed values despues.
+                this.idExp = newExperimentId;
+            } //end if insert new experiment.
         } else {
             Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
-        }
-    }
+        } //end if preguntando por los extras del intent.
+    } //end onCreate
 
+    // BD Functions.
     private long insertNewExperiment(int idMash) {
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -70,6 +77,8 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         return newExperimentId;
     }
 
+
+    // ------ Toolbar Functions----------
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
     private void setToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

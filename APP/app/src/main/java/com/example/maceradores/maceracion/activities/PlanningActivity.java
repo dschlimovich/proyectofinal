@@ -305,20 +305,48 @@ public class PlanningActivity extends AppCompatActivity {
             case R.id.acceptPlannification:
                 //Me robo los valores de los editText correspondientes a volumen y densidad.
                 EditText volumePlanning = findViewById(R.id.editTextPlanningVolumen);
+                if( volumePlanning.getText().toString().isEmpty()){
+                    Toast.makeText(this, "No se insertó el volumen de maceración", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 EditText densityPlanning = findViewById(R.id.editTextPlanningDensidad);
+                if( densityPlanning.getText().toString().isEmpty()){
+                    Toast.makeText(this, "No se insertó la densidad deseada de maceración", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 this.volume = Float.valueOf(volumePlanning.getText().toString().trim());
                 this.density = Float.valueOf(densityPlanning.getText().toString().trim());
                 //y el correspondiente al tipo de maceracion.
                 Spinner spinner = findViewById(R.id.spinnerTiposMaceracion);
                 this.type = spinner.getSelectedItem().toString().trim();
 
-                showAlertDialogFinishPlanning();
+                //válido los granos y los intervalos.
+                if(grains.isEmpty()){
+                    Toast.makeText(this, "No se insertó ningun grano para la maceración", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                if(intervals.isEmpty()){
+                    Toast.makeText(this, "No se insertó ningun intervalo de medición para la maceración", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
     }
+
+    private boolean validPlanning() {
+        /*    private String type;
+    private float volume;
+    private float density;
+    private List<MeasureInterval> intervals;
+    private List<Grain> grains;*/
+
+        return true;
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
     private void setToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_planning);

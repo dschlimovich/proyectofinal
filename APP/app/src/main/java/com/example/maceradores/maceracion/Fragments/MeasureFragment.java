@@ -2,6 +2,7 @@ package com.example.maceradores.maceracion.Fragments;
 
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ public class MeasureFragment extends Fragment {
     public void onResume() {
         super.onResume();
         chronometer = getView().findViewById(R.id.chronometer);
+        chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
         chronometer.start();
     }
 }
