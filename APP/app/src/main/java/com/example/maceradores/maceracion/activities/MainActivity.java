@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // User Interface
+    // User Interface functions
     private void showAlertCurrentValues(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

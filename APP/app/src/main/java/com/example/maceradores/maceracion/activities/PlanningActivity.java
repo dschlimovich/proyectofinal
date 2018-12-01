@@ -171,7 +171,7 @@ public class PlanningActivity extends AppCompatActivity {
         }
     }
 
-    //User interface
+    //User interface functions
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void chargeUI(){
 

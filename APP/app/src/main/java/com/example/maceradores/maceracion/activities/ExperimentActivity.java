@@ -42,7 +42,7 @@ public class ExperimentActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
 
-
+    // LifeCycle functions
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +83,6 @@ public class ExperimentActivity extends AppCompatActivity {
         setToolbar();
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -117,33 +116,6 @@ public class ExperimentActivity extends AppCompatActivity {
 
     }
 
-    private List<Experiment> getAllExperiments(int idMash) {
-        List<Experiment> resultados = new ArrayList<Experiment>();
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        // Filter results WHERE "title" = 'My Title'
-        //String selection = "id = ?";
-        String[] selectionArgs = { String.valueOf(this.idMash)};
-
-        Cursor cursor = db.rawQuery("SELECT E.id AS 'id', strftime('%d/%m/%Y %H:%M', E.fecha) AS 'fecha' FROM Experimento AS E INNER JOIN Maceracion AS M ON E.maceracion = M.id WHERE M.id = ? ORDER BY E.fecha DESC", selectionArgs);
-
-        //List itemNames = new ArrayList<>();
-        while(cursor.moveToNext()) {
-            int id = cursor.getInt(
-                    cursor.getColumnIndexOrThrow("id")
-            );
-            String fecha = cursor.getString(
-                    cursor.getColumnIndexOrThrow("fecha")
-            );
-
-            resultados.add(new Experiment(id, fecha));
-        } // end while
-        cursor.close();
-        dbHelper.close();
-        return resultados;
-    } //end getAllExperiments
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_bar_experiments_activity, menu);
@@ -172,12 +144,41 @@ public class ExperimentActivity extends AppCompatActivity {
 
     }
 
+    // User Interface functions
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
     private void setToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_MainActivity);
         setSupportActionBar(toolbar);
         getSupportActionBar().show();
     }
+
+    // DB functions
+    private List<Experiment> getAllExperiments(int idMash) {
+        List<Experiment> resultados = new ArrayList<Experiment>();
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Filter results WHERE "title" = 'My Title'
+        //String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(this.idMash)};
+
+        Cursor cursor = db.rawQuery("SELECT E.id AS 'id', strftime('%d/%m/%Y %H:%M', E.fecha) AS 'fecha' FROM Experimento AS E INNER JOIN Maceracion AS M ON E.maceracion = M.id WHERE M.id = ? ORDER BY E.fecha DESC", selectionArgs);
+
+        //List itemNames = new ArrayList<>();
+        while(cursor.moveToNext()) {
+            int id = cursor.getInt(
+                    cursor.getColumnIndexOrThrow("id")
+            );
+            String fecha = cursor.getString(
+                    cursor.getColumnIndexOrThrow("fecha")
+            );
+
+            resultados.add(new Experiment(id, fecha));
+        } // end while
+        cursor.close();
+        dbHelper.close();
+        return resultados;
+    } //end getAllExperiments
 
     private void deleteMash() {
         //tengo que eliminar todos los datos y tengo que mandar al main activity.

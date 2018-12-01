@@ -25,13 +25,12 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     private String nameMash;
     private long idExp;
 
-
     //UI
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
 
-
+    // LifeCycle functions.
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +79,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         dbHelper.close();
         return newExperimentId;
     }
-
-
+    
     // ------ Toolbar Functions----------
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
     private void setToolbar(){
