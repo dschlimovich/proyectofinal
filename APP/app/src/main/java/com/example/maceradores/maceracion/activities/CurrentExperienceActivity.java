@@ -62,6 +62,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
                 //me guardo el id del experimento para obtener los sensed values despues.
                 this.idExp = newExperimentId;
                 // que mas necesito para empezar a medir. los intervalos de medicion.
+                // y despues debería llamar un async task para que vaya midiendo sin que se me congele la cosa.
 
             } //end if insert new experiment.
         } else {

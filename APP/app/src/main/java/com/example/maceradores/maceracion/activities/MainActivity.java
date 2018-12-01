@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     //Current values
     private FloatingActionButton fab;
 
-
+    // Cycle life functions
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,40 +104,6 @@ public class MainActivity extends AppCompatActivity {
         setToolbar();
     }
 
-    private List<Mash> getAllMash() {
-        List<Mash> resultados = new ArrayList<Mash>();
-        // tengo que hacer una consulta SQL.
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                "id",
-                "nombre"
-        };
-        //String selection = "id = ?";
-        //String[] selectionArgs = { String.valueOf(newRowId)};
-
-        Cursor cursor = db.query("Maceracion", projection, null, null, null, null, null);
-
-        //List itemNames = new ArrayList<>();
-        while(cursor.moveToNext()) {
-            String itemName = cursor.getString(
-                    cursor.getColumnIndexOrThrow("nombre"));
-            int id = cursor.getInt(
-                    cursor.getColumnIndexOrThrow("id")
-            );
-
-            resultados.add(new Mash(id, itemName));
-            //itemNames.add(itemName);
-        }
-        cursor.close();
-
-        return resultados;
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //tengo que añadirle el layout que le cree.
@@ -161,109 +127,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
-    private void setToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_MainActivity);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().show();
-    }
 
-
-    private void getSensedValues(int idExp,String IdList){
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.MINUTES)
-                .readTimeout(240, TimeUnit.SECONDS)
-                .writeTimeout(240, TimeUnit.SECONDS)
-                .build();
-
-        //Luego lo agrego a la llamada de Retrofit
-
-        final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Api.BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-
-        //------Build new JsonObject with Experiment to be send
-        //{ "idExp": "31", "ArrayID": "" }
-        JsonObject jsonObject= new JsonObject();
-        jsonObject.addProperty("idExp","69");
-        jsonObject.addProperty("duracion_min","1");
-
-        Api api = retrofit.create(Api.class);
-        Call<List<SensedValuesContainer>> call = api.getSensedValues(jsonObject);
-
-        call.enqueue(new Callback<List<SensedValuesContainer>>() {
-            @Override
-            public void onResponse(Call<List<SensedValuesContainer>> call, Response<List<SensedValuesContainer>> response) {
-                List<SensedValuesContainer> values = response.body();
-
-                for (SensedValuesContainer value : values){
-                    //{"id":"5","id_exp":"69","fechayhora":"2018-11-29 10:13:02","temp1":"-1000","temp2":"-1000","temp3":"-1000","temp4":"-1000","temp5":"-1000","tempPh":"-1000","tempAmb":"-10000","humity":"-1","pH":"-2"}
-                    Log.d("id",value.getId());
-                    Log.d("idExp",value.getId_exp());
-                    Log.d("fechayhora",value.getFechayhora());
-
-                    Log.d("Temp",value.getTemp1());
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
-
-            }
-        });
-
-    }
-    private void executeNewMashExperiment(String nombre, int idExp, int duracion_min, int intervaloMedicionTemp_seg,int intervaloMedicionPH_seg){
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.MINUTES)
-                .readTimeout(240, TimeUnit.SECONDS)
-                .writeTimeout(240, TimeUnit.SECONDS)
-                .build();
-
-        //Luego lo agrego a la llamada de Retrofit
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Api.BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-
-        //------Build new JsonObject with Experiment to be send
-        //{ "nombre": "pepito","idExp":"1", "duracion_min": "1","intervaloMedicionTemp_seg":"15","intervaloMedicionPH_seg":"15" }
-        JsonObject NewExperiment= new JsonObject();
-        NewExperiment.addProperty("nombre",nombre);
-        NewExperiment.addProperty("idExp",Integer.toString(idExp));
-        NewExperiment.addProperty("duracion_min",Integer.toString(duracion_min));
-        NewExperiment.addProperty("intervaloMedicionTemp_seg",Integer.toString(intervaloMedicionTemp_seg));
-        NewExperiment.addProperty("intervaloMedicionPH_seg",Integer.toString(intervaloMedicionPH_seg));
-
-        Api api = retrofit.create(Api.class);
-        Call<Void> call = api.postExperiment(NewExperiment);
-
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse(Call call, Response response) {
-
-            }
-
-            @Override
-            public void onFailure(Call call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-
-
-
-    }
-
-
+    // User Interface
     private void showAlertCurrentValues(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -335,6 +200,144 @@ public class MainActivity extends AppCompatActivity {
 
         builder.create().show();
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
+    private void setToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_MainActivity);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().show();
+    }
+
+    // BD Functions
+    private List<Mash> getAllMash() {
+        List<Mash> resultados = new ArrayList<Mash>();
+        // tengo que hacer una consulta SQL.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                "id",
+                "nombre"
+        };
+        //String selection = "id = ?";
+        //String[] selectionArgs = { String.valueOf(newRowId)};
+
+        Cursor cursor = db.query("Maceracion", projection, null, null, null, null, null);
+
+        //List itemNames = new ArrayList<>();
+        while(cursor.moveToNext()) {
+            String itemName = cursor.getString(
+                    cursor.getColumnIndexOrThrow("nombre"));
+            int id = cursor.getInt(
+                    cursor.getColumnIndexOrThrow("id")
+            );
+
+            resultados.add(new Mash(id, itemName));
+            //itemNames.add(itemName);
+        }
+        cursor.close();
+
+        return resultados;
+    }
+
+    private void getSensedValues(int idExp,String IdList){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(240, TimeUnit.SECONDS)
+                .writeTimeout(240, TimeUnit.SECONDS)
+                .build();
+
+        //Luego lo agrego a la llamada de Retrofit
+
+        final Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        //------Build new JsonObject with Experiment to be send
+        //{ "idExp": "31", "ArrayID": "" }
+        JsonObject jsonObject= new JsonObject();
+        jsonObject.addProperty("idExp","69");
+        jsonObject.addProperty("duracion_min","1");
+
+        Api api = retrofit.create(Api.class);
+        Call<List<SensedValuesContainer>> call = api.getSensedValues(jsonObject);
+
+        call.enqueue(new Callback<List<SensedValuesContainer>>() {
+            @Override
+            public void onResponse(Call<List<SensedValuesContainer>> call, Response<List<SensedValuesContainer>> response) {
+                List<SensedValuesContainer> values = response.body();
+
+                for (SensedValuesContainer value : values){
+                    //{"id":"5","id_exp":"69","fechayhora":"2018-11-29 10:13:02","temp1":"-1000","temp2":"-1000","temp3":"-1000","temp4":"-1000","temp5":"-1000","tempPh":"-1000","tempAmb":"-10000","humity":"-1","pH":"-2"}
+                    Log.d("id",value.getId());
+                    Log.d("idExp",value.getId_exp());
+                    Log.d("fechayhora",value.getFechayhora());
+
+                    Log.d("Temp",value.getTemp1());
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+
+    private void executeNewMashExperiment(String nombre, int idExp, int duracion_min, int intervaloMedicionTemp_seg,int intervaloMedicionPH_seg){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(240, TimeUnit.SECONDS)
+                .writeTimeout(240, TimeUnit.SECONDS)
+                .build();
+
+        //Luego lo agrego a la llamada de Retrofit
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        //------Build new JsonObject with Experiment to be send
+        //{ "nombre": "pepito","idExp":"1", "duracion_min": "1","intervaloMedicionTemp_seg":"15","intervaloMedicionPH_seg":"15" }
+        JsonObject NewExperiment= new JsonObject();
+        NewExperiment.addProperty("nombre",nombre);
+        NewExperiment.addProperty("idExp",Integer.toString(idExp));
+        NewExperiment.addProperty("duracion_min",Integer.toString(duracion_min));
+        NewExperiment.addProperty("intervaloMedicionTemp_seg",Integer.toString(intervaloMedicionTemp_seg));
+        NewExperiment.addProperty("intervaloMedicionPH_seg",Integer.toString(intervaloMedicionPH_seg));
+
+        Api api = retrofit.create(Api.class);
+        Call<Void> call = api.postExperiment(NewExperiment);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+
+    }
+
+
 
 
 } //end MainActivity
