@@ -429,7 +429,7 @@ public class PlanningActivity extends AppCompatActivity {
 
         builder.create().show();
 
-    } //end alert dialog
+    } //end finish alert dialog
 
     private void showAlertDialogAddMeasureInterval() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -491,7 +491,7 @@ public class PlanningActivity extends AppCompatActivity {
 
         builder.create().show();
 
-    }
+    } //end Add Measure alert dialog
 
     private void showAlertDialogAddGrain() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -533,7 +533,7 @@ public class PlanningActivity extends AppCompatActivity {
         });
 
         builder.create().show();
-    }
+    } //end Add Grain alert dialog
 
     //BD functions
     private void addInterval(MeasureInterval interval){

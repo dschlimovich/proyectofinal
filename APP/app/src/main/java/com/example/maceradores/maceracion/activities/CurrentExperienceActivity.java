@@ -2,6 +2,7 @@ package com.example.maceradores.maceracion.activities;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -16,14 +17,18 @@ import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Experiment;
+import com.example.maceradores.maceracion.models.Mash;
+import com.example.maceradores.maceracion.models.SensedValues;
 
 import java.util.Date;
 
 public class CurrentExperienceActivity extends AppCompatActivity{
     //Data
+    private Mash currentMash;
     private int idMash;
     private String nameMash;
     private long idExp;
+    private SensedValues currenteSensedValue;
 
     //UI
     private TabLayout tabLayout;
@@ -47,6 +52,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         Intent intent = getIntent();
         if( intent.hasExtra("idMash") && intent.hasExtra("nameMash")){
             idMash = intent.getIntExtra("idMash", 0);
+            currentMash = loadCurrentMash(idMash);
             nameMash = intent.getStringExtra("nameMash");
             setTitle("Medición " + nameMash);
             long newExperimentId = insertNewExperiment(idMash);
@@ -60,7 +66,11 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             } else {
                 //me guardo el id del experimento para obtener los sensed values despues.
                 this.idExp = newExperimentId;
-                // que mas necesito para empezar a medir. los intervalos de medicion.
+                // que mas necesito para empezar a medir:
+                // -Los intervalos de medicion (tal vez con el de temperatura solo alcanza.
+                // -Saber cuantas mediciones se van a realizar.
+                // -Almacenar un Sensed Value con lo último obtenido(ojo que pH puede venir vacio.)
+                //
                 // y despues debería llamar un async task para que vaya midiendo sin que se me congele la cosa.
 
             } //end if insert new experiment.
@@ -79,7 +89,43 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         dbHelper.close();
         return newExperimentId;
     }
-    
+
+    private Mash loadCurrentMash(int idMash){
+        // De la maceracion actual necesito:
+        //  - ID,   Nombre, Tipo, Intervalos de mecidicion, Densidad Obtjetivo.
+
+        Mash mash = new Mash();
+
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Maceracion", null, selection, selectionArgs, null, null, null);
+
+        if( cursor.moveToFirst()){
+            //ID
+            mash.setId( cursor.getInt( cursor.getColumnIndexOrThrow("id")));
+            // Nombre
+            mash.setName( cursor.getString( cursor.getColumnIndexOrThrow("nombre")));
+            //Tipo
+            mash.setTipo( cursor.getString( cursor.getColumnIndexOrThrow("tipo")));
+            //Volumen
+            mash.setVolumen( cursor.getFloat( cursor.getColumnIndexOrThrow("volumen")));
+            // Densidad Objtetivo
+            mash.setDensidadObjetivo(cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo")));
+            //Intervalo de Medicion de temperatura.
+            mash.setPeriodMeasureTemperature(cursor.getInt( cursor.getColumnIndexOrThrow("intervaloMedTemp")));
+            // Intervalo de Medicion de PH
+            mash.setPeriodMeasurePh( cursor.getInt( cursor.getColumnIndexOrThrow("intervaloMedPh")));
+        }  //Seguramente hay valores que no voy a utilizar.
+
+        cursor.close();
+        db.close();
+        return mash;
+    }
+
     // ------ Toolbar Functions----------
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
     private void setToolbar(){
