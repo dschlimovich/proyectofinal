@@ -149,8 +149,8 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         return newSensedValueId; //si devuelve -1 es porque no pudo insertar
     }
 
-    private String getIdInsertedSensedValue(int idExp){
-        StringBuffer buffer = new StringBuffer();
+    private String getListIdInsertedSensedValue(int idExp){
+        StringBuilder buffer = new StringBuilder();
 
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
