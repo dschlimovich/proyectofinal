@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -24,9 +26,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.RetrofitGsonContainer.SensedValuesContainer;
 import com.example.maceradores.maceracion.RetrofitGsonContainer.TempPh;
+import com.example.maceradores.maceracion.WorkManager.MyWorker;
 import com.example.maceradores.maceracion.adapters.MashListAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Mash;
@@ -37,6 +41,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,6 +82,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //--------------WorkManager---------------------
+
+        Data data = new Data.Builder()
+                .putString(MyWorker.IDEXP, "69")
+                //.putString(MyWorker.EXTRA_TEXT, "Hi! I have come from activity.")
+                .build();
+
+        final OneTimeWorkRequest simpleRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
+                .setInputData(data)
+                .build();
+
+
+
+        WorkManager.getInstance().enqueue(simpleRequest);
+
+       /* //Esto parece q se hace ahora con WorkInfo... Es decir cambiaron el nombre de WorkStatus a WorkInfo
+        WorkManager.getInstance().getWorkInfoById(simpleRequest.getId()). // No anda el getStatusById
+                .observe(this, new Observer<WorkStatus>() {
+                    @Override
+                    public void onChanged(@Nullable WorkStatus workStatus) {
+                        if (workStatus != null) {
+                            //mTextView.append("SimpleWorkRequest: " + workStatus.getState().name() + "\n");
+                        }
+
+                        if (workStatus != null && workStatus.getState().isFinished()) { // Con esto saco lo q haya en el worker, una vez haya terminado
+                            String message = workStatus.getOutputData().getString(MyWorker.EXTRA_OUTPUT_MESSAGE, "Default message");
+                            Log.d("Sale del worker",message);
+                            //mTextView.append("SimpleWorkRequest (Data): " + message);
+                        }
+                    }
+                });*/
+
+
+
         //getSensedValues(69,"");
     } //end OnCreate
 
@@ -102,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         setToolbar();
+
     }
 
     private List<Mash> getAllMash() {
