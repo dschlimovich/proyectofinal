@@ -156,6 +156,17 @@ public class MyWorker extends Worker {
         return newSensedValueId; //si devuelve -1 es porque no pudo insertar
     }
 
+    private void insertExperimentHardCode(int idExp, int idMash){
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("id", idExp);
+        values.put("maceracion", idMash); //Suponete que tenes las maceracion con id 1 y se la agrego a esa.
+        long newSensedValueId = db.insert("SensedValues", null, values);
+        dbHelper.close();
+    }
+
     private String getListIdInsertedSensedValue(int idExp){
         StringBuilder buffer = new StringBuilder();
 
