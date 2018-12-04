@@ -149,6 +149,29 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         return newSensedValueId; //si devuelve -1 es porque no pudo insertar
     }
 
+    private String getIdInsertedSensedValue(int idExp){
+        StringBuffer buffer = new StringBuffer();
+
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"id"};
+        String selection = "id_exp = ?";
+        String[] selectionArgs = { String.valueOf(idExp)};
+
+        Cursor cursor = db.query("SensedValues", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            buffer.append( cursor.getString(0)); // checkear si la columna es 0 o 1
+            while(cursor.moveToNext()){
+                buffer.append(",");
+                buffer.append(cursor.getString(0));
+            }
+        }
+        cursor.close();
+        db.close();
+        return buffer.toString();
+    }
+
     // ------ Toolbar Functions----------
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
     private void setToolbar(){
