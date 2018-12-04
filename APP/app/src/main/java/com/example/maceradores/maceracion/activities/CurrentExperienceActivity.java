@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.RetrofitGsonContainer.SensedValuesContainer;
 import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Experiment;
@@ -25,8 +26,6 @@ import java.util.Date;
 public class CurrentExperienceActivity extends AppCompatActivity{
     //Data
     private Mash currentMash;
-    private int idMash;
-    private String nameMash;
     private long idExp;
     private SensedValues currenteSensedValue;
 
@@ -51,10 +50,11 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         // Saber de que maceración vine
         Intent intent = getIntent();
         if( intent.hasExtra("idMash") && intent.hasExtra("nameMash")){
-            idMash = intent.getIntExtra("idMash", 0);
-            currentMash = loadCurrentMash(idMash);
-            nameMash = intent.getStringExtra("nameMash");
+            int idMash = intent.getIntExtra("idMash", 0);
+            String nameMash = intent.getStringExtra("nameMash");
             setTitle("Medición " + nameMash);
+            currentMash = loadCurrentMash(idMash);
+
             long newExperimentId = insertNewExperiment(idMash);
             if(newExperimentId == -1) {
                 Toast.makeText(this, "Error al insertar experiencia", Toast.LENGTH_SHORT).show();
@@ -124,6 +124,29 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         cursor.close();
         db.close();
         return mash;
+    }
+
+    private long insertSensedValue(SensedValuesContainer svc){
+        // creo la instancia de basede datos para insertar.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        // values.put("id_exp", idExp); //ESTO O SE HARDCODEA O SE OBTIENE DE OTRO LADO.
+        values.put("id", svc.getId());
+        values.put("fechayhora", svc.getFechayhora());
+        values.put("temp1", svc.getTemp1());
+        values.put("temp2", svc.getTemp2());
+        values.put("temp3", svc.getTemp3());
+        values.put("temp4", svc.getTemp4());
+        values.put("temp5", svc.getTemp5());
+        values.put("tempPh", svc.getTempPh());
+        values.put("tempAmb", svc.getTempAmb());
+        values.put("pH", svc.getpH());
+
+        long newSensedValueId = db.insert("SensedValues", null, values);
+        dbHelper.close();
+        return newSensedValueId; //si devuelve -1 es porque no pudo insertar
     }
 
     // ------ Toolbar Functions----------
