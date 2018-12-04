@@ -2,7 +2,10 @@ package com.example.maceradores.maceracion.WorkManager;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,9 +16,11 @@ import android.widget.Toast;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.RetrofitGsonContainer.SensedValuesContainer;
 import com.example.maceradores.maceracion.activities.MainActivity;
+import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -30,12 +35,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MyWorker extends Worker {
-    //    public static final String EXTRA_TITLE = "title";
-//    public static final String EXTRA_TEXT = "text";
-//    public static final String EXTRA_OUTPUT_MESSAGE = "output_message";
-    public static final String NUMBEROFCICLES = "1";
+    public static final String EXTRA_TITLE = "title";
+    public static final String EXTRA_TEXT = "text";
+    public static final String EXTRA_OUTPUT_MESSAGE = "output_message";
+//    public static final String NUMBEROFCICLES = "1";
     public static final String IDEXP = "-1";
-    public static final String IDLIST = "";
+
 
     public MyWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -44,45 +49,48 @@ public class MyWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-       /* String title = getInputData().getString(EXTRA_TITLE);
-        String text = getInputData().getString(EXTRA_TEXT);
-        //sendNotification("Simple Work Manager", "I have been send by WorkManager.");
-        sendNotification(title, text);
 
-        Data output = new Data.Builder() // Armar datos a devolver desde MyWork
+        String IdExp = getInputData().getString(IDEXP);
+
+                /*Data output = new Data.Builder() // Armar datos a devolver desde MyWork
                 .putString(EXTRA_OUTPUT_MESSAGE, "I have come from MyWorker!")
                 .build();*/
-
         //setOutputData(output);//Envía el MyData
 
-        int cicleNumber = getInputData().getInt(NUMBEROFCICLES, 1);
-        for (int i = 0; i < cicleNumber; i++) {
+        Log.d("El idExp es:",IdExp);
+        int IdExp_int = Integer.valueOf(IdExp);
 
-            int IdExp = getInputData().getInt(IDEXP,-1);
-            String IdList = getInputData().getString(IDLIST);
-            Log.d("El idExp es:",Integer.toString(IdExp));
+        //int cicleNumber = getInputData().getInt(NUMBEROFCICLES, 1);*/
+       /* for (int i = 0; i < cicleNumber; ++i) {
 
-            getSensedValues(IdExp, IdList);
+            //int IdExp = getInputData().getInt(IDEXP,-1);
+            //String IdList = getInputData().getString(IDLIST);
+            //Log.d("El idExp es:",Integer.toString(IdExp));
+            //Log.d("La lista es:",IdList);
+            //getSensedValues(IdExp, IdList);
 
-            try {
+           *//* try {
                 Thread.sleep(30000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*//*
             //Llamada a Retrofit y a base de datos
 
-        }
+        }*/
 
 
         //SystemClock.sleep(7000);
-
-
+        List<SensedValuesContainer> Lista = getSensedValues(IdExp_int,"");
+        if(!Lista.isEmpty())
+            for (SensedValuesContainer value : Lista) {
+                insertSensedValue(value);
+            }
 
         return Result.SUCCESS;
     }
 
 
-    private void getSensedValues(int idExp, String IdList) {
+    private List<SensedValuesContainer> getSensedValues(int idExp, String IdList) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.MINUTES)
                 .readTimeout(240, TimeUnit.SECONDS)
@@ -106,35 +114,73 @@ public class MyWorker extends Worker {
 
         Api api = retrofit.create(Api.class);
         Call<List<SensedValuesContainer>> call = api.getSensedValues(jsonObject);
-
+        final List<SensedValuesContainer> Lista = new ArrayList<SensedValuesContainer>();
         call.enqueue(new Callback<List<SensedValuesContainer>>() {
             @Override
             public void onResponse(Call<List<SensedValuesContainer>> call, Response<List<SensedValuesContainer>> response) {
                 List<SensedValuesContainer> values = response.body();
-
                 for (SensedValuesContainer value : values) {
-                    //{"id":"5","id_exp":"69","fechayhora":"2018-11-29 10:13:02","temp1":"-1000","temp2":"-1000","temp3":"-1000","temp4":"-1000","temp5":"-1000","tempPh":"-1000","tempAmb":"-10000","humity":"-1","pH":"-2"}
-                   /* Log.d("id",value.getId());
-                    Log.d("idExp",value.getId_exp());
-                    Log.d("fechayhora",value.getFechayhora());
-
-                    Log.d("Temp",value.getTemp1());*/
-
+                   Lista.add(value);
                 }
-
             }
-
             @Override
             public void onFailure(Call call, Throwable t) {
-                //Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }
         });
 
+        return Lista;
     }
 
 
-    /*public void sendNotification(String title, String message) {
+    private long insertSensedValue(SensedValuesContainer svc){
+// creo la instancia de basede datos para insertar.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("id_exp", svc.getId_exp()); //ESTO O SE HARDCODEA O SE OBTIENE DE OTRO LADO.
+        values.put("id", svc.getId());
+        values.put("fechayhora", svc.getFechayhora());
+        values.put("temp1", svc.getTemp1());
+        values.put("temp2", svc.getTemp2());
+        values.put("temp3", svc.getTemp3());
+        values.put("temp4", svc.getTemp4());
+        values.put("temp5", svc.getTemp5());
+        values.put("tempPh", svc.getTempPh());
+        values.put("tempAmb", svc.getTempAmb());
+        values.put("pH", svc.getpH());
+
+        long newSensedValueId = db.insert("SensedValues", null, values);
+        dbHelper.close();
+        return newSensedValueId; //si devuelve -1 es porque no pudo insertar
+    }
+
+    private String getListIdInsertedSensedValue(int idExp){
+        StringBuilder buffer = new StringBuilder();
+
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"id"};
+        String selection = "id_exp = ?";
+        String[] selectionArgs = { String.valueOf(idExp)};
+
+        Cursor cursor = db.query("SensedValues", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            buffer.append( cursor.getString(0)); // checkear si la columna es 0 o 1
+            while(cursor.moveToNext()){
+                buffer.append(",");
+                buffer.append(cursor.getString(0));
+            }
+        }
+        cursor.close();
+        db.close();
+        return buffer.toString();
+    }
+
+
+    public void sendNotification(String title, String message) {
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         //If on Oreo then notification required a notification channel.
@@ -149,7 +195,7 @@ public class MyWorker extends Worker {
                 .setSmallIcon(R.mipmap.ic_launcher);
 
         notificationManager.notify(1, notification.build());
-    }*/
+    }
 
 
 }
