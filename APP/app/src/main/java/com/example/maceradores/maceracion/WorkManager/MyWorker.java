@@ -140,21 +140,32 @@ public class MyWorker extends Worker {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("id_exp", svc.getId_exp()); //ESTO O SE HARDCODEA O SE OBTIENE DE OTRO LADO.
+        values.put("id_exp", Integer.valueOf(svc.getId_exp()));
         values.put("id", svc.getId());
-        values.put("fechayhora", svc.getFechayhora());
-        values.put("temp1", svc.getTemp1());
-        values.put("temp2", svc.getTemp2());
-        values.put("temp3", svc.getTemp3());
-        values.put("temp4", svc.getTemp4());
-        values.put("temp5", svc.getTemp5());
-        values.put("tempPh", svc.getTempPh());
-        values.put("tempAmb", svc.getTempAmb());
-        values.put("pH", svc.getpH());
+        values.put("fechayhora", svc.getFechayhora());  //Aca no se que movida. Es tipo fecha.
+        values.put("temp1", Float.valueOf(svc.getTemp1()));
+        values.put("temp2", Float.valueOf(svc.getTemp2()));
+        values.put("temp3", Float.valueOf(svc.getTemp3()));
+        values.put("temp4", Float.valueOf(svc.getTemp4()));
+        values.put("temp5", Float.valueOf(svc.getTemp5()));
+        values.put("tempPh", Float.valueOf(svc.getTempPh()));
+        values.put("tempAmb", Float.valueOf(svc.getTempAmb()));
+        values.put("pH", Float.valueOf(svc.getpH()));
 
         long newSensedValueId = db.insert("SensedValues", null, values);
         dbHelper.close();
         return newSensedValueId; //si devuelve -1 es porque no pudo insertar
+    }
+
+    private void insertExperimentHardCode(int idExp, int idMash){
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("id", idExp);
+        values.put("maceracion", idMash); //Suponete que tenes las maceracion con id 1 y se la agrego a esa.
+        long newSensedValueId = db.insert("SensedValues", null, values);
+        dbHelper.close();
     }
 
     private String getListIdInsertedSensedValue(int idExp){
