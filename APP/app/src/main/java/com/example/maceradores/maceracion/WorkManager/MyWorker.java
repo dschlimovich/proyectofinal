@@ -139,7 +139,7 @@ public class MyWorker extends Worker {
         }
         c.close();
         db.close();
-        return duracionTotal / (intervaloMedicion/2);
+        return duracionTotal * 60 / (intervaloMedicion/2);
     }
 
     private void getSensedValues(int idExp, String IdList) {
