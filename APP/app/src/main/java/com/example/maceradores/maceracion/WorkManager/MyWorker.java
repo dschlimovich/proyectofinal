@@ -97,7 +97,7 @@ public class MyWorker extends Worker {
 
     private int getIdMashByIdExp( int idExp){
         int idMash = -1;
-        
+
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -113,6 +113,39 @@ public class MyWorker extends Worker {
         db.close();
 
         return idMash;
+    }
+
+    private int intervaloMedicion (int idMash){
+        int intervaloMedicion = 0;
+        // saber el periodo de medicion.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"intervaloMedTemp"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            intervaloMedicion = cursor.getInt(0); //como tengo una sola columna, devuelvo la primera nomas.
+        }
+        cursor.close();
+        db.close();
+
+        return intervaloMedicion;
+    }
+
+    private int cantMediciones( int idMash, int intervaloMedicion){
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT SUM(duracion) FROM Intervalo WHERE maceracion = ?", new String[]{String.valueOf(idMash)});
+        int duracionTotal = 0;
+        if(c.moveToFirst()){
+               duracionTotal = c.getInt(0);
+        }
+        c.close();
+        db.close();
+        return duracionTotal / (intervaloMedicion/2);
     }
 
     private void getSensedValues(int idExp, String IdList) {
