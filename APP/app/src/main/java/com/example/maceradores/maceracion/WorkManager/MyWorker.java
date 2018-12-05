@@ -61,7 +61,8 @@ public class MyWorker extends Worker {
         int IdExp_int = Integer.valueOf(IdExp);
 
         //int cicleNumber = getInputData().getInt(NUMBEROFCICLES, 1);*/
-       /* for (int i = 0; i < cicleNumber; ++i) {
+        int counter = 0;
+        while (counter<){
 
             //int IdExp = getInputData().getInt(IDEXP,-1);
             //String IdList = getInputData().getString(IDLIST);
@@ -69,29 +70,22 @@ public class MyWorker extends Worker {
             //Log.d("La lista es:",IdList);
             //getSensedValues(IdExp, IdList);
 
-           *//* try {
+            try {
                 Thread.sleep(30000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }*//*
+            }
             //Llamada a Retrofit y a base de datos
 
-        }*/
+        }
 
 
         //SystemClock.sleep(7000);
         //insertExperimentHardCode(69,1);
-        getSensedValues(IdExp_int,""); // Call to API to get the Sensed Values
+        String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
+        getSensedValues(IdExp_int,AppList); // Call to API to get the Sensed Values
 
 
-//        if(!Lista.isEmpty()) {
-//            for (SensedValuesContainer value : Lista) {
-//                Log.d("Un valor de temperatura", value.getTemp1());
-//                insertSensedValue(value);
-//            }
-//        }
-//        String insertedValues = getListIdInsertedSensedValue(69);
-//        Log.d("List of inserted val:", insertedValues);
         return Result.SUCCESS;
     }
 
@@ -120,21 +114,15 @@ public class MyWorker extends Worker {
 
         Api api = retrofit.create(Api.class);
         Call<List<SensedValuesContainer>> call = api.getSensedValues(jsonObject);
-//        final List<SensedValuesContainer> Lista = new ArrayList<SensedValuesContainer>();
         call.enqueue(new Callback<List<SensedValuesContainer>>() {
             @Override
             public void onResponse(Call<List<SensedValuesContainer>> call, Response<List<SensedValuesContainer>> response) {
                 List<SensedValuesContainer> values = response.body();
-                if (!values.isEmpty()) {
+                if (!values.isEmpty()) { // Only makes Insertions id the response is not empty
                     for (SensedValuesContainer value : values) {
                         Log.d("Un valor...", value.getTemp1());
                         Long flag = insertSensedValue(value); // Here we insert the values
                         if(flag==-1)Log.d("Error en","Inserción");
-                        //                  Log.d("Largo de lista1...",String.valueOf(Lista.size()));
-//                   Lista.add(value);
-//                    Log.d("Largo de lista2...",String.valueOf(Lista.size()));
-//                    Log.d("One item - last val ins",Lista.get(Lista.size()-1).getId());
-
                     }
                 }
             }
@@ -143,8 +131,7 @@ public class MyWorker extends Worker {
                 t.printStackTrace();
             }
         });
-        Log.d("Llego al final?","Si!");
-        //Log.d("Largo final de lista...",String.valueOf(Lista.size()));
+
     }
 
 
@@ -206,22 +193,7 @@ public class MyWorker extends Worker {
     }
 
 
-    public void sendNotification(String title, String message) {
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-        //If on Oreo then notification required a notification channel.
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("default", "Default", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext(), "default")
-                .setContentTitle(title)
-                .setContentText(message)
-                .setSmallIcon(R.mipmap.ic_launcher);
-
-        notificationManager.notify(1, notification.build());
-    }
 
 
 }
