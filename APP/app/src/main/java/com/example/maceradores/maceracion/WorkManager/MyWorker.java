@@ -81,11 +81,12 @@ public class MyWorker extends Worker {
 
         //SystemClock.sleep(7000);
         List<SensedValuesContainer> Lista = getSensedValues(IdExp_int,"");
-        if(!Lista.isEmpty())
+        if(!Lista.isEmpty()) {
             for (SensedValuesContainer value : Lista) {
+                Log.d("Un valor de temperatura", value.getTemp1());
                 insertSensedValue(value);
             }
-
+        }
         return Result.SUCCESS;
     }
 
