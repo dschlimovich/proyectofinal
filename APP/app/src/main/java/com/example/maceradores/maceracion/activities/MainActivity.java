@@ -82,9 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-                String[] projection = {
-                        "id",
-                };
+                String[] projection = { "id" };
                 Cursor cursor = db.query("SensedValues", projection, null, null, null, null, null);
                 while(cursor.moveToNext()){
                     Toast.makeText(MainActivity.this, " " + cursor.getInt(0), Toast.LENGTH_SHORT).show();
