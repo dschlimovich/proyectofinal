@@ -57,9 +57,14 @@ public class MyWorker extends Worker {
 
         int idMash = getIdMashByIdExp(IdExp_int);
         int intervaloMedicion = intervaloMedicion(idMash); //intervalo de medicion en segundos! o segun convengamos
+        Log.d("El idMash es:",String.valueOf(idMash));
+        Log.d("El interv de med es:",String.valueOf(intervaloMedicion));
 
-        int NumberOfCalls = cantMediciones(idMash, intervaloMedicion );
+
+        int NumberOfCalls = cantMediciones(idMash, intervaloMedicion);
+        Log.d("La duracion es:",String.valueOf(intervaloMedicion*NumberOfCalls));
         int counter = 0;
+        int sleep = intervaloMedicion*1000;
         while (counter<NumberOfCalls){
 
             String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
@@ -67,7 +72,7 @@ public class MyWorker extends Worker {
 
             counter++;
             try {
-                Thread.sleep(30000);
+                Thread.sleep(sleep);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -119,6 +124,7 @@ public class MyWorker extends Worker {
         }
         cursor.close();
         db.close();
+        if(intervaloMedicion<30)intervaloMedicion=30; // Minimo Intervalo de Medicion es de 30 seg
 
         return intervaloMedicion;
     }
