@@ -95,6 +95,25 @@ public class MyWorker extends Worker {
         return Result.SUCCESS;
     }
 
+    private int getIdMashByIdExp( int idExp){
+        int idMash = -1;
+        
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"maceracion"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idExp)};
+
+        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            idMash = cursor.getInt(0); //como tengo una sola columna, devuelvo la primera nomas.
+        }
+        cursor.close();
+        db.close();
+
+        return idMash;
+    }
 
     private void getSensedValues(int idExp, String IdList) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -146,7 +165,6 @@ public class MyWorker extends Worker {
         Log.d("Llego al final?","Si!");
         //Log.d("Largo final de lista...",String.valueOf(Lista.size()));
     }
-
 
     private long insertSensedValue(SensedValuesContainer svc){
 // creo la instancia de basede datos para insertar.
@@ -204,7 +222,6 @@ public class MyWorker extends Worker {
         db.close();
         return buffer.toString();
     }
-
 
     public void sendNotification(String title, String message) {
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
