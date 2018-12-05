@@ -141,7 +141,7 @@ public class MyWorker extends Worker {
 
         ContentValues values = new ContentValues();
         values.put("id_exp", Integer.valueOf(svc.getId_exp()));
-        values.put("id", svc.getId());
+        values.put("id", Integer.valueOf(svc.getId()));
         values.put("fechayhora", svc.getFechayhora());  //Aca no se que movida. Es tipo fecha.
         values.put("temp1", Float.valueOf(svc.getTemp1()));
         values.put("temp2", Float.valueOf(svc.getTemp2()));
