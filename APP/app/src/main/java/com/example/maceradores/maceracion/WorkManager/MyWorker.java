@@ -80,21 +80,23 @@ public class MyWorker extends Worker {
 
 
         //SystemClock.sleep(7000);
-        insertExperimentHardCode(69,1);
-        List<SensedValuesContainer> Lista = getSensedValues(IdExp_int,""); // Call to API to get the Sensed Values
-        if(!Lista.isEmpty()) {
-            for (SensedValuesContainer value : Lista) {
-                Log.d("Un valor de temperatura", value.getTemp1());
-                insertSensedValue(value);
-            }
-        }
-        String insertedValues = getListIdInsertedSensedValue(69);
-        Log.d("List of inserted val:", insertedValues);
+        //insertExperimentHardCode(69,1);
+        getSensedValues(IdExp_int,""); // Call to API to get the Sensed Values
+
+
+//        if(!Lista.isEmpty()) {
+//            for (SensedValuesContainer value : Lista) {
+//                Log.d("Un valor de temperatura", value.getTemp1());
+//                insertSensedValue(value);
+//            }
+//        }
+//        String insertedValues = getListIdInsertedSensedValue(69);
+//        Log.d("List of inserted val:", insertedValues);
         return Result.SUCCESS;
     }
 
 
-    private List<SensedValuesContainer> getSensedValues(int idExp, String IdList) {
+    private void getSensedValues(int idExp, String IdList) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.MINUTES)
                 .readTimeout(240, TimeUnit.SECONDS)
@@ -113,18 +115,27 @@ public class MyWorker extends Worker {
         //------Build new JsonObject with Experiment to be send
         //{ "idExp": "31", "ArrayID": "" }
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("idExp", "69");
-        jsonObject.addProperty("duracion_min", "1");
+        jsonObject.addProperty("idExp", String.valueOf(idExp));
+        jsonObject.addProperty("ArrayID", IdList);
 
         Api api = retrofit.create(Api.class);
         Call<List<SensedValuesContainer>> call = api.getSensedValues(jsonObject);
-        final List<SensedValuesContainer> Lista = new ArrayList<SensedValuesContainer>();
+//        final List<SensedValuesContainer> Lista = new ArrayList<SensedValuesContainer>();
         call.enqueue(new Callback<List<SensedValuesContainer>>() {
             @Override
             public void onResponse(Call<List<SensedValuesContainer>> call, Response<List<SensedValuesContainer>> response) {
                 List<SensedValuesContainer> values = response.body();
-                for (SensedValuesContainer value : values) {
-                   Lista.add(value);
+                if (!values.isEmpty()) {
+                    for (SensedValuesContainer value : values) {
+                        Log.d("Un valor...", value.getTemp1());
+                        Long flag = insertSensedValue(value); // Here we insert the values
+                        if(flag==-1)Log.d("Error en","Inserción");
+                        //                  Log.d("Largo de lista1...",String.valueOf(Lista.size()));
+//                   Lista.add(value);
+//                    Log.d("Largo de lista2...",String.valueOf(Lista.size()));
+//                    Log.d("One item - last val ins",Lista.get(Lista.size()-1).getId());
+
+                    }
                 }
             }
             @Override
@@ -132,8 +143,8 @@ public class MyWorker extends Worker {
                 t.printStackTrace();
             }
         });
-
-        return Lista;
+        Log.d("Llego al final?","Si!");
+        //Log.d("Largo final de lista...",String.valueOf(Lista.size()));
     }
 
 
