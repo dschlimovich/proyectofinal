@@ -167,7 +167,7 @@ public class MyWorker extends Worker {
         ContentValues values = new ContentValues();
         values.put("id", idExp);
         values.put("maceracion", idMash); //Suponete que tenes las maceracion con id 1 y se la agrego a esa.
-        long newSensedValueId = db.insert("SensedValues", null, values);
+        long newSensedValueId = db.insert("Experimento", null, values);
         dbHelper.close();
     }
 
