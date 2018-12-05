@@ -80,13 +80,16 @@ public class MyWorker extends Worker {
 
 
         //SystemClock.sleep(7000);
-        List<SensedValuesContainer> Lista = getSensedValues(IdExp_int,"");
+        insertExperimentHardCode(69,1);
+        List<SensedValuesContainer> Lista = getSensedValues(IdExp_int,""); // Call to API to get the Sensed Values
         if(!Lista.isEmpty()) {
             for (SensedValuesContainer value : Lista) {
                 Log.d("Un valor de temperatura", value.getTemp1());
                 insertSensedValue(value);
             }
         }
+        String insertedValues = getListIdInsertedSensedValue(69);
+        Log.d("List of inserted val:", insertedValues);
         return Result.SUCCESS;
     }
 
