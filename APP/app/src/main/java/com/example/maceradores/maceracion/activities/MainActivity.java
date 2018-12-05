@@ -78,6 +78,21 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Consulta sensed value
+                DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+                String[] projection = {
+                        "id",
+                };
+                Cursor cursor = db.query("SensedValues", projection, null, null, null, null, null);
+                while(cursor.moveToNext()){
+                    Toast.makeText(MainActivity.this, " " + cursor.getInt(0), Toast.LENGTH_SHORT).show();
+                }
+
+                cursor.close();
+                db.close();
+
                 showAlertCurrentValues();
             }
         });
