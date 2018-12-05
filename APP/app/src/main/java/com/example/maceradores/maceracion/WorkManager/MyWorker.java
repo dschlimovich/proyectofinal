@@ -62,9 +62,9 @@ public class MyWorker extends Worker {
 
 
         int NumberOfCalls = cantMediciones(idMash, intervaloMedicion);
-        Log.d("La duracion es:",String.valueOf(intervaloMedicion*NumberOfCalls));
+        Log.d("La duracion es:",String.valueOf((intervaloMedicion/2)*NumberOfCalls));
         int counter = 0;
-        int sleep = intervaloMedicion*1000;
+        int sleep = (intervaloMedicion/2)*1000;
         while (counter<NumberOfCalls){
 
             String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
@@ -139,7 +139,7 @@ public class MyWorker extends Worker {
         }
         c.close();
         db.close();
-        return duracionTotal * 60 / (intervaloMedicion/2);
+        return (duracionTotal * 60) / (intervaloMedicion/2);
     }
 
     private void getSensedValues(int idExp, String IdList) {
