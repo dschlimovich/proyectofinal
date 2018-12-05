@@ -52,38 +52,29 @@ public class MyWorker extends Worker {
 
         String IdExp = getInputData().getString(IDEXP);
 
-                /*Data output = new Data.Builder() // Armar datos a devolver desde MyWork
-                .putString(EXTRA_OUTPUT_MESSAGE, "I have come from MyWorker!")
-                .build();*/
-        //setOutputData(output);//Envía el MyData
-
         Log.d("El idExp es:",IdExp);
         int IdExp_int = Integer.valueOf(IdExp);
 
-        //int cicleNumber = getInputData().getInt(NUMBEROFCICLES, 1);*/
+        int NumberofCalls = 0;
         int counter = 0;
-        while (counter<){
+        while (counter<NumberofCalls){
 
-            //int IdExp = getInputData().getInt(IDEXP,-1);
-            //String IdList = getInputData().getString(IDLIST);
-            //Log.d("El idExp es:",Integer.toString(IdExp));
-            //Log.d("La lista es:",IdList);
-            //getSensedValues(IdExp, IdList);
+            String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
+            getSensedValues(IdExp_int,AppList); // Call to API to get the Sensed Values
 
+            counter++;
             try {
                 Thread.sleep(30000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //Llamada a Retrofit y a base de datos
 
         }
 
 
         //SystemClock.sleep(7000);
         //insertExperimentHardCode(69,1);
-        String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
-        getSensedValues(IdExp_int,AppList); // Call to API to get the Sensed Values
+
 
 
         return Result.SUCCESS;
@@ -133,7 +124,6 @@ public class MyWorker extends Worker {
         });
 
     }
-
 
     private long insertSensedValue(SensedValuesContainer svc){
 // creo la instancia de basede datos para insertar.
