@@ -182,8 +182,4 @@ public class MyWorker extends Worker {
         return buffer.toString();
     }
 
-
-
-
-
 }
