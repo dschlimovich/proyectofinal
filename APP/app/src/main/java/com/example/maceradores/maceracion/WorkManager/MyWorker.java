@@ -55,9 +55,12 @@ public class MyWorker extends Worker {
         Log.d("El idExp es:",IdExp);
         int IdExp_int = Integer.valueOf(IdExp);
 
-        int NumberofCalls = 0;
+        int idMash = getIdMashByIdExp(IdExp_int);
+        int intervaloMedicion = intervaloMedicion(idMash); //intervalo de medicion en segundos! o segun convengamos
+
+        int NumberOfCalls = cantMediciones(idMash, intervaloMedicion );
         int counter = 0;
-        while (counter<NumberofCalls){
+        while (counter<NumberOfCalls){
 
             String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
             getSensedValues(IdExp_int,AppList); // Call to API to get the Sensed Values
