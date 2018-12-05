@@ -27,8 +27,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "tipo VARCHAR(64)," +
                 "volumen FLOAT,"+
                 "densidadObjetivo FLOAT,"+
-                "intervaloMedTemp INTEGER, " +
-                "intervaloMedPh INTEGER)");
+                "intervaloMedTemp INTEGER, " + //segundos o minutos
+                "intervaloMedPh INTEGER)"); //segundos o minutos?
 
         // Tabla Intervalo - Maceraciones complejas llevan muchos intervalos de medicion.
         db.execSQL("CREATE TABLE Intervalo(" +

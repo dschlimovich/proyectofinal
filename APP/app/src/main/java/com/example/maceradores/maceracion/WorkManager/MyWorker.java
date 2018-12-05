@@ -55,9 +55,12 @@ public class MyWorker extends Worker {
         Log.d("El idExp es:",IdExp);
         int IdExp_int = Integer.valueOf(IdExp);
 
-        int NumberofCalls = 0;
+        int idMash = getIdMashByIdExp(IdExp_int);
+        int intervaloMedicion = intervaloMedicion(idMash); //intervalo de medicion en segundos! o segun convengamos
+
+        int NumberOfCalls = cantMediciones(idMash, intervaloMedicion );
         int counter = 0;
-        while (counter<NumberofCalls){
+        while (counter<NumberOfCalls){
 
             String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
             getSensedValues(IdExp_int,AppList); // Call to API to get the Sensed Values
@@ -80,6 +83,58 @@ public class MyWorker extends Worker {
         return Result.SUCCESS;
     }
 
+    private int getIdMashByIdExp( int idExp){
+        int idMash = -1;
+
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"maceracion"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idExp)};
+
+        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            idMash = cursor.getInt(0); //como tengo una sola columna, devuelvo la primera nomas.
+        }
+        cursor.close();
+        db.close();
+
+        return idMash;
+    }
+
+    private int intervaloMedicion (int idMash){
+        int intervaloMedicion = 0;
+        // saber el periodo de medicion.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"intervaloMedTemp"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            intervaloMedicion = cursor.getInt(0); //como tengo una sola columna, devuelvo la primera nomas.
+        }
+        cursor.close();
+        db.close();
+
+        return intervaloMedicion;
+    }
+
+    private int cantMediciones( int idMash, int intervaloMedicion){
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT SUM(duracion) FROM Intervalo WHERE maceracion = ?", new String[]{String.valueOf(idMash)});
+        int duracionTotal = 0;
+        if(c.moveToFirst()){
+               duracionTotal = c.getInt(0);
+        }
+        c.close();
+        db.close();
+        return duracionTotal / (intervaloMedicion/2);
+    }
 
     private void getSensedValues(int idExp, String IdList) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -105,6 +160,7 @@ public class MyWorker extends Worker {
 
         Api api = retrofit.create(Api.class);
         Call<List<SensedValuesContainer>> call = api.getSensedValues(jsonObject);
+//        final List<SensedValuesContainer> Lista = new ArrayList<SensedValuesContainer>();
         call.enqueue(new Callback<List<SensedValuesContainer>>() {
             @Override
             public void onResponse(Call<List<SensedValuesContainer>> call, Response<List<SensedValuesContainer>> response) {
