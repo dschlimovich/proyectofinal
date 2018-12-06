@@ -1,30 +1,20 @@
 package com.example.maceradores.maceracion.WorkManager;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.RetrofitGsonContainer.SensedValuesContainer;
-import com.example.maceradores.maceracion.activities.MainActivity;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import okhttp3.OkHttpClient;
@@ -35,10 +25,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MyWorker extends Worker {
-    public static final String EXTRA_TITLE = "title";
-    public static final String EXTRA_TEXT = "text";
-    public static final String EXTRA_OUTPUT_MESSAGE = "output_message";
-//    public static final String NUMBEROFCICLES = "1";
     public static final String IDEXP = "-1";
 
 
@@ -78,13 +64,6 @@ public class MyWorker extends Worker {
             }
 
         }
-
-
-        //SystemClock.sleep(7000);
-        //insertExperimentHardCode(69,1);
-
-
-
         return Result.SUCCESS;
     }
 
@@ -208,17 +187,6 @@ public class MyWorker extends Worker {
         long newSensedValueId = db.insert("SensedValues", null, values);
         dbHelper.close();
         return newSensedValueId; //si devuelve -1 es porque no pudo insertar
-    }
-
-    private void insertExperimentHardCode(int idExp, int idMash){
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put("id", idExp);
-        values.put("maceracion", idMash); //Suponete que tenes las maceracion con id 1 y se la agrego a esa.
-        long newExperimentId = db.insert("Experimento", null, values);
-        dbHelper.close();
     }
 
     private String getListIdInsertedSensedValue(int idExp){
