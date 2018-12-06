@@ -37,4 +37,9 @@ dependencies {
     // These two lines are added for using Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+
+    //WorkManager dependencies
+    def work_version = "1.0.0-alpha11"
+
+    implementation "android.arch.work:work-runtime:$work_version"
 }

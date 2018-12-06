@@ -14,20 +14,24 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
-import com.example.maceradores.maceracion.RetrofitGsonContainer.SensedValuesContainer;
 import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
-import com.example.maceradores.maceracion.models.Experiment;
-import com.example.maceradores.maceracion.models.Mash;
-import com.example.maceradores.maceracion.models.SensedValues;
+import com.example.maceradores.maceracion.retrofitInterface.Api;
+import com.google.gson.JsonObject;
 
-import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class CurrentExperienceActivity extends AppCompatActivity{
     //Data
-    private Mash currentMash;
-    private long idExp;
-    private SensedValues currenteSensedValue;
+    private int idMash;
 
     //UI
     private TabLayout tabLayout;
@@ -39,47 +43,30 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Setear el toolbar
         setContentView(R.layout.activity_current_experience);
         setToolbar();
         setTabLayout();
         setViewPager();
         setListenerTabLayout(viewPager);
-        //los fragments estan vacios porque aun no recibi ningun sensed values.
 
-        // Saber de que maceración vine
         Intent intent = getIntent();
         if( intent.hasExtra("idMash") && intent.hasExtra("nameMash")){
-            int idMash = intent.getIntExtra("idMash", 0);
-            String nameMash = intent.getStringExtra("nameMash");
-            setTitle("Medición " + nameMash);
-            currentMash = loadCurrentMash(idMash);
-
+            idMash = intent.getIntExtra("idMash", 0);
+            setTitle("Medición " + intent.getStringExtra("nameMash"));
             long newExperimentId = insertNewExperiment(idMash);
             if(newExperimentId == -1) {
                 Toast.makeText(this, "Error al insertar experiencia", Toast.LENGTH_SHORT).show();
-                // Me vuelvo al activity que lista las experiencias
-                Intent intentError = new Intent(CurrentExperienceActivity.this, ExperimentActivity.class);
-                intentError.putExtra("idMash", idMash);
-                intentError.putExtra("nameMash", nameMash);
-                startActivity(intentError);
-            } else {
-                //me guardo el id del experimento para obtener los sensed values despues.
-                this.idExp = newExperimentId;
-                // que mas necesito para empezar a medir:
-                // -Los intervalos de medicion (tal vez con el de temperatura solo alcanza.
-                // -Saber cuantas mediciones se van a realizar.
-                // -Almacenar un Sensed Value con lo último obtenido(ojo que pH puede venir vacio.)
-                //
-                // y despues debería llamar un async task para que vaya midiendo sin que se me congele la cosa.
-
-            } //end if insert new experiment.
+            } else{
+                // pudo insertar
+                sendNewExperiment((int) newExperimentId);
+            }
         } else {
             Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
-        } //end if preguntando por los extras del intent.
-    } //end onCreate
+        }
+    }
 
-    // BD Functions.
+
+
     private long insertNewExperiment(int idMash) {
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -90,89 +77,6 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         return newExperimentId;
     }
 
-    private Mash loadCurrentMash(int idMash){
-        // De la maceracion actual necesito:
-        //  - ID,   Nombre, Tipo, Intervalos de mecidicion, Densidad Obtjetivo.
-
-        Mash mash = new Mash();
-
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String selection = "id = ?";
-        String[] selectionArgs = { String.valueOf(idMash)};
-
-        Cursor cursor = db.query("Maceracion", null, selection, selectionArgs, null, null, null);
-
-        if( cursor.moveToFirst()){
-            //ID
-            mash.setId( cursor.getInt( cursor.getColumnIndexOrThrow("id")));
-            // Nombre
-            mash.setName( cursor.getString( cursor.getColumnIndexOrThrow("nombre")));
-            //Tipo
-            mash.setTipo( cursor.getString( cursor.getColumnIndexOrThrow("tipo")));
-            //Volumen
-            mash.setVolumen( cursor.getFloat( cursor.getColumnIndexOrThrow("volumen")));
-            // Densidad Objtetivo
-            mash.setDensidadObjetivo(cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo")));
-            //Intervalo de Medicion de temperatura.
-            mash.setPeriodMeasureTemperature(cursor.getInt( cursor.getColumnIndexOrThrow("intervaloMedTemp")));
-            // Intervalo de Medicion de PH
-            mash.setPeriodMeasurePh( cursor.getInt( cursor.getColumnIndexOrThrow("intervaloMedPh")));
-        }  //Seguramente hay valores que no voy a utilizar.
-
-        cursor.close();
-        db.close();
-        return mash;
-    }
-
-    private long insertSensedValue(SensedValuesContainer svc){
-        // creo la instancia de basede datos para insertar.
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        // values.put("id_exp", idExp); //ESTO O SE HARDCODEA O SE OBTIENE DE OTRO LADO.
-        values.put("id", svc.getId());
-        values.put("fechayhora", svc.getFechayhora());
-        values.put("temp1", svc.getTemp1());
-        values.put("temp2", svc.getTemp2());
-        values.put("temp3", svc.getTemp3());
-        values.put("temp4", svc.getTemp4());
-        values.put("temp5", svc.getTemp5());
-        values.put("tempPh", svc.getTempPh());
-        values.put("tempAmb", svc.getTempAmb());
-        values.put("pH", svc.getpH());
-
-        long newSensedValueId = db.insert("SensedValues", null, values);
-        dbHelper.close();
-        return newSensedValueId; //si devuelve -1 es porque no pudo insertar
-    }
-
-    private String getListIdInsertedSensedValue(int idExp){
-        StringBuilder buffer = new StringBuilder();
-
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] columns = {"id"};
-        String selection = "id_exp = ?";
-        String[] selectionArgs = { String.valueOf(idExp)};
-
-        Cursor cursor = db.query("SensedValues", columns, selection, selectionArgs, null, null, null);
-        if(cursor.moveToFirst()){
-            buffer.append( cursor.getString(0)); // checkear si la columna es 0 o 1
-            while(cursor.moveToNext()){
-                buffer.append(",");
-                buffer.append(cursor.getString(0));
-            }
-        }
-        cursor.close();
-        db.close();
-        return buffer.toString();
-    }
-
-    // ------ Toolbar Functions----------
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
     private void setToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -214,8 +118,86 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     }
 
+    private void sendNewExperiment(int newExperimentId) {
+        //necesito nombre maceracion, id Experimento, duraricion total, intervalo medicion temperatura, intervalo medicion ph
+        String nameMash = "";
+        int duracionTotal = 0;
+        int intervaloMedicionTemp = 0;
+        int intervaloMedicionPh = 0;
+
+        // saber el periodo de medicion.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"nombre", "intervaloMedTemp", "intervaloMedPh"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(this.idMash)};
+
+        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            nameMash = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
+            intervaloMedicionTemp = cursor.getInt(cursor.getColumnIndexOrThrow("intervaloMedTemp"));
+            intervaloMedicionPh = cursor.getInt(cursor.getColumnIndexOrThrow("intervaloMedPh"));
+        }
+        cursor.close();
+        db.close();
+        if(intervaloMedicionTemp<30)intervaloMedicionTemp=30; // Minimo Intervalo de Medicion es de 30 seg
+
+        dbHelper = new DatabaseHelper(getApplicationContext());
+        db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT SUM(duracion) FROM Intervalo WHERE maceracion = ?", new String[]{String.valueOf(idMash)});
+        if(c.moveToFirst()){
+            duracionTotal = c.getInt(0);
+        }
+        c.close();
+        db.close();
+
+        executeNewMashExperiment(nameMash, newExperimentId, duracionTotal, intervaloMedicionTemp, intervaloMedicionPh);
+    }
+
+    private void executeNewMashExperiment(String nombre, int idExp, int duracion_min, int intervaloMedicionTemp_seg,int intervaloMedicionPH_seg){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(240, TimeUnit.SECONDS)
+                .writeTimeout(240, TimeUnit.SECONDS)
+                .build();
+
+        //Luego lo agrego a la llamada de Retrofit
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
 
+        //------Build new JsonObject with Experiment to be send
+        //{ "nombre": "pepito","idExp":"1", "duracion_min": "1","intervaloMedicionTemp_seg":"15","intervaloMedicionPH_seg":"15" }
+        JsonObject NewExperiment= new JsonObject();
+        NewExperiment.addProperty("nombre",nombre);
+        NewExperiment.addProperty("idExp",Integer.toString(idExp));
+        NewExperiment.addProperty("duracion_min",Integer.toString(duracion_min));
+        NewExperiment.addProperty("intervaloMedicionTemp_seg",Integer.toString(intervaloMedicionTemp_seg));
+        NewExperiment.addProperty("intervaloMedicionPH_seg",Integer.toString(intervaloMedicionPH_seg));
+
+        Api api = retrofit.create(Api.class);
+        Call<Void> call = api.postExperiment(NewExperiment);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+
+    }
 
 
 }
