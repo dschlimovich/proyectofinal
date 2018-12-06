@@ -21,6 +21,7 @@ import org.w3c.dom.Text;
 public class MeasureFragment extends Fragment {
     private TextView tvMeasureTemp;
     private TextView tvMeasurePh;
+    private TextView tvMeasureEnzyme;
     private Chronometer chronometer;
 
     public MeasureFragment() {
@@ -39,17 +40,31 @@ public class MeasureFragment extends Fragment {
         super.onResume();
         this.tvMeasureTemp = (TextView) getView().findViewById(R.id.textViewMeasureTemp); //podria estar en el oncreate.
         this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
+        this.tvMeasureEnzyme = (TextView) getView().findViewById(R.id.textViewMeasureEnzyme);
 
         loadTemperatureCardView(68, 0, 68, 3, 68, 68, 68, 68);
         loadPhCardView(5.4f, 0.1f, 5.5f, 0.2f, 25);
-
-
+        loadEnzymeCardView(80,0,10,0);
 
         chronometer = getView().findViewById(R.id.chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
         chronometer.start();
     }
 
+    private void loadEnzymeCardView(float alfa, float proteasa, float beta, float glucanasa){
+        tvMeasureEnzyme.append(" Alfa Amilasa: ");
+        tvMeasureEnzyme.append(String.valueOf(alfa));
+
+        tvMeasureEnzyme.append("% \t\t Proteasa: ");
+        tvMeasureEnzyme.append(String.valueOf(proteasa));
+
+        tvMeasureEnzyme.append("% \n Beta Amilasa: ");
+        tvMeasureEnzyme.append(String.valueOf(beta));
+
+        tvMeasureEnzyme.append("% \t\t Beta Glucanasa: ");
+        tvMeasureEnzyme.append(String.valueOf(glucanasa));
+        tvMeasureEnzyme.append("%");
+    }
     private void loadPhCardView(float ph, float desvioObtenido, float phPlanificado, float desvioPlanificado, float tempPh) {
         //android:text=" \n Temperatura de Medición: 25°C"
         tvMeasurePh.append(" Actual: ");
