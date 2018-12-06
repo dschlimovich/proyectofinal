@@ -73,8 +73,18 @@ public class MeasureFragment extends Fragment {
                     //message.arg1 = i;
                     mHandlerThread.sendMessage(message);
                     counter++;
+                    //-------Aca va tmb lo de la verificacion para las NOTIFICACIONES DE DESVIOS!
+                    int temp =0; //Hardcod
+                    int tempMin = 0;
+                    int tempMax = 0;
+                    if(temp<tempMin){ //Si es menor a la minima o mayor a la maxima
+                        sendNotification("Älerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "menor al minimo" + String.valueOf(tempMin));
+                    }
+                    if(temp>tempMax){ //Si es menor a la minima o mayor a la maxima
+                        sendNotification("Älerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "mayor al maximo" + String.valueOf(tempMax));
+                    }
+
                 }
-            //-------Aca va tmb lo de la verificacion para las NOTIFICACIONES DE DESVIOS!
             }
         });
 
@@ -106,10 +116,13 @@ public class MeasureFragment extends Fragment {
                     thread1.start();
                 }
                 else if(msg.what == UPDATE_COUNT){
-                    textView.setText("Count"+msg.arg1);
+                   // textView.setText("Count"+msg.arg1);
                 }
             }
         };
+
+
+
 
 
     }
