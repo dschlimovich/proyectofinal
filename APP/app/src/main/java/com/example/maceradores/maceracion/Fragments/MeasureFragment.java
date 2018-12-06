@@ -78,10 +78,10 @@ public class MeasureFragment extends Fragment {
                     int tempMin = 0;
                     int tempMax = 0;
                     if(temp<tempMin){ //Si es menor a la minima o mayor a la maxima
-                        sendNotification("Älerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "menor al minimo" + String.valueOf(tempMin));
+                        sendNotification("Alerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "menor al minimo" + String.valueOf(tempMin));
                     }
                     if(temp>tempMax){ //Si es menor a la minima o mayor a la maxima
-                        sendNotification("Älerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "mayor al maximo" + String.valueOf(tempMax));
+                        sendNotification("Alerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "mayor al maximo" + String.valueOf(tempMax));
                     }
 
                 }
