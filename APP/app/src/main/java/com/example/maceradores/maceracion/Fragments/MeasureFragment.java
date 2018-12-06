@@ -49,7 +49,7 @@ public class MeasureFragment extends Fragment {
         tvMeasureTemp.append(" Calculado: ");
         tvMeasureTemp.append(String.valueOf(tPromedio)); //este debería ser el valor promedio calculado.
 
-        tvMeasureTemp.append(" °C \t\t  Desvío: "); //esto es por una cuestión estetica.
+        tvMeasureTemp.append(" °C \t\t Desvío: "); //esto es por una cuestión estetica.
         tvMeasureTemp.append(String.valueOf(desvioObtenido)); //valor desviado respecto a lo planificado.
 
         tvMeasureTemp.append(" °C \n Planificado: ");
