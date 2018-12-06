@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
-import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
@@ -30,9 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.example.maceradores.maceracion.R;
-import com.example.maceradores.maceracion.RetrofitGsonContainer.SensedValuesContainer;
 import com.example.maceradores.maceracion.RetrofitGsonContainer.TempPh;
 import com.example.maceradores.maceracion.WorkManager.MyWorker;
 import com.example.maceradores.maceracion.adapters.MashListAdapter;
@@ -47,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -100,40 +95,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //--------------WorkManager---------------------
-
         Data data = new Data.Builder()
                 .putString(MyWorker.IDEXP, "69")
-                //.putString(MyWorker.EXTRA_TEXT, "Hi! I have come from activity.")
                 .build();
 
         final OneTimeWorkRequest simpleRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
                 .setInputData(data)
                 .build();
-
-
-
         WorkManager.getInstance().enqueue(simpleRequest);
 
-       /* //Esto parece q se hace ahora con WorkInfo... Es decir cambiaron el nombre de WorkStatus a WorkInfo
-        WorkManager.getInstance().getWorkInfoById(simpleRequest.getId()). // No anda el getStatusById
-                .observe(this, new Observer<WorkStatus>() {
-                    @Override
-                    public void onChanged(@Nullable WorkStatus workStatus) {
-                        if (workStatus != null) {
-                            //mTextView.append("SimpleWorkRequest: " + workStatus.getState().name() + "\n");
-                        }
 
-                        if (workStatus != null && workStatus.getState().isFinished()) { // Con esto saco lo q haya en el worker, una vez haya terminado
-                            String message = workStatus.getOutputData().getString(MyWorker.EXTRA_OUTPUT_MESSAGE, "Default message");
-                            Log.d("Sale del worker",message);
-                            //mTextView.append("SimpleWorkRequest (Data): " + message);
-                        }
-                    }
-                });*/
-
-
-
-        //getSensedValues(69,"");
     } //end OnCreate
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -227,59 +198,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().show();
     }
-
-
-    private void getSensedValues(int idExp,String IdList){
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.MINUTES)
-                .readTimeout(240, TimeUnit.SECONDS)
-                .writeTimeout(240, TimeUnit.SECONDS)
-                .build();
-
-        //Luego lo agrego a la llamada de Retrofit
-
-        final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Api.BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-
-        //------Build new JsonObject with Experiment to be send
-        //{ "idExp": "31", "ArrayID": "" }
-        JsonObject jsonObject= new JsonObject();
-        jsonObject.addProperty("idExp","69");
-        jsonObject.addProperty("duracion_min","1");
-
-        Api api = retrofit.create(Api.class);
-        Call<List<SensedValuesContainer>> call = api.getSensedValues(jsonObject);
-
-        call.enqueue(new Callback<List<SensedValuesContainer>>() {
-            @Override
-            public void onResponse(Call<List<SensedValuesContainer>> call, Response<List<SensedValuesContainer>> response) {
-                List<SensedValuesContainer> values = response.body();
-
-                for (SensedValuesContainer value : values){
-                    //{"id":"5","id_exp":"69","fechayhora":"2018-11-29 10:13:02","temp1":"-1000","temp2":"-1000","temp3":"-1000","temp4":"-1000","temp5":"-1000","tempPh":"-1000","tempAmb":"-10000","humity":"-1","pH":"-2"}
-                    Log.d("id",value.getId());
-                    Log.d("idExp",value.getId_exp());
-                    Log.d("fechayhora",value.getFechayhora());
-
-                    Log.d("Temp",value.getTemp1());
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
-
-            }
-        });
-
-    }
-
 
 
     private void showAlertCurrentValues(){
