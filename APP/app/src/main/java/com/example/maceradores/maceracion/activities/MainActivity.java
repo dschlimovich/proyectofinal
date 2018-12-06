@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         WorkManager.getInstance().enqueue(simpleRequest);
 
-       /* //Esto parece q se hace ahora con WorkInfo... Es decir cambiaron el nombre de WorkStatus a WorkInfo
+        /*//Esto parece q se hace ahora con WorkInfo... Es decir cambiaron el nombre de WorkStatus a WorkInfo
         WorkManager.getInstance().getWorkInfoById(simpleRequest.getId()). // No anda el getStatusById
                 .observe(this, new Observer<WorkStatus>() {
                     @Override
