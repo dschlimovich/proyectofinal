@@ -279,49 +279,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    private void executeNewMashExperiment(String nombre, int idExp, int duracion_min, int intervaloMedicionTemp_seg,int intervaloMedicionPH_seg){
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.MINUTES)
-                .readTimeout(240, TimeUnit.SECONDS)
-                .writeTimeout(240, TimeUnit.SECONDS)
-                .build();
 
-        //Luego lo agrego a la llamada de Retrofit
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Api.BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-
-        //------Build new JsonObject with Experiment to be send
-        //{ "nombre": "pepito","idExp":"1", "duracion_min": "1","intervaloMedicionTemp_seg":"15","intervaloMedicionPH_seg":"15" }
-        JsonObject NewExperiment= new JsonObject();
-        NewExperiment.addProperty("nombre",nombre);
-        NewExperiment.addProperty("idExp",Integer.toString(idExp));
-        NewExperiment.addProperty("duracion_min",Integer.toString(duracion_min));
-        NewExperiment.addProperty("intervaloMedicionTemp_seg",Integer.toString(intervaloMedicionTemp_seg));
-        NewExperiment.addProperty("intervaloMedicionPH_seg",Integer.toString(intervaloMedicionPH_seg));
-
-        Api api = retrofit.create(Api.class);
-        Call<Void> call = api.postExperiment(NewExperiment);
-
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse(Call call, Response response) {
-
-            }
-
-            @Override
-            public void onFailure(Call call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-
-
-
-    }
 
 
     private void showAlertCurrentValues(){

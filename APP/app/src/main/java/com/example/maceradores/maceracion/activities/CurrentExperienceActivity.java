@@ -2,6 +2,7 @@ package com.example.maceradores.maceracion.activities;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -15,6 +16,17 @@ import android.widget.Toast;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.retrofitInterface.Api;
+import com.google.gson.JsonObject;
+
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CurrentExperienceActivity extends AppCompatActivity{
     //Data
@@ -43,11 +55,16 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             long newExperimentId = insertNewExperiment(idMash);
             if(newExperimentId == -1) {
                 Toast.makeText(this, "Error al insertar experiencia", Toast.LENGTH_SHORT).show();
+            } else{
+                // pudo insertar
+                sendNewExperiment((int) newExperimentId);
             }
         } else {
             Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
     private long insertNewExperiment(int idMash) {
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
@@ -100,8 +117,86 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     }
 
+    private void sendNewExperiment(int newExperimentId) {
+        //necesito nombre maceracion, id Experimento, duraricion total, intervalo medicion temperatura, intervalo medicion ph
+        String nameMash = "";
+        int duracionTotal = 0;
+        int intervaloMedicionTemp = 0;
+        int intervaloMedicionPh = 0;
+
+        // saber el periodo de medicion.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"nombre", "intervaloMedTemp", "intervaloMedPh"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(this.idMash)};
+
+        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            nameMash = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
+            intervaloMedicionTemp = cursor.getInt(cursor.getColumnIndexOrThrow("intervaloMedTemp"));
+            intervaloMedicionPh = cursor.getInt(cursor.getColumnIndexOrThrow("intervaloMedPh"));
+        }
+        cursor.close();
+        db.close();
+        if(intervaloMedicionTemp<30)intervaloMedicionTemp=30; // Minimo Intervalo de Medicion es de 30 seg
+
+        dbHelper = new DatabaseHelper(getApplicationContext());
+        db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT SUM(duracion) FROM Intervalo WHERE maceracion = ?", new String[]{String.valueOf(idMash)});
+        if(c.moveToFirst()){
+            duracionTotal = c.getInt(0);
+        }
+        c.close();
+        db.close();
+
+        executeNewMashExperiment(nameMash, newExperimentId, duracionTotal, intervaloMedicionTemp, intervaloMedicionPh);
+    }
+
+    private void executeNewMashExperiment(String nombre, int idExp, int duracion_min, int intervaloMedicionTemp_seg,int intervaloMedicionPH_seg){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(240, TimeUnit.SECONDS)
+                .writeTimeout(240, TimeUnit.SECONDS)
+                .build();
+
+        //Luego lo agrego a la llamada de Retrofit
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
 
+        //------Build new JsonObject with Experiment to be send
+        //{ "nombre": "pepito","idExp":"1", "duracion_min": "1","intervaloMedicionTemp_seg":"15","intervaloMedicionPH_seg":"15" }
+        JsonObject NewExperiment= new JsonObject();
+        NewExperiment.addProperty("nombre",nombre);
+        NewExperiment.addProperty("idExp",Integer.toString(idExp));
+        NewExperiment.addProperty("duracion_min",Integer.toString(duracion_min));
+        NewExperiment.addProperty("intervaloMedicionTemp_seg",Integer.toString(intervaloMedicionTemp_seg));
+        NewExperiment.addProperty("intervaloMedicionPH_seg",Integer.toString(intervaloMedicionPH_seg));
+
+        Api api = retrofit.create(Api.class);
+        Call<Void> call = api.postExperiment(NewExperiment);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+
+    }
 
 
 }
