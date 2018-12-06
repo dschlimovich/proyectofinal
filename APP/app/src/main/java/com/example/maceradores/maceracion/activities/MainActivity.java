@@ -1,8 +1,5 @@
 package com.example.maceradores.maceracion.activities;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -77,19 +73,6 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Consulta sensed value
-                DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-                SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-                String[] projection = { "id" };
-                Cursor cursor = db.query("SensedValues", projection, null, null, null, null, null);
-                while(cursor.moveToNext()){
-                    Toast.makeText(MainActivity.this, " " + cursor.getInt(0), Toast.LENGTH_SHORT).show();
-                }
-
-                cursor.close();
-                db.close();
-
                 showAlertCurrentValues();
             }
         });
@@ -132,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         setToolbar();
-
     }
 
     private List<Mash> getAllMash() {

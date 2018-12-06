@@ -6,16 +6,19 @@ import java.util.List;
 public class Mash {
     private int id;
     private String name;
-    private String tipo;
+    private String tipo; //TODO change variable name to Type
     private List<MeasureInterval> plan;
     private List<Grain> grains;
     private List<Experiment> experiments;
-    private float volumen;
-    private float densidadObjetivo;
+    private float volumen; //TODO change variable name to volume
+    private float densidadObjetivo; //TODO change variable name to objetiveDensity
     private int periodMeasureTemperature;
     private int periodMeasurePh;
 
     // Constructors
+
+    //Empty Constructor.
+    public Mash(){}
 
     public Mash(String name) {
         this.name = name;
