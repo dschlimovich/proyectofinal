@@ -65,8 +65,6 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         }
     }
 
-
-
     private long insertNewExperiment(int idMash) {
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
