@@ -54,7 +54,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" Actual: 5.4 \t\t\t\t\t Desvío: 0.1 \n Planificado: 5.5 \t\t\t Alerta: +- 0.2 \n Temperatura de Medición: 25°C"/>
+                android:id="@+id/textViewMeasurePh"
+                />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

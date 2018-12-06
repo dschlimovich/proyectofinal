@@ -20,6 +20,7 @@ import org.w3c.dom.Text;
  */
 public class MeasureFragment extends Fragment {
     private TextView tvMeasureTemp;
+    private TextView tvMeasurePh;
     private Chronometer chronometer;
 
     public MeasureFragment() {
@@ -37,12 +38,35 @@ public class MeasureFragment extends Fragment {
     public void onResume() {
         super.onResume();
         this.tvMeasureTemp = (TextView) getView().findViewById(R.id.textViewMeasureTemp); //podria estar en el oncreate.
+        this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
 
         loadTemperatureCardView(68, 0, 68, 3, 68, 68, 68, 68);
+        loadPhCardView(5.4f, 0.1f, 5.5f, 0.2f, 25);
+
+
 
         chronometer = getView().findViewById(R.id.chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
         chronometer.start();
+    }
+
+    private void loadPhCardView(float ph, float desvioObtenido, float phPlanificado, float desvioPlanificado, float tempPh) {
+        //android:text=" \n Temperatura de Medición: 25°C"
+        tvMeasurePh.append(" Actual: ");
+        tvMeasurePh.append(String.valueOf(ph));
+
+        tvMeasurePh.append(" \t\t\t\t\t\t Desvío: ");
+        tvMeasurePh.append(String.valueOf(desvioObtenido));
+
+        tvMeasurePh.append(" \n Planificado: ");
+        tvMeasurePh.append(String.valueOf(phPlanificado));
+
+        tvMeasurePh.append(" \t\t\t\t Alerta: ± ");
+        tvMeasurePh.append(String.valueOf(desvioPlanificado));
+
+        tvMeasurePh.append(" \n Temperatura de Medición: ");
+        tvMeasurePh.append(String.valueOf(tempPh));
+        tvMeasurePh.append(" °C");
     }
 
     private void loadTemperatureCardView(float tPromedio, float desvioObtenido, float tPlanificada, float desvioPlanificado, float t1, float t2, float t3, float t4) {
