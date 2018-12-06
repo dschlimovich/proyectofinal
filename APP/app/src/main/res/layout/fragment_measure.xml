@@ -133,7 +133,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Actual: -°C \t\t\t\t\t Desvío: - \n Planificado: - \t\t\t\t Alerta: - "/>
+                android:id="@+id/textViewMeasureSecondMaserator" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -173,7 +173,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Etapa Actual: 1"/>
+                android:id="@+id/textViewMeasureStage" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

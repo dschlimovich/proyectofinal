@@ -23,6 +23,8 @@ public class MeasureFragment extends Fragment {
     private TextView tvMeasurePh;
     private TextView tvMeasureEnzyme;
     private TextView tvMeasureEnviroment;
+    private TextView tvMeasureSecondMacerator;
+    private TextView tvMeasureStage;
     private Chronometer chronometer;
 
     public MeasureFragment() {
@@ -43,15 +45,41 @@ public class MeasureFragment extends Fragment {
         this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
         this.tvMeasureEnzyme = (TextView) getView().findViewById(R.id.textViewMeasureEnzyme);
         this.tvMeasureEnviroment = (TextView) getView().findViewById(R.id.textViewMeasureEnviroment);
+        this.tvMeasureSecondMacerator = (TextView) getView().findViewById(R.id.textViewMeasureSecondMaserator);
+        this.tvMeasureStage= (TextView) getView().findViewById(R.id.textViewMeasureStage);
 
         loadTemperatureCardView(68, 0, 68, 3, 68, 68, 68, 68);
         loadPhCardView(5.4f, 0.1f, 5.5f, 0.2f, 25);
         loadEnzymeCardView(80,0,10,0);
         loadEnviromentCardView(22,67);
+        loadSecondMaceratorCardView(0,0,0,0);
+        loadStageCardView(1);
+
 
         chronometer = getView().findViewById(R.id.chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
         chronometer.start();
+    }
+
+    private void loadStageCardView(int stage){
+        tvMeasureStage.append(" Etapa Actual: ");
+        tvMeasureStage.append(String.valueOf(stage));
+    }
+
+    private void loadSecondMaceratorCardView(float temp, float desvioObtenido, float tempPlanificada, float alerta){
+        //android:text="-- "
+        tvMeasureSecondMacerator.append(" Actual: ");
+        tvMeasureSecondMacerator.append(String.valueOf(temp));
+
+        tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
+        tvMeasureSecondMacerator.append(String.valueOf(desvioObtenido));
+
+        tvMeasureSecondMacerator.append(" °C \n Planificado: ");
+        tvMeasureSecondMacerator.append(String.valueOf(tempPlanificada));
+
+        tvMeasureSecondMacerator.append(" °C \t\t Alerta: ±");
+        tvMeasureSecondMacerator.append(String.valueOf(alerta));
+        tvMeasureSecondMacerator.append(" °C");
     }
 
     private void loadEnviromentCardView(float temp, float humidity){
@@ -59,7 +87,7 @@ public class MeasureFragment extends Fragment {
         tvMeasureEnviroment.append(" Temperatura: ");
         tvMeasureEnviroment.append(String.valueOf(temp));
 
-        tvMeasureEnviroment.append(" °C \\t Humedad: ");
+        tvMeasureEnviroment.append(" °C \t Humedad: ");
         tvMeasureEnviroment.append(String.valueOf(humidity));
         tvMeasureEnviroment.append("%");
     }
