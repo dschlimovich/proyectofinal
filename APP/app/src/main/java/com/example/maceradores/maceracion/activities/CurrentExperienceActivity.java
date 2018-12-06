@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
@@ -63,6 +64,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         } else {
             Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private long insertNewExperiment(int idMash) {
@@ -90,7 +92,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     private void setViewPager(){
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager(),this,tabLayout.getTabCount());
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),this,tabLayout.getTabCount(),idMash);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
