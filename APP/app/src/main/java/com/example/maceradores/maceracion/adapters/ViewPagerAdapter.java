@@ -12,18 +12,21 @@ import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 public class ViewPagerAdapter  extends FragmentPagerAdapter {
     private int numberOfTabs;
     private int idMash;
+    private int idExperiment;
     private Fragment fragment = null;
 
-    public ViewPagerAdapter(FragmentManager fm, Context context, int numberOfTabs, int idMash) {
+    public ViewPagerAdapter(FragmentManager fm, Context context, int numberOfTabs, int idMash, int idExp) {
         super(fm);
         this.numberOfTabs=numberOfTabs;
         this.idMash=idMash;
+        this.idExperiment = idExp;
     }
 
     @Override
     public Fragment getItem(int position) {
         Bundle bundle = new Bundle();
         bundle.putInt("idMash",idMash);
+        bundle.putInt("idExp", idExperiment);
         switch (position) {
             case 0:
                 fragment = new MeasureFragment();

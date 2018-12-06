@@ -33,6 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CurrentExperienceActivity extends AppCompatActivity{
     //Data
     private int idMash;
+    private int idExperiment;
 
     //UI
     private TabLayout tabLayout;
@@ -44,11 +45,6 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_current_experience);
-        setToolbar();
-        setTabLayout();
-        setViewPager();
-        setListenerTabLayout(viewPager);
 
         Intent intent = getIntent();
         if( intent.hasExtra("idMash") && intent.hasExtra("nameMash")){
@@ -57,13 +53,23 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             long newExperimentId = insertNewExperiment(idMash);
             if(newExperimentId == -1) {
                 Toast.makeText(this, "Error al insertar experiencia", Toast.LENGTH_SHORT).show();
+                // TODO volver al activity
             } else{
                 // pudo insertar
-                sendNewExperiment((int) newExperimentId);
+                this.idExperiment = (int) newExperimentId;
+                sendNewExperiment(idExperiment);
+
+                setContentView(R.layout.activity_current_experience);
+                setToolbar();
+                setTabLayout();
+                setViewPager();
+                setListenerTabLayout(viewPager);
             }
         } else {
             Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
         }
+
+
 
     }
 
@@ -92,7 +98,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     private void setViewPager(){
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager(),this,tabLayout.getTabCount(),idMash);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),this,tabLayout.getTabCount(),idMash, idExperiment);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
