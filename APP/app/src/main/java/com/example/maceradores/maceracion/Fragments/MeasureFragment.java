@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.models.SensedValues;
 
 import org.w3c.dom.Text;
 
@@ -50,6 +51,7 @@ public class MeasureFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_measure, container, false);
         final int idMash = getArguments().getInt("idMash"); //Me traigo el idMash q viene del viewpager
+        final int idExp = getArguments().getInt("idExp");
         //---Thread con Handler
         thread1 = new Thread(new Runnable() {
             @Override
@@ -106,12 +108,40 @@ public class MeasureFragment extends Fragment {
                     thread1.start();
                 }
                 else if(msg.what == UPDATE_COUNT){
-                    textView.setText("Count"+msg.arg1);
+                    //textView.setText("Count"+msg.arg1);
                 }
             }
         };
 
 
+    }
+
+    private SensedValues getLastSensedValues(int idExp){
+        SensedValues sv = null;
+
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM SensedValues WHERE id_exp = ? AND id = (SELECT MAX(id) FROM SensedValues)", new String[] {String.valueOf(idExp)});
+
+        if(cursor.moveToFirst()){
+            int id = cursor.getInt( cursor.getColumnIndexOrThrow("id"));
+            String date = cursor.getString(cursor.getColumnIndexOrThrow("fechayhora"));
+            float temp1 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp1"));
+            float temp2 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp2"));
+            float temp3 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp3"));
+            float temp4 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp4"));
+            float temp5 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp5"));
+            float tempPh = cursor.getFloat(cursor.getColumnIndexOrThrow("tempPh"));
+            float tempAmb = cursor.getFloat(cursor.getColumnIndexOrThrow("tempAmb"));
+            float humidity = cursor.getFloat(cursor.getColumnIndexOrThrow("humity"));
+            float pH= cursor.getFloat(cursor.getColumnIndexOrThrow("pH"));
+
+            sv = new SensedValues(id,date, temp1, temp2, temp3, temp4, temp5, tempPh, humidity, tempAmb, pH);
+        }
+        cursor.close();
+        db.close();
+        return sv;
     }
 
     private void loadPhCardView(float ph, float desvioObtenido, float phPlanificado, float desvioPlanificado, float tempPh) {

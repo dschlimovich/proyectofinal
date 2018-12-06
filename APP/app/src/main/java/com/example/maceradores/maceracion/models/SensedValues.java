@@ -5,7 +5,7 @@ import java.util.Date;
 public class SensedValues {
 
     private int id;
-    private Date date; //the format YYYY MM DD hh:mm
+    private String date; //the format YYYY MM DD hh:mm
     //temperatures from sensors
     private float temp1;
     private float temp2;
@@ -19,7 +19,7 @@ public class SensedValues {
     //ph sensor
     private float pH;
 
-    public SensedValues(int id, Date date, float temp1, float temp2, float temp3, float temp4, float tempSecondary, float tempPH, float humidity, float tempEnviroment, float pH) {
+    public SensedValues(int id, String date, float temp1, float temp2, float temp3, float temp4, float tempSecondary, float tempPH, float humidity, float tempEnviroment, float pH) {
         this.id = id;
         this.date = date;
         this.temp1 = temp1;
@@ -41,11 +41,11 @@ public class SensedValues {
         this.id = id;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
