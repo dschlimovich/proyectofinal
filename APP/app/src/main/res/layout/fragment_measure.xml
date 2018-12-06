@@ -107,7 +107,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Temperatura: 22°C \t Humedad: 67%"/>
+                android:id="@+id/textViewMeasureEnviroment" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

@@ -22,6 +22,7 @@ public class MeasureFragment extends Fragment {
     private TextView tvMeasureTemp;
     private TextView tvMeasurePh;
     private TextView tvMeasureEnzyme;
+    private TextView tvMeasureEnviroment;
     private Chronometer chronometer;
 
     public MeasureFragment() {
@@ -41,14 +42,26 @@ public class MeasureFragment extends Fragment {
         this.tvMeasureTemp = (TextView) getView().findViewById(R.id.textViewMeasureTemp); //podria estar en el oncreate.
         this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
         this.tvMeasureEnzyme = (TextView) getView().findViewById(R.id.textViewMeasureEnzyme);
+        this.tvMeasureEnviroment = (TextView) getView().findViewById(R.id.textViewMeasureEnviroment);
 
         loadTemperatureCardView(68, 0, 68, 3, 68, 68, 68, 68);
         loadPhCardView(5.4f, 0.1f, 5.5f, 0.2f, 25);
         loadEnzymeCardView(80,0,10,0);
+        loadEnviromentCardView(22,67);
 
         chronometer = getView().findViewById(R.id.chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
         chronometer.start();
+    }
+
+    private void loadEnviromentCardView(float temp, float humidity){
+        //android:text="22°C \t Humedad: 67%"
+        tvMeasureEnviroment.append(" Temperatura: ");
+        tvMeasureEnviroment.append(String.valueOf(temp));
+
+        tvMeasureEnviroment.append(" °C \\t Humedad: ");
+        tvMeasureEnviroment.append(String.valueOf(humidity));
+        tvMeasureEnviroment.append("%");
     }
 
     private void loadEnzymeCardView(float alfa, float proteasa, float beta, float glucanasa){
@@ -65,6 +78,7 @@ public class MeasureFragment extends Fragment {
         tvMeasureEnzyme.append(String.valueOf(glucanasa));
         tvMeasureEnzyme.append("%");
     }
+
     private void loadPhCardView(float ph, float desvioObtenido, float phPlanificado, float desvioPlanificado, float tempPh) {
         //android:text=" \n Temperatura de Medición: 25°C"
         tvMeasurePh.append(" Actual: ");
