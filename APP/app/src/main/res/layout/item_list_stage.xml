@@ -14,8 +14,42 @@
                 android:id="@+id/textViewNumberStage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ETAPA "
-                android:layout_gravity="center_horizontal"/>
+                android:text=" ETAPA "
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="2dp"/>
+            <!-- Estado etapa-->
+            <TextView
+                android:id="@+id/textViewStateStage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Estado: "
+                android:layout_margin="2dp"
+                />
+            <!-- Duracion etapa-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Duración: "/>
+
+                <Chronometer
+                    android:id="@+id/chronometerDurationStage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+
+            <!-- Temperatura etapa-->
+            <TextView
+                android:id="@+id/textViewTemperatureStage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Temperatura: "
+                android:layout_margin="2dp"
+                />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

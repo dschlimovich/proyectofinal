@@ -13,6 +13,7 @@ import com.example.maceradores.maceracion.models.MeasureInterval;
 import java.util.List;
 
 public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdapter.ViewHolder> {
+    private int stageInProgress;
     private List<MeasureInterval> intervals;
     private int layout;
     //necesito Listener para el click?
@@ -21,6 +22,7 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
     public StageFragmentAdapter(List<MeasureInterval> intervals, int layout) {
         this.intervals = intervals;
         this.layout = layout;
+        stageInProgress = 0;
     }
 
     @NonNull
