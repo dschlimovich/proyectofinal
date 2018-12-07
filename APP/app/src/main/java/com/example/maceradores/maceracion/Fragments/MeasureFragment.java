@@ -68,23 +68,45 @@ public class MeasureFragment extends Fragment {
                 int sleep = (intervaloMedicion/2)*1000;
 
                 while (counter < NumberOfCalls) {
+                    counter++;
                     //Log.d("I",":"+i);
                     try {
                         Thread.sleep(sleep);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
-
+                    SensedValues sensedValues = getLastSensedValues(idExp);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("date",sensedValues.getDate());
+                    bundle.putFloat("temp1",sensedValues.getTemp1());
+                    bundle.putFloat("temp2",sensedValues.getTemp2());
+                    bundle.putFloat("temp3",sensedValues.getTemp3());
+                    bundle.putFloat("temp4",sensedValues.getTemp4());
+                    bundle.putFloat("tempSecondary",sensedValues.getTempSecondary());
+                    bundle.putFloat("tempPH",sensedValues.getTempPH());
+                    bundle.putFloat("humidity",sensedValues.getHumidity());
+                    bundle.putFloat("tempEnviroment",sensedValues.getTempEnviroment());
+                    bundle.putFloat("pH",sensedValues.getpH());
                     Message message = new Message();
-                    message.what = UPDATE_COUNT;
-                    //message.arg1 = i;
+                    message.setData(bundle);
+
                     mHandlerThread.sendMessage(message);
-                    counter++;
+
+                    //-------Aca va tmb lo de la verificacion para las NOTIFICACIONES DE DESVIOS!
+                    int temp =0; //Hardcod
+                    int tempMin = 0;
+                    int tempMax = 0;
+                    if(temp<tempMin){ //Si es menor a la minima o mayor a la maxima
+                        sendNotification("Alerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "menor al minimo" + String.valueOf(tempMin));
+                    }
+                    if(temp>tempMax){ //Si es menor a la minima o mayor a la maxima
+                        sendNotification("Alerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "mayor al maximo" + String.valueOf(tempMax));
+                    }
+
                 }
-            //-------Aca va tmb lo de la verificacion para las NOTIFICACIONES DE DESVIOS!
             }
         });
-
+        thread1.start();
         // Inflate the layout for this fragment
         return view;
     }
@@ -95,11 +117,6 @@ public class MeasureFragment extends Fragment {
         this.tvMeasureTemp = (TextView) getView().findViewById(R.id.textViewMeasureTemp); //podria estar en el oncreate.
         this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
 
-        loadTemperatureCardView(68, 0, 68, 3, 68, 68, 68, 68);
-        loadPhCardView(5.4f, 0.1f, 5.5f, 0.2f, 25);
-
-
-
         chronometer = getView().findViewById(R.id.chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
         chronometer.start();
@@ -109,12 +126,19 @@ public class MeasureFragment extends Fragment {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                if (msg.what == START_PROGRESS){
-                    thread1.start();
-                }
-                else if(msg.what == UPDATE_COUNT){
-                    //textView.setText("Count"+msg.arg1);
-                }
+                Bundle bundle = msg.getData();
+                float t1 = bundle.getFloat("temp1");
+                float t2 = bundle.getFloat("temp2");
+                float t3 = bundle.getFloat("temp3");
+                float t4 = bundle.getFloat("temp4");
+                float tPromedio= (t1 + t2 + t3 + t4)/4;
+                float ph = bundle.getFloat("pH");
+                float tempPh = bundle.getFloat("tempPH");
+
+
+                loadTemperatureCardView(68, 0, 68, 3, 68, 68, 68, 68);
+                loadPhCardView(5.4f, 0.1f, 5.5f, 0.2f, 25);
+
             }
         };
 
