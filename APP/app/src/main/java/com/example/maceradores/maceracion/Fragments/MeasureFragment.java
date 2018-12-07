@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.models.SensedValues;
 
 import org.w3c.dom.Text;
@@ -195,6 +196,8 @@ public class MeasureFragment extends Fragment {
     }
 
     private int cantMediciones( int idMash, int intervaloMedicion){
+        //TODO hacer con medicionesPorIntervalo
+
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT SUM(duracion) FROM Intervalo WHERE maceracion = ?", new String[]{String.valueOf(idMash)});
@@ -245,8 +248,8 @@ public class MeasureFragment extends Fragment {
         notificationManager.notify(1, notification.build());
     }
 
-    public List<Integer> duracionIntervalos( int idMash){
-        List<Integer> intervalos = new ArrayList<Integer>();
+    public List<Integer> medicionesPorIntervalo( int idMash, int intervaloMedicion){
+        List<Integer> mediciones = new ArrayList<Integer>();
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -256,20 +259,72 @@ public class MeasureFragment extends Fragment {
 
         Cursor cursor = db.query("Intervalo", columns, selection, selectionArgs, null, null, "orden DESC");
         while(cursor.moveToNext()){
-            intervalos.add( cursor.getInt(0));
+            mediciones.add( cursor.getInt(0) * 60 / (intervaloMedicion/2));
         }
         cursor.close();
         db.close();
-        return intervalos;
+        return mediciones;
     }
 
-    public int amoutSensedValue(int idExp){
+    public int amountSensedValue(int idExp){
         //int amount = 0;
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         int amount = (int) DatabaseUtils.queryNumEntries(db, "SensedValues", "id_exp=?", new String[] {String.valueOf(idExp)});
         db.close();
         return amount;
+    }
+
+    public int getOrderInterval( int amount, List<Integer> medicionesPorIntervalo){
+        // hago los valores acumulados.
+        // {10, 30, 20}
+        for( int i = medicionesPorIntervalo.size() - 1; i > 0; i--){
+            int acumulado = 0;
+            // sumo todos los valores antes que i.
+            for( int j = 0; j <= i; j++){
+                acumulado = acumulado + medicionesPorIntervalo.get(j);
+            }
+            medicionesPorIntervalo.set(i, acumulado);
+        }
+        // {10, 40, 60}
+
+        int orden = 1;
+        boolean flag = true;
+        while(flag){
+            if( amount <= medicionesPorIntervalo.get(orden)){
+                flag = false;
+            }else{
+                orden = orden + 1;
+            }
+        }
+        return orden;
+
+    }
+
+    public MeasureInterval getIntervalByOrder(int order, int idMash){
+        MeasureInterval measureInterval = null;
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        //String[] columns = {"intervaloMedTemp"};
+        String selection = "maceracion = ? AND orden = ?";
+        String[] selectionArgs = { String.valueOf(idMash), String.valueOf(order)};
+
+        Cursor cursor = db.query("intervalo", null, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            float mainTemperature = cursor.getFloat( cursor.getColumnIndexOrThrow("temperatura"));
+            float mainTemperatureDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTemperatura"));
+            float secondTemperature = cursor.getFloat(cursor.getColumnIndexOrThrow("tempDecoccion"));
+            float secondTemperatureDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTempDecoccion"));
+            float pH = cursor.getFloat(cursor.getColumnIndexOrThrow("ph"));
+            float phDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioPh"));
+            int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duracion"));
+
+            measureInterval = new MeasureInterval(order,mainTemperature, mainTemperatureDeviation, secondTemperature, secondTemperatureDeviation, pH,  phDeviation,  duration);
+        }
+        cursor.close();
+        db.close();
+        return measureInterval;
     }
 
 }
