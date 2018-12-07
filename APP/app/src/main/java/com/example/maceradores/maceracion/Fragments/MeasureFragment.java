@@ -97,6 +97,12 @@ public class MeasureFragment extends Fragment {
                     if(temp>tempMax){ //Si es menor a la minima o mayor a la maxima
                         sendNotification("Alerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "mayor al maximo" + String.valueOf(tempMax));
                     }
+                    if(temp<tempMin){ //Si es menor a la minima o mayor a la maxima
+                        sendNotification("Alerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "menor al minimo" + String.valueOf(tempMin));
+                    }
+                    if(temp>tempMax){ //Si es menor a la minima o mayor a la maxima
+                        sendNotification("Alerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "mayor al maximo" + String.valueOf(tempMax));
+                    }
 
                 }
             }
@@ -126,13 +132,12 @@ public class MeasureFragment extends Fragment {
                 float t2 = bundle.getFloat("temp2");
                 float t3 = bundle.getFloat("temp3");
                 float t4 = bundle.getFloat("temp4");
-                float tPromedio= (t1 + t2 + t3 + t4)/4;
+                float tPromedio=validatedTempMean(t1,t2,t3,t4);
                 float ph = bundle.getFloat("pH");
                 float tempPh = bundle.getFloat("tempPH");
 
-
-                loadTemperatureCardView(68, 0, 68, 3, 68, 68, 68, 68);
-                loadPhCardView(5.4f, 0.1f, 5.5f, 0.2f, 25);
+                loadTemperatureCardView(tPromedio, 0, 68, 3, t1, t2, t3, t4);
+                if(ph>0)loadPhCardView(ph, 0.1f, 5.5f, 0.2f, tempPh); //Solo actualizo ph si el valor es valido
 
             }
         };
@@ -170,6 +175,7 @@ public class MeasureFragment extends Fragment {
 
     private void loadPhCardView(float ph, float desvioObtenido, float phPlanificado, float desvioPlanificado, float tempPh) {
         //android:text=" \n Temperatura de Medición: 25°C"
+
         tvMeasurePh.append(" Actual: ");
         tvMeasurePh.append(String.valueOf(ph));
 
@@ -263,6 +269,29 @@ public class MeasureFragment extends Fragment {
                 .setSmallIcon(R.mipmap.ic_launcher);
 
         notificationManager.notify(1, notification.build());
+    }
+    private float validatedTempMean(float t1, float t2, float t3, float t4){
+        int divisor=4;
+        float dividendo=0;
+        if(t1==-1000){
+            divisor--;
+        }else{dividendo = dividendo + t1;}
+        if(t2==-1000){
+            divisor--;
+        }else{dividendo = dividendo + t2;}
+        if(t3==-1000){
+            divisor--;
+        }else{dividendo = dividendo + t3;}
+        if(t4==-1000){
+            divisor--;
+        }else{dividendo = dividendo + t4;}
+        if(dividendo==0){//Asi evito la division por cero
+            return -1000;//Devuelvo, una temperatura invalida
+        }else {
+            float promedio = dividendo / divisor;
+            return promedio;
+        }
+
     }
 
 }

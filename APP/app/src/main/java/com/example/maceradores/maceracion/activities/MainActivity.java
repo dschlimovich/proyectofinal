@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, PlanningActivity.class);
                 // si es necesario pasar algun parametro con putExtra.
                 startActivity(intent);
+                finish();//No anda...
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
