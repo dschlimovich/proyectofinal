@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,9 @@ import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.SensedValues;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -239,6 +243,33 @@ public class MeasureFragment extends Fragment {
                 .setSmallIcon(R.mipmap.ic_launcher);
 
         notificationManager.notify(1, notification.build());
+    }
+
+    public List<Integer> duracionIntervalos( int idMash){
+        List<Integer> intervalos = new ArrayList<Integer>();
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"duracion"};
+        String selection = "maceracion = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Intervalo", columns, selection, selectionArgs, null, null, "orden DESC");
+        while(cursor.moveToNext()){
+            intervalos.add( cursor.getInt(0));
+        }
+        cursor.close();
+        db.close();
+        return intervalos;
+    }
+
+    public int amoutSensedValue(int idExp){
+        //int amount = 0;
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        int amount = (int) DatabaseUtils.queryNumEntries(db, "SensedValues", "id_exp=?", new String[] {String.valueOf(idExp)});
+        db.close();
+        return amount;
     }
 
 }
