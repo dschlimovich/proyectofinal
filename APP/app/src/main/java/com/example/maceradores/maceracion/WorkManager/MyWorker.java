@@ -167,6 +167,24 @@ public class MyWorker extends Worker {
     }
 
     private long insertSensedValue(SensedValuesContainer svc){
+        DatabaseHelper dbHelperTest = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase dbTest = dbHelperTest.getReadableDatabase();
+
+        //String[] columns = new String[]{"id"};
+        String selection = "id = ?";
+        String[] selectionArgs = new String[] {String.valueOf(svc.getId())};
+        Cursor c = dbTest.query("SensedValues", null, selection, selectionArgs, null, null, null);
+        if(c.moveToFirst()){
+            String idExp = c.getString(c.getColumnIndexOrThrow("id_exp"));
+            String idSV = c.getString(c.getColumnIndexOrThrow("id"));
+            Log.d("Insertar Sensed Values", "el sensed value " + idSV + "ya existe en el experimento " + idExp);
+            c.close();
+            dbTest.close();
+            return -1;
+        }
+        c.close();
+        dbTest.close();
+
 // creo la instancia de basede datos para insertar.
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
