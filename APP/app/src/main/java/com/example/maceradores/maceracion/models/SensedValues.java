@@ -120,4 +120,33 @@ public class SensedValues {
     public void setpH(float pH) {
         this.pH = pH;
     }
+
+    private float enzymeParabolicActivation( float t, float minT, float maxT, float ph, float minPh, float maxPh ){
+        //devuelo porcentaje. osea si 70% entonces devuleve 70
+        // devuleve 100 en el centro del intervalo
+        if( t >= minT && t <= maxT && ph >= minPh && ph <= maxPh ){
+            float dividendo = 100 * (t - minT) * (t - maxT) * (ph - minPh) * (ph - maxPh);
+            float divisor = (maxT + minT) * (maxT - 3*minT) * (maxPh + minPh) * (maxPh - 3*minPh) / 8;
+
+            if( divisor != 0) return dividendo / divisor;
+            else return 0;
+        }
+        else return 0;
+    }
+
+    public float alphaAmylase (float t, float ph){
+        return enzymeParabolicActivation(t, 70, 75, ph, 5.3f, 5.7f);
+    }
+
+    public float betaAmylase( float t, float ph){
+        return enzymeParabolicActivation(t, 62, 65, ph, 5f, 5.5f);
+    }
+
+    public float betaGlucanase(float t, float ph){
+        return enzymeParabolicActivation(t, 35, 45, ph, 4.5f, 5.5f);
+    }
+
+    public float protease (float t, float ph){
+        return enzymeParabolicActivation(t, 45, 55, ph, 4.6f, 5.3f);
+    }
 }
