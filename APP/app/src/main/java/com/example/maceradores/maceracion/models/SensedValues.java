@@ -5,6 +5,7 @@ import java.util.Date;
 public class SensedValues {
 
     private int id;
+    private int idRaspi;
     private String date; //the format YYYY MM DD hh:mm
     //temperatures from sensors
     private float temp1;
@@ -18,6 +19,22 @@ public class SensedValues {
     private float tempEnviroment;
     //ph sensor
     private float pH;
+
+    public SensedValues(int id, int idRaspi, String date, float temp1, float temp2, float temp3, float temp4, float tempSecondary, float tempPH, float humidity, float tempEnviroment, float pH) {
+        this.id = id;
+        this.idRaspi = idRaspi;
+        this.date = date;
+        this.temp1 = temp1;
+        this.temp2 = temp2;
+        this.temp3 = temp3;
+        this.temp4 = temp4;
+        this.tempSecondary = tempSecondary;
+        this.tempPH = tempPH;
+        this.humidity = humidity;
+        this.tempEnviroment = tempEnviroment;
+        this.pH = pH;
+    }
+
 
     public SensedValues(int id, String date, float temp1, float temp2, float temp3, float temp4, float tempSecondary, float tempPH, float humidity, float tempEnviroment, float pH) {
         this.id = id;
@@ -120,6 +137,15 @@ public class SensedValues {
     public void setpH(float pH) {
         this.pH = pH;
     }
+
+    public int getIdRaspi() {
+        return idRaspi;
+    }
+
+    public void setIdRaspi(int idRaspi) {
+        this.idRaspi = idRaspi;
+    }
+
 
     private float enzymeParabolicActivation( float t, float minT, float maxT, float ph, float minPh, float maxPh ){
         //devuelo porcentaje. osea si 70% entonces devuleve 70
