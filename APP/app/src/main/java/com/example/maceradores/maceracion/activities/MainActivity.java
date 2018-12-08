@@ -81,15 +81,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //--------------WorkManager---------------------
-        Data data = new Data.Builder()
-                .putString(MyWorker.IDEXP, "69")
-                .build();
 
-        final OneTimeWorkRequest simpleRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
-                .setInputData(data)
-                .build();
-        WorkManager.getInstance().enqueue(simpleRequest);
 
 
     } //end OnCreate
@@ -172,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, PlanningActivity.class);
                 // si es necesario pasar algun parametro con putExtra.
                 startActivity(intent);
-                finish();//No anda...
+                //finish();//No anda...
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -42,27 +42,35 @@ public class MyWorker extends Worker {
         int IdExp_int = Integer.valueOf(IdExp);
 
         int idMash = getIdMashByIdExp(IdExp_int);
-        int intervaloMedicion = intervaloMedicion(idMash); //intervalo de medicion en segundos! o segun convengamos
-        Log.d("El idMash es:",String.valueOf(idMash));
-        Log.d("El interv de med es:",String.valueOf(intervaloMedicion));
+        if(idMash != -1 && IdExp_int != -1) {
+            int intervaloMedicion = intervaloMedicion(idMash); //intervalo de medicion en segundos! o segun convengamos
+            Log.d("El idMash es:", String.valueOf(idMash));
+            Log.d("El interv de med es:", String.valueOf(intervaloMedicion));
 
 
-        int NumberOfCalls = cantMediciones(idMash, intervaloMedicion);
-        Log.d("La duracion es:",String.valueOf((intervaloMedicion/2)*NumberOfCalls));
-        int counter = 0;
-        int sleep = (intervaloMedicion/2)*1000;
-        while (counter<NumberOfCalls){
+            int NumberOfCalls = cantMediciones(idMash, intervaloMedicion);
+            Log.d("La duracion es:", String.valueOf((intervaloMedicion / 2) * NumberOfCalls));
+            int counter = 0;
+            int sleep = (intervaloMedicion / 2) * 1000;
+            while (counter < NumberOfCalls) {
 
-            String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
-            getSensedValues(IdExp_int,AppList); // Call to API to get the Sensed Values
+                String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
+                try {
+                    getSensedValues(IdExp_int, AppList); // Call to API to get the Sensed Values
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("Se rompio la ", "llamada RETROFIT new Exp");
+                }
 
-            counter++;
-            try {
-                Thread.sleep(sleep);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                counter++;
+                try {
+                    getSensedValues(IdExp_int, AppList); // Call to API to get the Sensed Values
+                    Thread.sleep(sleep);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
-
         }
         return Result.SUCCESS;
     }
