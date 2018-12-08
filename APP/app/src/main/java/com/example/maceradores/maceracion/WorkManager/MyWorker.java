@@ -162,7 +162,7 @@ public class MyWorker extends Worker {
                     for (SensedValuesContainer value : values) {
                         Log.d("Un valor...", value.getTemp1());
                         Long flag = insertSensedValue(value); // Here we insert the values
-                        if(flag==-1)Log.d("Error en","Inserción");
+                        if(flag==-1)Log.d("Error en","Inserción SensedValue");
                     }
                 }
             }
@@ -199,7 +199,7 @@ public class MyWorker extends Worker {
 
         ContentValues values = new ContentValues();
         values.put("id_exp", Integer.valueOf(svc.getId_exp()));
-        values.put("id", Integer.valueOf(svc.getId()));
+        values.put("idRaspi", Integer.valueOf(svc.getId()));
         values.put("fechayhora", svc.getFechayhora());  //Aca no se que movida. Es tipo fecha.
         values.put("temp1", Float.valueOf(svc.getTemp1()));
         values.put("temp2", Float.valueOf(svc.getTemp2()));
@@ -221,7 +221,7 @@ public class MyWorker extends Worker {
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String[] columns = {"id"};
+        String[] columns = {"idRaspi"};
         String selection = "id_exp = ?";
         String[] selectionArgs = { String.valueOf(idExp)};
 

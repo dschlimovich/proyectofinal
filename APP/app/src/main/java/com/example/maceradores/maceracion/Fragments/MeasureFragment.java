@@ -204,6 +204,7 @@ public class MeasureFragment extends Fragment {
 
         if(cursor.moveToFirst()){
             int id = cursor.getInt( cursor.getColumnIndexOrThrow("id"));
+            int idRaspi = cursor.getInt( cursor.getColumnIndexOrThrow("idRaspi"));
             String date = cursor.getString(cursor.getColumnIndexOrThrow("fechayhora"));
             float temp1 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp1"));
             float temp2 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp2"));
@@ -215,7 +216,7 @@ public class MeasureFragment extends Fragment {
             float humidity = cursor.getFloat(cursor.getColumnIndexOrThrow("humity"));
             float pH= cursor.getFloat(cursor.getColumnIndexOrThrow("pH"));
 
-            sv = new SensedValues(id,date, temp1, temp2, temp3, temp4, temp5, tempPh, humidity, tempAmb, pH);
+            sv = new SensedValues(id,idRaspi, date, temp1, temp2, temp3, temp4, temp5, tempPh, humidity, tempAmb, pH);
         }
         cursor.close();
         db.close();
