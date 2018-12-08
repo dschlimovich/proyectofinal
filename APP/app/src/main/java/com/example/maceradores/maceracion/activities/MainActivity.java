@@ -81,15 +81,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //--------------WorkManager---------------------
-        Data data = new Data.Builder()
-                .putString(MyWorker.IDEXP, "69")
-                .build();
 
-        final OneTimeWorkRequest simpleRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
-                .setInputData(data)
-                .build();
-        WorkManager.getInstance().enqueue(simpleRequest);
 
 
     } //end OnCreate

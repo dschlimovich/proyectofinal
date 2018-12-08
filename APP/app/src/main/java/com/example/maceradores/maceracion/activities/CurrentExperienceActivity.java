@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.WorkManager.MyWorker;
 import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
@@ -22,6 +23,9 @@ import com.google.gson.JsonObject;
 
 import java.util.concurrent.TimeUnit;
 
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,7 +61,16 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             } else{
                 // pudo insertar
                 this.idExperiment = (int) newExperimentId;
-                //sendNewExperiment(idExperiment); //ESTA ES LA LLAMADA A LA API PARA EMPEZAR EL ACTIVITY
+                sendNewExperiment(idExperiment); //ESTA ES LA LLAMADA A LA API PARA EMPEZAR LA EXP
+                //--------------WorkManager---------------------
+                Data data = new Data.Builder()
+                        .putString(MyWorker.IDEXP, String.valueOf(idExperiment))
+                        .build();
+
+                final OneTimeWorkRequest simpleRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
+                        .setInputData(data)
+                        .build();
+                WorkManager.getInstance().enqueue(simpleRequest);
 
                 setContentView(R.layout.activity_current_experience);
                 setToolbar();
@@ -119,6 +132,43 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
+            }
+        });
+
+    }
+    private void cancelExperiment(int idExp){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(240, TimeUnit.SECONDS)
+                .writeTimeout(240, TimeUnit.SECONDS)
+                .build();
+
+        //Luego lo agrego a la llamada de Retrofit
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        //------Build new JsonObject with Experiment to be send
+        //{ "nombre": "pepito","idExp":"1", "duracion_min": "1","intervaloMedicionTemp_seg":"15","intervaloMedicionPH_seg":"15" }
+        JsonObject cancelExp= new JsonObject();
+        cancelExp.addProperty("idExp",Integer.toString(idExp));
+
+        Api api = retrofit.create(Api.class);
+        Call<Void> call = api.cancelExperiment(cancelExp);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                Toast.makeText(getApplicationContext(),"Experimento de Maceración Cancelado",Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
 
