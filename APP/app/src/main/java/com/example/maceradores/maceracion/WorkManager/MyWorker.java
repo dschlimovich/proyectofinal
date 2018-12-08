@@ -179,7 +179,7 @@ public class MyWorker extends Worker {
         SQLiteDatabase dbTest = dbHelperTest.getReadableDatabase();
 
         //String[] columns = new String[]{"id"};
-        String selection = "id = ?";
+        String selection = "idRaspi = ?";
         String[] selectionArgs = new String[] {String.valueOf(svc.getId())};
         Cursor c = dbTest.query("SensedValues", null, selection, selectionArgs, null, null, null);
         if(c.moveToFirst()){
