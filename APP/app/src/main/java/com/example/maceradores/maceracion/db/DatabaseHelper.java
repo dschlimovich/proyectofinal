@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "maceraciones";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public DatabaseHelper( Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -66,6 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE SensedValues( "+
                 "id INTEGER PRIMARY KEY," +
+                "idRaspi INTEGER, " +
                 "id_exp INTEGER," +
                 "fechayhora DATETIME DEFAULT CURRENT_TIMESTAMP," +
                 "temp1 FLOAT," +
