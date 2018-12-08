@@ -57,7 +57,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             } else{
                 // pudo insertar
                 this.idExperiment = (int) newExperimentId;
-                sendNewExperiment(idExperiment);
+                //sendNewExperiment(idExperiment); //ESTA ES LA LLAMADA A LA API PARA EMPEZAR EL ACTIVITY
 
                 setContentView(R.layout.activity_current_experience);
                 setToolbar();

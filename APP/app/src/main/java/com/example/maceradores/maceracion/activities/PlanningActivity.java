@@ -414,7 +414,8 @@ public class PlanningActivity extends AppCompatActivity {
                     } else {
                         //At this moment, i need to insert this new mash in the database
                         insertNewPlanning();
-                        startActivity(new Intent(PlanningActivity.this, MainActivity.class));
+                        //startActivity(new Intent(PlanningActivity.this, MainActivity.class));
+                        finish();
                     }
                 } //end if validate planning
             }

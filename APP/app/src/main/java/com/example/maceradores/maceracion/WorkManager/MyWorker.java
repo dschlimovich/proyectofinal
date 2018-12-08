@@ -54,10 +54,16 @@ public class MyWorker extends Worker {
         while (counter<NumberOfCalls){
 
             String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
-            getSensedValues(IdExp_int,AppList); // Call to API to get the Sensed Values
+            try {
+               getSensedValues(IdExp_int,AppList); // Call to API to get the Sensed Values
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                Log.d("Se rompio la ","llamada RETROFIT new Exp");
+            }
 
             counter++;
             try {
+                getSensedValues(IdExp_int,AppList); // Call to API to get the Sensed Values
                 Thread.sleep(sleep);
             } catch (InterruptedException e) {
                 e.printStackTrace();
