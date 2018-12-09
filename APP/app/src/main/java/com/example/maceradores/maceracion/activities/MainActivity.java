@@ -166,6 +166,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 //finish();//No anda...
                 return true;
+            case R.id.deleteDatabase:
+                DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                db.delete("Maceracion", null, null);
+                //db.execSQL("DROP TABLE IF EXISTS " + "Maceracion");
+                db.delete("Intervalo", null, null);
+                //db.execSQL("DROP TABLE IF EXISTS " + "Intervalo");
+                db.delete("Grano", null, null);
+                //db.execSQL("DROP TABLE IF EXISTS " + "Grano");
+                db.delete("Experimento", null, null);
+                //db.execSQL("DROP TABLE IF EXISTS " + "Experimento");
+                //db.execSQL("DROP TABLE IF EXISTS " + "SensedValues");
+                db.delete("SensedValues", null, null);
+                db.close();
+                
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
