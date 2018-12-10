@@ -88,50 +88,56 @@ public class MeasureFragment extends Fragment {
                     }
                     SensedValues sensedValues = getLastSensedValues(idExp);
                     if (sensedValues != null) {
-                        //Bundle bundle = new Bundle();
-                        //bundle.putBoolean("NewSensedValues",true);
-//                    bundle.putString("date",sensedValues.getDate());
-//                    bundle.putFloat("temp1",sensedValues.getTemp1());
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("NewSensedValues",true);
+                        bundle.putString("date",sensedValues.getDate());
+                        bundle.putFloat("temp1",sensedValues.getTemp1());
                         Log.d("temp1", String.valueOf(sensedValues.getTemp1()));
-//                    bundle.putFloat("temp2",sensedValues.getTemp2());
-//                    bundle.putFloat("temp3",sensedValues.getTemp3());
-//                    bundle.putFloat("temp4",sensedValues.getTemp4());
-//                    bundle.putFloat("tempSecondary",sensedValues.getTempSecondary());
-//                    bundle.putFloat("tempPH",sensedValues.getTempPH());
-//                    bundle.putFloat("humidity",sensedValues.getHumidity());
-//                    bundle.putFloat("tempEnviroment",sensedValues.getTempEnviroment());
-//                    bundle.putFloat("pH",sensedValues.getpH());
-//                    Message message = new Message();
-//                    message.setData(bundle);
-//
-//                    mHandlerThread.sendMessage(message);
+                        bundle.putFloat("temp2",sensedValues.getTemp2());
+                        bundle.putFloat("temp3",sensedValues.getTemp3());
+                        bundle.putFloat("temp4",sensedValues.getTemp4());
+                        bundle.putFloat("tempSecondary",sensedValues.getTempSecondary());
+                        bundle.putFloat("tempPH",sensedValues.getTempPH());
+                        bundle.putFloat("humidity",sensedValues.getHumidity());
+                        bundle.putFloat("tempEnviroment",sensedValues.getTempEnviroment());
+                        bundle.putFloat("pH",sensedValues.getpH());
+                        Message message = new Message();
+                        message.setData(bundle);
+
+                        mHandlerThread.sendMessage(message);
 
                         //-------Aca va tmb lo de la verificacion para las NOTIFICACIONES DE DESVIOS!
-//                    float temp = validatedTempMean(sensedValues.getTemp1(),sensedValues.getTemp2(),sensedValues.getTemp3(),sensedValues.getTemp4()); //Hardcod
-//                    int intervaloDuracion = intervaloMedicion(idMash);
-//                    List<Integer> ListmedicionesxInter = medicionesPorIntervalo(idMash,intervaloDuracion);
-//                    int cantSensedValues = amountSensedValue(idExp);
-//                    int Etapa = getOrderInterval(cantSensedValues,ListmedicionesxInter);
-//                    MeasureInterval measureInterval = getIntervalByOrder(Etapa,idMash);
-//                    float tempMin = measureInterval.getMainTemperature() - measureInterval.getMainTemperatureDeviation();//temp objetivo menos desviacion
-//                    float tempMax = measureInterval.getMainTemperature() + measureInterval.getMainTemperatureDeviation();//temp objetivo mas desviacion
-//                    float ph = sensedValues.getpH();
-//                    float phMin = measureInterval.getpH() - measureInterval.getPhDeviation();//pH objetivo menos desviacion
-//                    float phMax = measureInterval.getpH() + measureInterval.getPhDeviation();//pH objetivo mas desviacion
-//
-//
-//                    if(temp<tempMin){ //Si es menor a la minima o mayor a la maxima
-//                        sendNotification("Alerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "menor al minimo" + String.valueOf(tempMin));
-//                    }
-//                    if(temp>tempMax){ //Si es menor a la minima o mayor a la maxima
-//                        sendNotification("Alerta de desvío de Temperatura","Temperatura "+String.valueOf(temp) + "mayor al maximo" + String.valueOf(tempMax));
-//                    }
-//                    if(ph<phMin){ //Si es menor a la minima o mayor a la maxima
-//                        sendNotification("Alerta de desvío de pH","pH "+String.valueOf(ph) + "menor al minimo" + String.valueOf(phMin));
-//                    }
-//                    if(ph>phMax){ //Si es menor a la minima o mayor a la maxima
-//                        sendNotification("Alerta de desvío de ph","pH "+String.valueOf(ph) + "mayor al maximo" + String.valueOf(phMax));
-//                    }
+                        float temp = validatedTempMean(sensedValues.getTemp1(),sensedValues.getTemp2(),sensedValues.getTemp3(),sensedValues.getTemp4()); //Hardcod
+                        int intervaloDuracion = intervaloMedicion(idMash);
+                        List<Integer> ListmedicionesxInter = medicionesPorIntervalo(idMash,intervaloDuracion);
+                        int cantSensedValues = amountSensedValue(idExp);
+                        Log.d("Cant SensedValues",String.valueOf(cantSensedValues));
+                        for (int medicion:ListmedicionesxInter) {
+                            Log.d("List Mediciones",String.valueOf(medicion));
+                        }
+
+                        int Etapa = getOrderInterval(cantSensedValues,ListmedicionesxInter);
+                        MeasureInterval measureInterval = getIntervalByOrder(Etapa,idMash);
+                        float tempMin = measureInterval.getMainTemperature() - measureInterval.getMainTemperatureDeviation();//temp objetivo menos desviacion
+                        float tempMax = measureInterval.getMainTemperature() + measureInterval.getMainTemperatureDeviation();//temp objetivo mas desviacion
+                        float ph = sensedValues.getpH();
+                        float phMin = measureInterval.getpH() - measureInterval.getPhDeviation();//pH objetivo menos desviacion
+                        float phMax = measureInterval.getpH() + measureInterval.getPhDeviation();//pH objetivo mas desviacion
+                        Log.d("temp", String.valueOf(temp));
+                        Log.d("tempMin", String.valueOf(tempMin));
+                        //TODO acomodar para que al tirar temp=-1000 no pase el temp<tempMin NO ESTA ANDANDO IGUAL...JAJAJ SOLO PARA PH
+                        if(temp<tempMin){ //Si es menor a la minima o mayor a la maxima
+                            sendNotification("Alerta de desvío de Temperatura ","Temperatura: "+String.valueOf(temp) + " menor al minimo: " + String.valueOf(tempMin));
+                        }
+                        if(temp>tempMax){ //Si es menor a la minima o mayor a la maxima
+                            sendNotification("Alerta de desvío de Temperatura ","Temperatura: "+String.valueOf(temp) + "  mayor al maximo: " + String.valueOf(tempMax));
+                        }
+//                        if(ph<phMin){ //Si es menor a la minima o mayor a la maxima
+//                            sendNotification("Alerta de desvío de pH ","pH: "+String.valueOf(ph) + " menor al minimo: " + String.valueOf(phMin));
+//                        }
+                        if(ph>phMax){ //Si es menor a la minima o mayor a la maxima
+                            sendNotification("Alerta de desvío de ph ","pH: "+String.valueOf(ph) + " mayor al maximo: " + String.valueOf(phMax));
+                        }
 
                     }
                     else{
@@ -162,34 +168,41 @@ public class MeasureFragment extends Fragment {
         chronometer.start();
 
         //----Handler para manejo de mensajes con el thread
-       /* mHandlerThread = new Handler(){
+        mHandlerThread = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 Bundle bundle = msg.getData();
                 boolean newSensedValues = bundle.getBoolean("NewSensedValues");
-                if(newSensedValues){ //Solo si hay nuevos SensedValues
+                if(newSensedValues) { //Solo si hay nuevos SensedValues
                     float t1 = bundle.getFloat("temp1");
                     float t2 = bundle.getFloat("temp2");
                     float t3 = bundle.getFloat("temp3");
                     float t4 = bundle.getFloat("temp4");
-                    float tPromedio=validatedTempMean(t1,t2,t3,t4);
+                    float tPromedio = validatedTempMean(t1, t2, t3, t4);
                     float ph = bundle.getFloat("pH");
                     float tempPh = bundle.getFloat("tempPH");
 
                     int intervaloDuracion = intervaloMedicion(idMash);
-                    List<Integer> ListmedicionesxInter = medicionesPorIntervalo(idMash,intervaloDuracion);
+                    Log.d("Duration",String.valueOf(intervaloDuracion));
+                    List<Integer> ListmedicionesxInter = medicionesPorIntervalo(idMash, intervaloDuracion);
+                    for (int medicion:ListmedicionesxInter) {
+                        Log.d("List Mediciones",String.valueOf(medicion));
+                    }
+
                     int cantSensedValues = amountSensedValue(idExp);
-                    int Etapa = getOrderInterval(cantSensedValues,ListmedicionesxInter);
-                    MeasureInterval measureInterval = getIntervalByOrder(Etapa,idMash);
+                    Log.d("Cant SensedValues",String.valueOf(cantSensedValues));
+                    int Etapa = getOrderInterval(cantSensedValues, ListmedicionesxInter);
+                    MeasureInterval measureInterval = getIntervalByOrder(Etapa, idMash);
                     float desvioTemp = tPromedio - measureInterval.getMainTemperature();
-                    float desvioPh =  ph - measureInterval.getpH();
+                    float desvioPh = ph - measureInterval.getpH();
                     loadTemperatureCardView(tPromedio, desvioTemp, measureInterval.getMainTemperature(), measureInterval.getMainTemperatureDeviation(), t1, t2, t3, t4);
-                    if(ph>0)loadPhCardView(ph, desvioPh, measureInterval.getpH(), measureInterval.getPhDeviation(), tempPh); //Solo actualizo ph si el valor es valido
+                    if (ph > 0)
+                        loadPhCardView(ph, desvioPh, measureInterval.getpH(), measureInterval.getPhDeviation(), tempPh); //Solo actualizo ph si el valor es valido
                 }
 
             }
-        };*/
+        };
 
 
     }
@@ -226,7 +239,7 @@ public class MeasureFragment extends Fragment {
     private void loadPhCardView(float ph, float desvioObtenido, float phPlanificado, float desvioPlanificado, float tempPh) {
         //android:text=" \n Temperatura de Medición: 25°C"
 
-        tvMeasurePh.append(" Actual: ");
+        tvMeasurePh.setText(" Actual: ");
         tvMeasurePh.append(String.valueOf(ph));
 
         tvMeasurePh.append(" \t\t\t\t\t\t Desvío: ");
@@ -244,7 +257,7 @@ public class MeasureFragment extends Fragment {
     }
 
     private void loadTemperatureCardView(float tPromedio, float desvioObtenido, float tPlanificada, float desvioPlanificado, float t1, float t2, float t3, float t4) {
-        tvMeasureTemp.append(" Calculado: ");
+        tvMeasureTemp.setText(" Calculado: ");
         tvMeasureTemp.append(String.valueOf(tPromedio)); //este debería ser el valor promedio calculado.
 
         tvMeasureTemp.append(" °C \t\t Desvío: "); //esto es por una cuestión estetica.
@@ -253,7 +266,7 @@ public class MeasureFragment extends Fragment {
         tvMeasureTemp.append(" °C \n Planificado: ");
         tvMeasureTemp.append(String.valueOf(tPlanificada)); //Aca iría el valor planificado.
 
-        tvMeasureTemp.append(" °C \t\t Alerta: ± ");
+        tvMeasureTemp.append(" °C \t\t\t Alerta: ± ");
         tvMeasureTemp.append(String.valueOf(desvioPlanificado)); //aca sería valor de desvio
 
         tvMeasureTemp.append(" °C \n Sensor 1: ");
@@ -382,6 +395,7 @@ public class MeasureFragment extends Fragment {
             // sumo todos los valores antes que i.
             for( int j = 0; j <= i; j++){
                 acumulado = acumulado + medicionesPorIntervalo.get(j);
+                Log.d("Acumulado",String.valueOf(acumulado));
             }
             medicionesPorIntervalo.set(i, acumulado);
         }
@@ -390,7 +404,10 @@ public class MeasureFragment extends Fragment {
         int orden = 1;
         boolean flag = true;
         while(flag){
-            if( amount <= medicionesPorIntervalo.get(orden)){
+            Log.d("getOrderIntervals","");
+            Log.d("Cant of SensedValues: ",String.valueOf(amount));
+
+            if( amount <= medicionesPorIntervalo.get(orden-1)){
                 flag = false;
             }else{
                 orden = orden + 1;

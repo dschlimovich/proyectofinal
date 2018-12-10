@@ -195,6 +195,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             }
         });
 
+        //finish();
     }
 
     private void sendNewExperiment(int newExperimentId) {

@@ -55,6 +55,7 @@ public class MyWorker extends Worker {
             while (counter < NumberOfCalls) {
 
                 String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
+                Log.d("ListInsertedValues",AppList);
                 try {
                     getSensedValues(IdExp_int, AppList); // Call to API to get the Sensed Values
                 } catch (Exception e) {
@@ -64,7 +65,6 @@ public class MyWorker extends Worker {
 
                 counter++;
                 try {
-                    getSensedValues(IdExp_int, AppList); // Call to API to get the Sensed Values
                     Thread.sleep(sleep);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -158,7 +158,7 @@ public class MyWorker extends Worker {
             @Override
             public void onResponse(Call<List<SensedValuesContainer>> call, Response<List<SensedValuesContainer>> response) {
                 List<SensedValuesContainer> values = response.body();
-                if (!values.isEmpty()) { // Only makes Insertions id the response is not empty
+                if (!values.isEmpty()) { // Only makes Insertions if the response is not empty
                     for (SensedValuesContainer value : values) {
                         Log.d("Un valor...", value.getTemp1());
                         Long flag = insertSensedValue(value); // Here we insert the values
