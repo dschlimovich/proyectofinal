@@ -184,7 +184,7 @@ public class MyWorker extends Worker {
         Cursor c = dbTest.query("SensedValues", null, selection, selectionArgs, null, null, null);
         if(c.moveToFirst()){
             String idExp = c.getString(c.getColumnIndexOrThrow("id_exp"));
-            String idSV = c.getString(c.getColumnIndexOrThrow("id"));
+            String idSV = c.getString(c.getColumnIndexOrThrow("idRaspi"));
             Log.d("Insertar Sensed Values", "el sensed value " + idSV + "ya existe en el experimento " + idExp);
             c.close();
             dbTest.close();
