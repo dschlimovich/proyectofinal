@@ -11,9 +11,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.WorkManager.MyWorker;
 import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
@@ -21,6 +26,9 @@ import com.google.gson.JsonObject;
 
 import java.util.concurrent.TimeUnit;
 
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,6 +40,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CurrentExperienceActivity extends AppCompatActivity{
     //Data
     private int idMash;
+    private int idExperiment;
 
     //UI
     private TabLayout tabLayout;
@@ -43,11 +52,6 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_current_experience);
-        setToolbar();
-        setTabLayout();
-        setViewPager();
-        setListenerTabLayout(viewPager);
 
         Intent intent = getIntent();
         if( intent.hasExtra("idMash") && intent.hasExtra("nameMash")){
@@ -56,13 +60,51 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             long newExperimentId = insertNewExperiment(idMash);
             if(newExperimentId == -1) {
                 Toast.makeText(this, "Error al insertar experiencia", Toast.LENGTH_SHORT).show();
+                // TODO volver al activity
             } else{
                 // pudo insertar
-                sendNewExperiment((int) newExperimentId);
+                this.idExperiment = (int) newExperimentId;
+                sendNewExperiment(idExperiment); //ESTA ES LA LLAMADA A LA API PARA EMPEZAR LA EXP
+                //--------------WorkManager---------------------
+                Data data = new Data.Builder()
+                        .putString(MyWorker.IDEXP, String.valueOf(idExperiment))
+                        .build();
+
+                final OneTimeWorkRequest simpleRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
+                        .setInputData(data)
+                        .build();
+                WorkManager.getInstance().enqueue(simpleRequest);
+
+                setContentView(R.layout.activity_current_experience);
+                setToolbar();
+                setTabLayout();
+                setViewPager();
+                setListenerTabLayout(viewPager);
             }
         } else {
             Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
         }
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar_current_experience, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.cancelCurrentExperience:
+                cancelExperiment(this.idExperiment);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
     }
 
     private long insertNewExperiment(int idMash) {
@@ -90,7 +132,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     private void setViewPager(){
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager(),this,tabLayout.getTabCount());
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),this,tabLayout.getTabCount(),idMash, idExperiment);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
@@ -114,6 +156,45 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             }
         });
 
+    }
+
+    private void cancelExperiment(int idExp){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(240, TimeUnit.SECONDS)
+                .writeTimeout(240, TimeUnit.SECONDS)
+                .build();
+
+        //Luego lo agrego a la llamada de Retrofit
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        //------Build new JsonObject with Experiment to be send
+        //{ "nombre": "pepito","idExp":"1", "duracion_min": "1","intervaloMedicionTemp_seg":"15","intervaloMedicionPH_seg":"15" }
+        JsonObject cancelExp= new JsonObject();
+        cancelExp.addProperty("idExp",Integer.toString(idExp));
+
+        Api api = retrofit.create(Api.class);
+        Call<Void> call = api.cancelExperiment(cancelExp);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                Toast.makeText(getApplicationContext(),"Experimento de Maceración Cancelado",Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+        //finish();
     }
 
     private void sendNewExperiment(int newExperimentId) {
@@ -196,6 +277,8 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
 
     }
+
+
 
 
 }

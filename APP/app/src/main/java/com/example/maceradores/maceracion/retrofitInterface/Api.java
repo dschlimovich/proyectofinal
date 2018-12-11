@@ -23,4 +23,7 @@ public interface Api {
 
     @POST("apiGet.php")
     Call<List<SensedValuesContainer>> getSensedValues(@Body JsonObject jsonObject);
+
+    @POST("apiCancel.php")
+    Call<Void> cancelExperiment(@Body JsonObject idExperiment);
 }

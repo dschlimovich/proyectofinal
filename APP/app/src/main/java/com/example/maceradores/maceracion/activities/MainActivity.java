@@ -81,15 +81,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //--------------WorkManager---------------------
-        Data data = new Data.Builder()
-                .putString(MyWorker.IDEXP, "69")
-                .build();
 
-        final OneTimeWorkRequest simpleRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
-                .setInputData(data)
-                .build();
-        WorkManager.getInstance().enqueue(simpleRequest);
 
 
     } //end OnCreate
@@ -172,6 +164,24 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, PlanningActivity.class);
                 // si es necesario pasar algun parametro con putExtra.
                 startActivity(intent);
+                //finish();//No anda...
+                return true;
+            case R.id.deleteDatabase:
+                DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                db.delete("Maceracion", null, null);
+                //db.execSQL("DROP TABLE IF EXISTS " + "Maceracion");
+                db.delete("Intervalo", null, null);
+                //db.execSQL("DROP TABLE IF EXISTS " + "Intervalo");
+                db.delete("Grano", null, null);
+                //db.execSQL("DROP TABLE IF EXISTS " + "Grano");
+                db.delete("Experimento", null, null);
+                //db.execSQL("DROP TABLE IF EXISTS " + "Experimento");
+                //db.execSQL("DROP TABLE IF EXISTS " + "SensedValues");
+                db.delete("SensedValues", null, null);
+                db.close();
+                
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -259,22 +269,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void sendNotification(String title, String message) {
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-        //If on Oreo then notification required a notification channel.
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("default", "Default", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext(), "default")
-                .setContentTitle(title)
-                .setContentText(message)
-                .setSmallIcon(R.mipmap.ic_launcher);
-
-        notificationManager.notify(1, notification.build());
-    }
 
 
 } //end MainActivity

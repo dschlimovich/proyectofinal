@@ -100,11 +100,13 @@ public class ExperimentActivity extends AppCompatActivity {
                 String selection = "id = ?";
                 String [] selectionArgs = new String[] { String.valueOf(experiment.getId())};
 
+                db.delete("SensedValues", "id_exp = ?", new String[] {String.valueOf(experiment.getId())});
                 int cant = db.delete("Experimento", selection, selectionArgs);
                 if(cant == 1)
                     Toast.makeText(ExperimentActivity.this, "Experimento eliminado", Toast.LENGTH_SHORT).show();
 
                 dbHelper.close();
+
             }
         });
         layoutManager = new LinearLayoutManager(this);

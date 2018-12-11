@@ -42,27 +42,35 @@ public class MyWorker extends Worker {
         int IdExp_int = Integer.valueOf(IdExp);
 
         int idMash = getIdMashByIdExp(IdExp_int);
-        int intervaloMedicion = intervaloMedicion(idMash); //intervalo de medicion en segundos! o segun convengamos
-        Log.d("El idMash es:",String.valueOf(idMash));
-        Log.d("El interv de med es:",String.valueOf(intervaloMedicion));
+        if(idMash != -1 && IdExp_int != -1) {
+            int intervaloMedicion = intervaloMedicion(idMash); //intervalo de medicion en segundos! o segun convengamos
+            Log.d("El idMash es:", String.valueOf(idMash));
+            Log.d("El interv de med es:", String.valueOf(intervaloMedicion));
 
 
-        int NumberOfCalls = cantMediciones(idMash, intervaloMedicion);
-        Log.d("La duracion es:",String.valueOf((intervaloMedicion/2)*NumberOfCalls));
-        int counter = 0;
-        int sleep = (intervaloMedicion/2)*1000;
-        while (counter<NumberOfCalls){
+            int NumberOfCalls = cantMediciones(idMash, intervaloMedicion);
+            Log.d("La duracion es:", String.valueOf((intervaloMedicion / 2) * NumberOfCalls));
+            int counter = 0;
+            int sleep = (intervaloMedicion / 2) * 1000;
+            while (counter < NumberOfCalls) {
 
-            String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
-            getSensedValues(IdExp_int,AppList); // Call to API to get the Sensed Values
+                String AppList = getListIdInsertedSensedValue(IdExp_int); // Get the sensed values in the APP DB
+                Log.d("ListInsertedValues",AppList);
+                try {
+                    getSensedValues(IdExp_int, AppList); // Call to API to get the Sensed Values
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("Se rompio la ", "llamada RETROFIT new Exp");
+                }
 
-            counter++;
-            try {
-                Thread.sleep(sleep);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                counter++;
+                try {
+                    Thread.sleep(sleep);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
-
         }
         return Result.SUCCESS;
     }
@@ -150,11 +158,11 @@ public class MyWorker extends Worker {
             @Override
             public void onResponse(Call<List<SensedValuesContainer>> call, Response<List<SensedValuesContainer>> response) {
                 List<SensedValuesContainer> values = response.body();
-                if (!values.isEmpty()) { // Only makes Insertions id the response is not empty
+                if (!values.isEmpty()) { // Only makes Insertions if the response is not empty
                     for (SensedValuesContainer value : values) {
                         Log.d("Un valor...", value.getTemp1());
                         Long flag = insertSensedValue(value); // Here we insert the values
-                        if(flag==-1)Log.d("Error en","Inserción");
+                        if(flag==-1)Log.d("Error en","Inserción SensedValue");
                     }
                 }
             }
@@ -167,13 +175,31 @@ public class MyWorker extends Worker {
     }
 
     private long insertSensedValue(SensedValuesContainer svc){
+        DatabaseHelper dbHelperTest = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase dbTest = dbHelperTest.getReadableDatabase();
+
+        //String[] columns = new String[]{"id"};
+        String selection = "idRaspi = ?";
+        String[] selectionArgs = new String[] {String.valueOf(svc.getId())};
+        Cursor c = dbTest.query("SensedValues", null, selection, selectionArgs, null, null, null);
+        if(c.moveToFirst()){
+            String idExp = c.getString(c.getColumnIndexOrThrow("id_exp"));
+            String idSV = c.getString(c.getColumnIndexOrThrow("idRaspi"));
+            Log.d("Insertar Sensed Values", "el sensed value " + idSV + "ya existe en el experimento " + idExp);
+            c.close();
+            dbTest.close();
+            return -1;
+        }
+        c.close();
+        dbTest.close();
+
 // creo la instancia de basede datos para insertar.
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put("id_exp", Integer.valueOf(svc.getId_exp()));
-        values.put("id", Integer.valueOf(svc.getId()));
+        values.put("idRaspi", Integer.valueOf(svc.getId()));
         values.put("fechayhora", svc.getFechayhora());  //Aca no se que movida. Es tipo fecha.
         values.put("temp1", Float.valueOf(svc.getTemp1()));
         values.put("temp2", Float.valueOf(svc.getTemp2()));
@@ -195,7 +221,7 @@ public class MyWorker extends Worker {
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String[] columns = {"id"};
+        String[] columns = {"idRaspi"};
         String selection = "id_exp = ?";
         String[] selectionArgs = { String.valueOf(idExp)};
 
