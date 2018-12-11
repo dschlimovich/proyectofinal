@@ -37,6 +37,10 @@ import java.util.List;
 public class MeasureFragment extends Fragment {
     private TextView tvMeasureTemp;
     private TextView tvMeasurePh;
+    private TextView tvMeasureEnzyme;
+    private TextView tvMeasureEnviroment;
+    private TextView tvMeasureSecondMacerator;
+    private TextView tvMeasureStage;
     private Chronometer chronometer;
     //---Handler---
     Handler mHandlerThread;
@@ -157,7 +161,7 @@ public class MeasureFragment extends Fragment {
         });
         thread1.start();
         // Inflate the layout for this fragment
-        return view;
+        return inflater.inflate(R.layout.fragment_measure, container, false);
     }
 
     @Override
@@ -165,6 +169,10 @@ public class MeasureFragment extends Fragment {
         super.onResume();
         this.tvMeasureTemp = (TextView) getView().findViewById(R.id.textViewMeasureTemp); //podria estar en el oncreate.
         this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
+        this.tvMeasureEnzyme = (TextView) getView().findViewById(R.id.textViewMeasureEnzyme);
+        this.tvMeasureEnviroment = (TextView) getView().findViewById(R.id.textViewMeasureEnviroment);
+        this.tvMeasureSecondMacerator = (TextView) getView().findViewById(R.id.textViewMeasureSecondMaserator);
+        this.tvMeasureStage= (TextView) getView().findViewById(R.id.textViewMeasureStage);
 
         chronometer = getView().findViewById(R.id.chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
@@ -237,6 +245,52 @@ public class MeasureFragment extends Fragment {
         cursor.close();
         db.close();
         return sv;
+    }
+
+    private void loadStageCardView(int stage){
+        tvMeasureStage.append(" Etapa Actual: ");
+        tvMeasureStage.append(String.valueOf(stage));
+    }
+
+    private void loadSecondMaceratorCardView(float temp, float desvioObtenido, float tempPlanificada, float alerta){
+        //android:text="-- "
+        tvMeasureSecondMacerator.append(" Actual: ");
+        tvMeasureSecondMacerator.append(String.valueOf(temp));
+
+        tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
+        tvMeasureSecondMacerator.append(String.valueOf(desvioObtenido));
+
+        tvMeasureSecondMacerator.append(" °C \n Planificado: ");
+        tvMeasureSecondMacerator.append(String.valueOf(tempPlanificada));
+
+        tvMeasureSecondMacerator.append(" °C \t\t Alerta: ±");
+        tvMeasureSecondMacerator.append(String.valueOf(alerta));
+        tvMeasureSecondMacerator.append(" °C");
+    }
+
+    private void loadEnviromentCardView(float temp, float humidity){
+        //android:text="22°C \t Humedad: 67%"
+        tvMeasureEnviroment.append(" Temperatura: ");
+        tvMeasureEnviroment.append(String.valueOf(temp));
+
+        tvMeasureEnviroment.append(" °C \t Humedad: ");
+        tvMeasureEnviroment.append(String.valueOf(humidity));
+        tvMeasureEnviroment.append("%");
+    }
+
+    private void loadEnzymeCardView(float alfa, float proteasa, float beta, float glucanasa){
+        tvMeasureEnzyme.append(" Alfa Amilasa: ");
+        tvMeasureEnzyme.append(String.valueOf(alfa));
+
+        tvMeasureEnzyme.append("% \t\t Proteasa: ");
+        tvMeasureEnzyme.append(String.valueOf(proteasa));
+
+        tvMeasureEnzyme.append("% \n Beta Amilasa: ");
+        tvMeasureEnzyme.append(String.valueOf(beta));
+
+        tvMeasureEnzyme.append("% \t\t Beta Glucanasa: ");
+        tvMeasureEnzyme.append(String.valueOf(glucanasa));
+        tvMeasureEnzyme.append("%");
     }
 
     private void loadPhCardView(float ph, float desvioObtenido, float phPlanificado, float desvioPlanificado, float tempPh) {

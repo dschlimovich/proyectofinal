@@ -82,7 +82,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" Alfa Amilasa: 80% \t\t Proteasa: 0% \n Beta Amilasa: 10% \t Beta Glucanasa: 0%"/>
+                android:id="@+id/textViewMeasureEnzyme" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -108,7 +108,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Temperatura: 22°C \t Humedad: 67%"/>
+                android:id="@+id/textViewMeasureEnviroment" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -134,7 +134,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Actual: -°C \t\t\t\t\t Desvío: - \n Planificado: - \t\t\t\t Alerta: - "/>
+                android:id="@+id/textViewMeasureSecondMaserator" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -174,7 +174,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Etapa Actual: 1"/>
+                android:id="@+id/textViewMeasureStage" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
