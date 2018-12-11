@@ -147,7 +147,7 @@ public class SensedValues {
     }
 
 
-    private float enzymeParabolicActivation( float t, float minT, float maxT, float ph, float minPh, float maxPh ){
+    private static float enzymeParabolicActivation( float t, float minT, float maxT, float ph, float minPh, float maxPh ){
         //devuelo porcentaje. osea si 70% entonces devuleve 70
         // devuleve 100 en el centro del intervalo
         if( t >= minT && t <= maxT && ph >= minPh && ph <= maxPh ){
@@ -160,19 +160,19 @@ public class SensedValues {
         else return 0;
     }
 
-    public float alphaAmylase (float t, float ph){
+    public static float alphaAmylase (float t, float ph){
         return enzymeParabolicActivation(t, 70, 75, ph, 5.3f, 5.7f);
     }
 
-    public float betaAmylase( float t, float ph){
+    public static float betaAmylase( float t, float ph){
         return enzymeParabolicActivation(t, 62, 65, ph, 5f, 5.5f);
     }
 
-    public float betaGlucanase(float t, float ph){
+    public static float betaGlucanase(float t, float ph){
         return enzymeParabolicActivation(t, 35, 45, ph, 4.5f, 5.5f);
     }
 
-    public float protease (float t, float ph){
+    public static float protease (float t, float ph){
         return enzymeParabolicActivation(t, 45, 55, ph, 4.6f, 5.3f);
     }
 }

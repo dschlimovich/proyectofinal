@@ -105,6 +105,7 @@ public class MeasureFragment extends Fragment {
                         bundle.putFloat("humidity",sensedValues.getHumidity());
                         bundle.putFloat("tempEnviroment",sensedValues.getTempEnviroment());
                         bundle.putFloat("pH",sensedValues.getpH());
+
                         Message message = new Message();
                         message.setData(bundle);
 
@@ -193,6 +194,7 @@ public class MeasureFragment extends Fragment {
                     float tPromedio = validatedTempMean(t1, t2, t3, t4);
                     float ph = bundle.getFloat("pH");
                     float tempPh = bundle.getFloat("tempPH");
+                    float tempSecondary =  bundle.getFloat("tempSecondary");
 
                     int intervaloDuracion = intervaloMedicion(idMash);
                     Log.d("Duration",String.valueOf(intervaloDuracion));
@@ -207,9 +209,15 @@ public class MeasureFragment extends Fragment {
                     MeasureInterval measureInterval = getIntervalByOrder(Etapa, idMash);
                     float desvioTemp = tPromedio - measureInterval.getMainTemperature();
                     float desvioPh = ph - measureInterval.getpH();
+                    float desvioTempSecon = tempSecondary - measureInterval.getSecondTemperature();
                     loadTemperatureCardView(tPromedio, desvioTemp, measureInterval.getMainTemperature(), measureInterval.getMainTemperatureDeviation(), t1, t2, t3, t4);
                     if (ph > 0)
                         loadPhCardView(ph, desvioPh, measureInterval.getpH(), measureInterval.getPhDeviation(), tempPh); //Solo actualizo ph si el valor es valido
+                    loadStageCardView(Etapa);
+                    loadSecondMaceratorCardView(tempSecondary,desvioTempSecon,measureInterval.getSecondTemperature(),measureInterval.getSecondTemperatureDeviation());
+                    loadEnviromentCardView(bundle.getFloat("tempEnviroment"),bundle.getFloat("humidity"));
+                    loadEnzymeCardView(SensedValues.alphaAmylase(tPromedio,ph),
+                            SensedValues.betaAmylase(tPromedio,ph),SensedValues.betaGlucanase(tPromedio,ph),SensedValues.protease(tPromedio,ph));
                 }
 
             }
@@ -248,13 +256,13 @@ public class MeasureFragment extends Fragment {
     }
 
     private void loadStageCardView(int stage){
-        tvMeasureStage.append(" Etapa Actual: ");
+        tvMeasureStage.setText(" Etapa Actual: ");
         tvMeasureStage.append(String.valueOf(stage));
     }
 
     private void loadSecondMaceratorCardView(float temp, float desvioObtenido, float tempPlanificada, float alerta){
         //android:text="-- "
-        tvMeasureSecondMacerator.append(" Actual: ");
+        tvMeasureSecondMacerator.setText(" Actual: ");
         tvMeasureSecondMacerator.append(String.valueOf(temp));
 
         tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
@@ -270,7 +278,7 @@ public class MeasureFragment extends Fragment {
 
     private void loadEnviromentCardView(float temp, float humidity){
         //android:text="22°C \t Humedad: 67%"
-        tvMeasureEnviroment.append(" Temperatura: ");
+        tvMeasureEnviroment.setText(" Temperatura: ");
         tvMeasureEnviroment.append(String.valueOf(temp));
 
         tvMeasureEnviroment.append(" °C \t Humedad: ");
@@ -278,8 +286,8 @@ public class MeasureFragment extends Fragment {
         tvMeasureEnviroment.append("%");
     }
 
-    private void loadEnzymeCardView(float alfa, float proteasa, float beta, float glucanasa){
-        tvMeasureEnzyme.append(" Alfa Amilasa: ");
+    private void loadEnzymeCardView(float alfa, float beta, float glucanasa, float proteasa){
+        tvMeasureEnzyme.setText(" Alfa Amilasa: ");
         tvMeasureEnzyme.append(String.valueOf(alfa));
 
         tvMeasureEnzyme.append("% \t\t Proteasa: ");
