@@ -13,7 +13,9 @@ public class ViewPagerAdapter  extends FragmentPagerAdapter {
     private int numberOfTabs;
     private int idMash;
     private int idExperiment;
-    private Fragment fragment = null;
+    private Fragment measureFragment = null;
+    private Fragment stageFragment = null;
+
 
     public ViewPagerAdapter(FragmentManager fm, Context context, int numberOfTabs, int idMash, int idExp) {
         super(fm);
@@ -29,11 +31,17 @@ public class ViewPagerAdapter  extends FragmentPagerAdapter {
         bundle.putInt("idExp", idExperiment);
         switch (position) {
             case 0:
-                fragment = new MeasureFragment();
-                fragment.setArguments(bundle);
-                return fragment;
+                if(measureFragment == null){ // Si el fragment no esta seteado
+                    measureFragment = new MeasureFragment();
+                    measureFragment.setArguments(bundle);
+                }
+                return measureFragment;
             case 1:
-                return new StageFragment();
+                if(stageFragment == null){
+                    stageFragment = new StageFragment();
+                    measureFragment.setArguments(bundle);
+                }
+                return stageFragment;
             default:
                 return null;
         }

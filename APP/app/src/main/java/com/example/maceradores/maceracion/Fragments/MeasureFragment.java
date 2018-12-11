@@ -126,15 +126,18 @@ public class MeasureFragment extends Fragment {
                         Log.d("temp", String.valueOf(temp));
                         Log.d("tempMin", String.valueOf(tempMin));
                         //TODO acomodar para que al tirar temp=-1000 no pase el temp<tempMin NO ESTA ANDANDO IGUAL...JAJAJ SOLO PARA PH
-                        if(temp<tempMin){ //Si es menor a la minima o mayor a la maxima
+                        if(temp<tempMin && ph<phMin) {
+                            sendNotification("Alerta de desvío de Temperatura y pH ","Temperatura: "+String.valueOf(temp) + " menor al minimo: " + String.valueOf(tempMin)
+                                    + "y pH: "+String.valueOf(ph) + " menor al minimo: " + String.valueOf(phMin));
+                        }
+                        else if(temp<tempMin){ //Si es menor a la minima o mayor a la maxima
                             sendNotification("Alerta de desvío de Temperatura ","Temperatura: "+String.valueOf(temp) + " menor al minimo: " + String.valueOf(tempMin));
+                        }else if(ph<phMin){ //Si es menor a la minima o mayor a la maxima
+                            sendNotification("Alerta de desvío de pH ","pH: "+String.valueOf(ph) + " menor al minimo: " + String.valueOf(phMin));
                         }
                         if(temp>tempMax){ //Si es menor a la minima o mayor a la maxima
                             sendNotification("Alerta de desvío de Temperatura ","Temperatura: "+String.valueOf(temp) + "  mayor al maximo: " + String.valueOf(tempMax));
                         }
-//                        if(ph<phMin){ //Si es menor a la minima o mayor a la maxima
-//                            sendNotification("Alerta de desvío de pH ","pH: "+String.valueOf(ph) + " menor al minimo: " + String.valueOf(phMin));
-//                        }
                         if(ph>phMax){ //Si es menor a la minima o mayor a la maxima
                             sendNotification("Alerta de desvío de ph ","pH: "+String.valueOf(ph) + " mayor al maximo: " + String.valueOf(phMax));
                         }

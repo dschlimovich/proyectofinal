@@ -86,7 +86,6 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         }
 
 
-
     }
 
     @Override
