@@ -3,7 +3,9 @@ package com.example.maceradores.maceracion.Fragments;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.activities.CurrentExperienceActivity;
+import com.example.maceradores.maceracion.activities.MainActivity;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.models.SensedValues;
@@ -386,6 +390,9 @@ public class MeasureFragment extends Fragment {
 
     public void sendNotification(String title, String message) {
         NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+//        Intent intent = new Intent(getContext(), CurrentExperienceActivity.class); // Aca estaria mi duda
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
 
         //If on Oreo then notification required a notification channel.
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -395,7 +402,10 @@ public class MeasureFragment extends Fragment {
 
         NotificationCompat.Builder notification = new NotificationCompat.Builder(getContext(), "default")
                 .setContentTitle(title)
-                .setContentText(message)
+                //.setContentText(message)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(message))
+//                .setContentIntent(pendingIntent)
                 .setSmallIcon(R.mipmap.ic_launcher);
 
         notificationManager.notify(1, notification.build());
