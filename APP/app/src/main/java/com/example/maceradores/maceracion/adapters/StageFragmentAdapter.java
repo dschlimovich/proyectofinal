@@ -5,10 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.models.MeasureInterval;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -44,10 +47,21 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView numberStage;
+        private Chronometer durationStage;
+        private Chronometer remainingStage;
+        private TextView temperatureStage;
+        private TextView phStage;
+        private TextView temperatureDecoccionStage;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.numberStage = (TextView) itemView.findViewById(R.id.textViewNumberStage);
+            this.durationStage = (Chronometer) itemView.findViewById(R.id.chronometerDurationStage);
+            this.remainingStage = (Chronometer) itemView.findViewById(R.id.chronometerRemainingStage);
+            this.phStage = (TextView) itemView.findViewById(R.id.textViewPhStage);
+            this.temperatureDecoccionStage = (TextView) itemView.findViewById(R.id.textViewTemperatureDecoccionStage);
+
         }
 
         public void bind(MeasureInterval interval) {
