@@ -278,7 +278,20 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     }
 
+    private void deleteExperiment( int idExp){
+        // elemino todos los sensed values del experimentos
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selection = "id = ?";
+        String [] selectionArgs = new String[] { String.valueOf(idExp)};
 
+        db.delete("SensedValues", "id_exp = ?", selectionArgs);
+        int cant = db.delete("Experimento", selection, selectionArgs);
+        if(cant == 1)
+            Toast.makeText(CurrentExperienceActivity.this, "Experimento eliminado", Toast.LENGTH_SHORT).show();
+
+        dbHelper.close();
+    }
 
 
 }

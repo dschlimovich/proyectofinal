@@ -462,7 +462,8 @@ public class MeasureFragment extends Fragment {
         return amount;
     }
 
-    public int getOrderInterval( int amount, List<Integer> medicionesPorIntervalo){//Me devuelve la Etapa/Stage en la q estoy
+    public int getOrderInterval( int amount, List<Integer> medicionesPorIntervalo){
+        //Me devuelve la Etapa/Stage en la q estoy
         // hago los valores acumulados.
         // {10, 30, 20}
         for( int i = medicionesPorIntervalo.size() - 1; i > 0; i--){
