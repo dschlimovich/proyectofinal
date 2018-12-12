@@ -48,8 +48,6 @@ public class MeasureFragment extends Fragment {
     private Chronometer chronometer;
     //---Handler---
     Handler mHandlerThread;
-    private static final int START_PROGRESS = 100;
-    private static final int UPDATE_COUNT = 101;
     Thread thread1;
     private int idMash;
     private int idExp;
@@ -68,10 +66,9 @@ public class MeasureFragment extends Fragment {
         final int idMash = getArguments().getInt("idMash"); //Me traigo el idMash q viene del viewpager
         final int idExp = getArguments().getInt("idExp");
         this.idMash=idMash;
-//        this.idMash=69;
 
         this.idExp=idExp;
-//        this.idExp=1;
+
 
         //---Thread con Handler
         thread1 = new Thread(new Runnable() {
