@@ -364,7 +364,7 @@ public class PlanningActivity extends AppCompatActivity {
             float temperatureDecoccionDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTempDecoccion"));
 
             //con estos tres valores puedo crear el intervalo y agregarlo.
-            MeasureInterval interval = new MeasureInterval(temperature, temperatureDeviation, temperatureDecoccion, temperatureDecoccionDeviation, ph, phDeviation, duration);
+            MeasureInterval interval = new MeasureInterval(order, temperature, temperatureDeviation, temperatureDecoccion, temperatureDecoccionDeviation, ph, phDeviation, duration);
             intervals.add(interval);
         }//end while
         intervalListAdapter.notifyDataSetChanged();

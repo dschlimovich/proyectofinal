@@ -39,7 +39,7 @@ public class ViewPagerAdapter  extends FragmentPagerAdapter {
             case 1:
                 if(stageFragment == null){
                     stageFragment = new StageFragment();
-                    measureFragment.setArguments(bundle);
+                    stageFragment.setArguments(bundle);
                 }
                 return stageFragment;
             default:
