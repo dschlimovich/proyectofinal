@@ -1,13 +1,16 @@
 package com.example.maceradores.maceracion.adapters;
 
+import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
@@ -39,6 +42,7 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
         return new StageFragmentAdapter.ViewHolder(v);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.bind(this.intervals.get(i));
@@ -56,6 +60,7 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
         private TextView temperatureStage;
         private TextView phStage;
         private TextView temperatureDecoccionStage;
+        private LinearLayout linearLayoutRemainingStage;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -66,9 +71,11 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
             this.temperatureStage = (TextView) itemView.findViewById(R.id.textViewTemperatureStage);
             this.phStage = (TextView) itemView.findViewById(R.id.textViewPhStage);
             this.temperatureDecoccionStage = (TextView) itemView.findViewById(R.id.textViewTemperatureDecoccionStage);
+            this.linearLayoutRemainingStage = (LinearLayout) itemView.findViewById(R.id.linearLayoutRemainingStage);
 
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         public void bind(MeasureInterval interval) {
             //the interval have an order, no?
             String stage = String.valueOf(interval.getOrder());
@@ -78,12 +85,26 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
             durationStage.setBase( SystemClock.elapsedRealtime() - duration*60000);
 
             // tiempo restante.
-            int remaining = 0;
-            for( int i = 0; i < interval.getOrder() - 1; i++ ){
-                remaining = remaining + intervals.get(i).getDuration();
-            }
-            remainingStage.setBase( SystemClock.elapsedRealtime() - remaining*60000);
+            if( interval.getOrder() == 1){
+                linearLayoutRemainingStage.setVisibility(View.INVISIBLE);
+            } else {
+                int remaining = 0;
+                for( int i = 0; i < interval.getOrder() - 1; i++ ){
+                    remaining = remaining + intervals.get(i).getDuration();
+                }
+                remainingStage.setBase( SystemClock.elapsedRealtime() + remaining*60000);
+                remainingStage.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                    @Override
+                    public void onChronometerTick(Chronometer chronometer) {
+                        if( "00:00".equals(chronometer.getText())){
+                            chronometer.stop();
+                        }
+                    }
+                });
+                remainingStage.setCountDown(true);
+                remainingStage.start();
 
+            }
 
             //temperatura + desviacion-
             StringBuilder builder = new StringBuilder();
