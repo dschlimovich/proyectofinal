@@ -52,14 +52,12 @@ public class ExperimentActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent.hasExtra("idMash")){
             this.idMash = intent.getIntExtra("idMash", -1);
+            setNameMashTitle(idMash);
         }
         else{
             startActivity(new Intent(ExperimentActivity.this, MainActivity.class));
         }
-        if(intent.hasExtra("nameMash")){
-            this.nameMash = intent.getStringExtra("nameMash");
-            setTitle(this.nameMash);
-        }
+
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewMash);
 
@@ -209,5 +207,25 @@ public class ExperimentActivity extends AppCompatActivity {
         dbHelper.close();
 
         startActivity(new Intent(ExperimentActivity.this, MainActivity.class));
+    }
+
+    private void setNameMashTitle(int idMash){
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        //elimino primero todos los experimentos. Despues la maceracion
+
+        String[] columns = new String[]{"nombre"};
+        String selection = "id = ?";
+        String [] selectionArgs = new String[] { String.valueOf(this.idMash)};
+
+        Cursor c = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(c.moveToFirst()){
+            String name = c.getString(0);
+            setTitle(name);
         }
+        c.close();
+        dbHelper.close();
+    }
+
+
 }//end ExperimentActivity
