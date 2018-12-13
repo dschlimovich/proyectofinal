@@ -35,6 +35,7 @@ public class ExperimentActivity extends AppCompatActivity {
     private String nameMash;
     private List<Experiment> experimentList;
 
+
     //UI
     private RecyclerView recyclerView;
     private RecyclerView.Adapter rvAdapter;
@@ -57,6 +58,7 @@ public class ExperimentActivity extends AppCompatActivity {
         else{
             startActivity(new Intent(ExperimentActivity.this, MainActivity.class));
         }
+
 
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewMash);

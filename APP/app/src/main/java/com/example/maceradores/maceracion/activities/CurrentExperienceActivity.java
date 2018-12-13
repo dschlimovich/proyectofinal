@@ -24,6 +24,7 @@ import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
 import com.google.gson.JsonObject;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import androidx.work.Data;
@@ -46,6 +47,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
+    private UUID workId;
 
     // LifeCycle functions.
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -75,11 +77,17 @@ public class CurrentExperienceActivity extends AppCompatActivity{
                         .build();
                 WorkManager.getInstance().enqueue(simpleRequest);
 
+                this.workId = simpleRequest.getId();//Guardo el id del workid
+
+
                 setContentView(R.layout.activity_current_experience);
                 setToolbar();
                 setTabLayout();
                 setViewPager();
                 setListenerTabLayout(viewPager);
+
+
+
             }
         } else {
             Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
@@ -98,7 +106,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.cancelCurrentExperience:
-                cancelExperiment(this.idExperiment);
+                cancelExperiment(this.idExperiment,this.idMash);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -158,14 +166,30 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     }
 
-    private void cancelExperiment(int idExp){
+    private void cancelExperiment(int idExp, int idMash){
+    //---Cancel Worker
+        WorkManager.getInstance().cancelWorkById(this.workId);//Cancelo el Worker
+
+    //---Move to the Experiment Activity
+        Intent intent = new Intent(CurrentExperienceActivity.this, ExperimentActivity.class);
+        intent.putExtra("idMash", idMash);
+        startActivity(intent);
+
+    //---Cancel FragmentManager
+//        getSupportFragmentManager().beginTransaction().
+//                remove(getSupportFragmentManager().findFragmentById(R.id.fragmentMeasure)).commit();
+
+    //---Elimino de la DB de la APP LOCAL
+        deleteExperiment(idExp);
+
+    //---Llamo a la API para eliminar del Raspi
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.MINUTES)
                 .readTimeout(240, TimeUnit.SECONDS)
                 .writeTimeout(240, TimeUnit.SECONDS)
                 .build();
 
-        //Luego lo agrego a la llamada de Retrofit
+    //Luego lo agrego a la llamada de Retrofit
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Api.BASE_URL)
@@ -193,6 +217,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
                 Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
+
 
         //finish();
     }

@@ -1,7 +1,10 @@
 package com.example.maceradores.maceracion.utils;
 
+import com.example.maceradores.maceracion.models.Grain;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Calculos {
 
@@ -53,6 +56,22 @@ public class Calculos {
         //asi entendí la formula.
         return (tempTarget - tempAmb) * (0.41 * kgMalta + volAgua) / (tempMash - tempTarget);
     }
+    public double calcCantInsumoTeoRayDaniels(float densEspecif, float volLitros, List<Grain> granos, float rendEquipo){
+        double factorDenso = (1- densEspecif)*1000; //densEspecif Objetivo!
+        double ptosDensidad = factorDenso * volLitros; //Ptos de densidad de objetivo
 
+        //1 lb = 2,2 Kg ---- 3,78 l = 1 gal ---> 1 lb/ gal = 2.2/(1/3.78) Kg/l = 8.316
+        //En una proporción de 100 g, divido por 10... = 0.8316
+        //PPG a PKGL en (0.1Kg/l) = PPG * 0.8316
+        //ppg = ExtractoPotencial en porcentaje (Ej 0.8) por 46 q sos los ppg del azucar cuyo ExPot es 100
+        //Kg de Malta = Sum (PD/EXTPOT/RENDIMIENTO/10)
+        double KgdeMalta = 0;
+        for(int i = 0; i < granos.size(); i++){
+            double PKglx100g = 0.8316 * granos.get(i).getExtractPotential();
+            double Kggrano =  (ptosDensidad * granos.get(i).getQuantity())/PKglx100g/rendEquipo/10; // RendEquipo tiene q estar como 0.8 o 0.7...
+            KgdeMalta = KgdeMalta + Kggrano;
+        }
+        return KgdeMalta;
+    }
 
 }
