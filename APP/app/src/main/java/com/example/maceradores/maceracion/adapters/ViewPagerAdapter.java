@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.example.maceradores.maceracion.Fragments.StageFragment;
 import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 
+import java.util.UUID;
+
 public class ViewPagerAdapter  extends FragmentPagerAdapter {
     private int numberOfTabs;
     private int idMash;
@@ -51,4 +53,9 @@ public class ViewPagerAdapter  extends FragmentPagerAdapter {
     public int getCount() {
         return numberOfTabs;
     }
+//    public UUID getMeasurId(){
+//
+//
+//
+//    }
 }
