@@ -56,6 +56,11 @@ public class Calculos {
         //asi entendí la formula.
         return (tempTarget - tempAmb) * (0.41 * kgMalta + volAgua) / (tempMash - tempTarget);
     }
+
+    public double cantMostoRetirarDecoccion( double tempMash, double tempTarget, double volAgua){
+        return ((tempTarget - tempMash) * volAgua) / (95 - tempMash);
+    }
+
     public double calcCantInsumoTeoRayDaniels(float densEspecif, float volLitros, List<Grain> granos, float rendEquipo){
         double factorDenso = (1- densEspecif)*1000; //densEspecif Objetivo!
         double ptosDensidad = factorDenso * volLitros; //Ptos de densidad de objetivo
