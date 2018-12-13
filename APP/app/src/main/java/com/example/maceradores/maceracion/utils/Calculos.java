@@ -30,7 +30,29 @@ public class Calculos {
         return kgGrano;
     }
 
+    public double cantInsumoPorGrano( double kgGranoTotal, double porcentajeGrano, double extractoPotencial ){
+        // supongando porcentaje con formato 0.9 para 90% y extracto potencia en formato 0.81
+        // si no estan expersados en porcentaje, lo divido por cien :)
+        if(porcentajeGrano > 1){
+            porcentajeGrano = porcentajeGrano / 100;
+        }
+        if(extractoPotencial > 1){
+            extractoPotencial = extractoPotencial / 100;
+        }
 
+        return (kgGranoTotal * porcentajeGrano) / extractoPotencial;
+    }
+
+    public double temperaturaAguaInicial( double tempTarget, double tempAmb, double volAgua, double kgMalta){
+        // de donde sacamos la temperatura ambiente? pinche mierda.
+        double r = volAgua / kgMalta;
+        return (0.41 / r) * (tempTarget - tempAmb) + tempTarget;
+    }
+
+    public double escalonTemperatura( double tempMash, double tempTarget, double tempAmb, double volAgua, double kgMalta){
+        //asi entendí la formula.
+        return (tempTarget - tempAmb) * (0.41 * kgMalta + volAgua) / (tempMash - tempTarget);
+    }
 
 
 }
