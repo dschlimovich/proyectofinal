@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -148,9 +149,11 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         // primero debería saber si ya se ejecutaron todas las mediciones planificadas.
         int medicionesRealizadas = amountSensedValue(idExperiment);
         int cadaCuantoMido = intervaloMedicion(idMash);
-        int medcionesARealizar = cantMediciones( idMash, cadaCuantoMido);
+        int medicionesARealizar = cantMediciones( idMash, cadaCuantoMido);
+        Log.d("Mediciones a realizar: ",String.valueOf(medicionesARealizar));
+        Log.d("Mediciones realizadas: ",String.valueOf(medicionesRealizadas));
 
-        if( medicionesRealizadas == medcionesARealizar){
+        if( medicionesRealizadas == medicionesARealizar){
             // Mostrar el alertDialog para finalizar la experiencia.
             // Tiene que insertar la densidad obtenida en el experimento.
             showAlertFinishExperience();
