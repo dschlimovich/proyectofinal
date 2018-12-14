@@ -70,7 +70,8 @@ public class MeasureFragment extends Fragment {
         this.idExp=idExp;
 
 
-        chronometer = getView().findViewById(R.id.chronometer);
+        //chronometer = getView().findViewById(R.id.chronometer);
+        chronometer = view.findViewById(R.id.chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
         chronometer.start();
 
@@ -168,7 +169,7 @@ public class MeasureFragment extends Fragment {
         });
         thread1.start();
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_measure, container, false);
+        return view;
     }
 
     @Override

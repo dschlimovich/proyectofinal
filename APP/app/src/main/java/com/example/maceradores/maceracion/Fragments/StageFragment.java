@@ -42,6 +42,7 @@ public class StageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_stage, container, false);
         final int idMash = getArguments().getInt("idMash"); //Me traigo el idMash q viene del viewpager
         final int idExp = getArguments().getInt("idExp");
         this.idMash=idMash;
@@ -49,14 +50,14 @@ public class StageFragment extends Fragment {
 
         this.idExp=idExp;
 
-        recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerViewStage);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewStage);
         List<MeasureInterval> intervals = getIntervals(idMash);
         adapter = new StageFragmentAdapter(intervals, R.layout.item_list_stage);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 
-        return inflater.inflate(R.layout.fragment_stage, container, false);
+        return view;
     }
 
     private List<MeasureInterval> getIntervals(int idMash){
