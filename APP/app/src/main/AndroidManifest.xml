@@ -22,8 +22,12 @@
         <activity
             android:name=".activities.PlanningActivity"
             android:label="Planificación" />
-        <activity android:name=".activities.CurrentExperienceActivity"></activity>
-        <activity android:name=".activities.ExperimentActivity"></activity>
+        <activity android:name=".activities.CurrentExperienceActivity" />
+        <activity android:name=".activities.ExperimentActivity" />
+        <activity
+            android:name=".activities.MashExpHistory"
+            android:label="@string/title_activity_mash_exp_history"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
