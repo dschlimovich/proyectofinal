@@ -70,6 +70,11 @@ public class MeasureFragment extends Fragment {
         this.idExp=idExp;
 
 
+        chronometer = getView().findViewById(R.id.chronometer);
+        chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
+        chronometer.start();
+
+
         //---Thread con Handler
         thread1 = new Thread(new Runnable() {
             @Override
@@ -176,9 +181,6 @@ public class MeasureFragment extends Fragment {
         this.tvMeasureSecondMacerator = (TextView) getView().findViewById(R.id.textViewMeasureSecondMaserator);
         this.tvMeasureStage= (TextView) getView().findViewById(R.id.textViewMeasureStage);
 
-        chronometer = getView().findViewById(R.id.chronometer);
-        chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
-        chronometer.start();
 
         //----Handler para manejo de mensajes con el thread
         mHandlerThread = new Handler(){
