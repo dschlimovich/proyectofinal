@@ -61,7 +61,7 @@ public class Calculos {
         return ((tempTarget - tempMash) * volAgua) / (95 - tempMash);
     }
 
-    public double calcCantInsumoTeoRayDaniels(float densEspecif, float volLitros, List<Grain> granos, float rendEquipo){
+    public double calcCantInsumoTeoRayDaniels(float densEspecif, float volLitros, Grain grano, float rendEquipo){
         double factorDenso = (1- densEspecif)*1000; //densEspecif Objetivo!
         double ptosDensidad = factorDenso * volLitros; //Ptos de densidad de objetivo
 
@@ -70,13 +70,13 @@ public class Calculos {
         //PPG a PKGL en (0.1Kg/l) = PPG * 0.8316
         //ppg = ExtractoPotencial en porcentaje (Ej 0.8) por 46 q sos los ppg del azucar cuyo ExPot es 100
         //Kg de Malta = Sum (PD/EXTPOT/RENDIMIENTO/10)
+
         double KgdeMalta = 0;
-        for(int i = 0; i < granos.size(); i++){
-            double PKglx100g = 0.8316 * granos.get(i).getExtractPotential();
-            double Kggrano =  (ptosDensidad * granos.get(i).getQuantity())/PKglx100g/rendEquipo/10; // RendEquipo tiene q estar como 0.8 o 0.7...
-            KgdeMalta = KgdeMalta + Kggrano;
-        }
-        return KgdeMalta;
+        double PKglx100g = 0.8316 * grano.getExtractPotential();
+        double kgdeMalta =  (ptosDensidad * grano.getQuantity())/PKglx100g/rendEquipo/10; // RendEquipo tiene q estar como 0.8 o 0.7...
+
+
+        return kgdeMalta;
     }
 
 }
