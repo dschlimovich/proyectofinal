@@ -32,7 +32,8 @@
             android:id="@+id/editTextFinishPlanningMedTemp"
             android:layout_width="wrap_content"
             android:ems="3"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"/>
     </LinearLayout>
 
     <!--> Medición pH</!-->
@@ -48,7 +49,8 @@
             android:id="@+id/editTextFinishPlanningMedPh"
             android:layout_width="wrap_content"
             android:ems="3"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"/>
     </LinearLayout>
 
 </LinearLayout>
