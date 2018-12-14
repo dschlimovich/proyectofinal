@@ -96,7 +96,7 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
                 remainingStage.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
                     @Override
                     public void onChronometerTick(Chronometer chronometer) {
-                        if( "00:00".equals(chronometer.getText())){
+                        if( "00:00".contentEquals(chronometer.getText())){
                             chronometer.stop();
                             linearLayoutRemainingStage.setVisibility(View.INVISIBLE);
                         }

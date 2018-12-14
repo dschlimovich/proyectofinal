@@ -3,6 +3,7 @@ package com.example.maceradores.maceracion.activities;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -56,9 +57,10 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        if( intent.hasExtra("idMash") && intent.hasExtra("nameMash")){
+        if( intent.hasExtra("idMash") ){
             idMash = intent.getIntExtra("idMash", 0);
-            setTitle("Medición " + intent.getStringExtra("nameMash"));
+            setTitleName(idMash);
+            //setTitle("Medición " + intent.getStringExtra("nameMash"));
             long newExperimentId = insertNewExperiment(idMash);
             if(newExperimentId == -1) {
                 Toast.makeText(this, "Error al insertar experiencia", Toast.LENGTH_SHORT).show();
@@ -96,6 +98,24 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     }
 
+    private void setTitleName(int idMash) {
+        // saber el periodo de medicion.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"nombre"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            String name = cursor.getString(0); //como tengo una sola columna, devuelvo la primera nomas.
+            setTitle("Maceración" + name);
+        }
+        cursor.close();
+        db.close();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_bar_current_experience, menu);
@@ -108,9 +128,27 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             case R.id.cancelCurrentExperience:
                 cancelExperiment(this.idExperiment,this.idMash);
                 return true;
+            case R.id.acceptCurrentExperience:
+                acceptExperiment(this.idExperiment, this.idMash);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 
+        }
+
+    }
+
+    private void acceptExperiment(int idExperiment, int idMash) {
+        // primero debería saber si ya se ejecutaron todas las mediciones planificadas.
+        int medicionesRealizadas = amountSensedValue(idExperiment);
+        int cadaCuantoMido = intervaloMedicion(idMash);
+        int medcionesARealizar = cantMediciones( idMash, cadaCuantoMido);
+
+        if( medicionesRealizadas == medcionesARealizar){
+            // Mostrar el alertDialog para finalizar la experiencia.
+            // Tiene que insertar la densidad obtenida en el experimento.
+        } else {
+            Toast.makeText(this, "Aun no se realizaron todas las mediciones correspondientes", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -316,6 +354,51 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             Toast.makeText(CurrentExperienceActivity.this, "Experimento eliminado", Toast.LENGTH_SHORT).show();
 
         dbHelper.close();
+    }
+
+    public int amountSensedValue(int idExp){
+        //int amount = 0;
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        int amount = (int) DatabaseUtils.queryNumEntries(db, "SensedValues", "id_exp=?", new String[] {String.valueOf(idExp)});
+        db.close();
+        return amount;
+    }
+
+    private int cantMediciones( int idMash, int intervaloMedicion){
+        //TODO hacer con medicionesPorIntervalo
+
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT SUM(duracion) FROM Intervalo WHERE maceracion = ?", new String[]{String.valueOf(idMash)});
+        int duracionTotal = 0;
+        if(c.moveToFirst()){
+            duracionTotal = c.getInt(0);
+        }
+        c.close();
+        db.close();
+        return (duracionTotal * 60) / (intervaloMedicion/2);
+    }
+
+    private int intervaloMedicion (int idMash){
+        int intervaloMedicion = 0;
+        // saber el periodo de medicion.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"intervaloMedTemp"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            intervaloMedicion = cursor.getInt(0); //como tengo una sola columna, devuelvo la primera nomas.
+        }
+        cursor.close();
+        db.close();
+        if(intervaloMedicion<30)intervaloMedicion=30; // Minimo Intervalo de Medicion es de 30 seg
+
+        return intervaloMedicion;
     }
 
 
