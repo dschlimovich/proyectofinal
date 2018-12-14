@@ -58,7 +58,7 @@ public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapte
             //Here i load the values of my model in the UI
             // and link the listener
             //tengo que setear todos los campos-
-            this.stage.setText( "INTERVALO " + (getAdapterPosition() + 1));
+            this.stage.setText( "ETAPA " + (getAdapterPosition() + 1));
             this.detail.setText(interval.getDescription());
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
