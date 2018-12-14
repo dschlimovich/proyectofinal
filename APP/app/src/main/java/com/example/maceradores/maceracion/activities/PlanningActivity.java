@@ -54,7 +54,7 @@ public class PlanningActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
     //flag.
-    private boolean showMenu = true;
+    private boolean planned = false;
 
     //Container
     Spinner spinner;
@@ -96,7 +96,7 @@ public class PlanningActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if( this.showMenu){
+        if( !this.planned){
             getMenuInflater().inflate(R.menu.action_bar_planning_activity, menu);
             return super.onCreateOptionsMenu(menu);
         }
@@ -203,11 +203,13 @@ public class PlanningActivity extends AppCompatActivity {
         intervalListAdapter = new IntervalListAdapter(mash.getPlan(), R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
             @Override
             public void onItemClick(MeasureInterval interval, int position) {
-                Toast.makeText(PlanningActivity.this, "Intervalo Borrado", Toast.LENGTH_SHORT).show();
-                mash.removeMeasureInterval(position);
-                //intervals.remove(position);
-                //intervalListAdapter.notifyItemRemoved(position);
-                intervalListAdapter.notifyDataSetChanged();
+                if(!planned){
+                    Toast.makeText(PlanningActivity.this, "Intervalo Borrado", Toast.LENGTH_SHORT).show();
+                    mash.removeMeasureInterval(position);
+                    //intervals.remove(position);
+                    //intervalListAdapter.notifyItemRemoved(position);
+                    intervalListAdapter.notifyDataSetChanged();
+                }
             }
         });
         listsIntervals = (RecyclerView) findViewById(R.id.recyclerViewIntervalPlanning);
@@ -244,7 +246,7 @@ public class PlanningActivity extends AppCompatActivity {
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.framePlanning);
         blockView(frameLayout);
         // necesito bloquear el menu tambien...
-        this.showMenu = false;
+        this.planned = true;
 
     }
 
