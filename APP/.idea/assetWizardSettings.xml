@@ -34,11 +34,11 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="a0a1a6" />
+                                      <entry key="backgroundColor" value="ffffff" />
                                       <entry key="backgroundLayerName" value="ic_launcher_background" />
-                                      <entry key="foregroundImage" value="C:\Users\damia\Downloads\error.svg" />
+                                      <entry key="foregroundImage" value="C:\Users\damia\Downloads\success (1).svg" />
                                       <entry key="foregroundLayerName" value="ic_launcher_foreground" />
-                                      <entry key="outputName" value="ic_cancel" />
+                                      <entry key="outputName" value="ic_success" />
                                     </map>
                                   </option>
                                 </PersistentState>
