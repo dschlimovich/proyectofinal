@@ -1,6 +1,7 @@
 package com.example.maceradores.maceracion.activities;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -9,12 +10,17 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maceradores.maceracion.Fragments.MeasureFragment;
@@ -147,6 +153,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         if( medicionesRealizadas == medcionesARealizar){
             // Mostrar el alertDialog para finalizar la experiencia.
             // Tiene que insertar la densidad obtenida en el experimento.
+            showAlertFinishExperience();
         } else {
             Toast.makeText(this, "Aun no se realizaron todas las mediciones correspondientes", Toast.LENGTH_SHORT).show();
         }
@@ -399,6 +406,50 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         if(intervaloMedicion<30)intervaloMedicion=30; // Minimo Intervalo de Medicion es de 30 seg
 
         return intervaloMedicion;
+    }
+
+    private void showAlertFinishExperience(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Finalizar Experimento");
+
+        View finishExperienceView = LayoutInflater.from(this).inflate(R.layout.dialog_finish_experience, null);
+        builder.setView(finishExperienceView);
+        //Ahora tenemos que obtener las referencia y cargarla
+        final EditText editTextDensity = (EditText) finishExperienceView.findViewById(R.id.editTextFinishExperienceDensity);
+        //agrego boton para cerrar el dialogo
+
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //necesito insertarle la densidad al experimento.
+                float density = Float.valueOf(editTextDensity.getText().toString());
+                insertDensity(idExperiment, density);
+            }
+        });
+
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.create().show();
+
+    }
+
+    private void insertDensity( int idExperiment, float density){
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues experimentValues = new ContentValues();
+        experimentValues.put("densidad", density );
+        String whereClausule = "id = ?";
+        String[] whereClausuleArgs = new String[] {String.valueOf(idExperiment)};
+        int cant = db.update("Experimento", experimentValues,whereClausule, whereClausuleArgs);
+        dbHelper.close();
+        if(cant == 1)
+            Toast.makeText(this, "Valor de densidad insertado correctamente", Toast.LENGTH_SHORT).show();
     }
 
 
