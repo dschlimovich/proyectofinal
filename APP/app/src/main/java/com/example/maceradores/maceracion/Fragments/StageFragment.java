@@ -48,18 +48,15 @@ public class StageFragment extends Fragment {
 
 
         this.idExp=idExp;
-        return inflater.inflate(R.layout.fragment_stage, container, false);
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
         recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerViewStage);
         List<MeasureInterval> intervals = getIntervals(idMash);
         adapter = new StageFragmentAdapter(intervals, R.layout.item_list_stage);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
+
+        return inflater.inflate(R.layout.fragment_stage, container, false);
     }
 
     private List<MeasureInterval> getIntervals(int idMash){
