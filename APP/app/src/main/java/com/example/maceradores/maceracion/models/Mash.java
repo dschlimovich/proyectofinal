@@ -1,5 +1,7 @@
 package com.example.maceradores.maceracion.models;
 
+import com.example.maceradores.maceracion.utils.Calculos;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -181,4 +183,5 @@ public class Mash {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
+
 }

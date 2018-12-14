@@ -34,4 +34,16 @@ public class Grain {
     public void setExtractPotential(float extractPotential) {
         this.extractPotential = extractPotential;
     }
+
+    public String getStringPlanning(){
+        return  getName() +
+                "\t porcentaje: " + String.valueOf(getQuantity()) +
+                "\t Extracto: " + String.valueOf(getExtractPotential());
+    }
+
+    public String getStringPlanned(float rendimiento){
+        String detail = getName() +
+                "\t Cantidad: " + String.valueOf(1) + " kg ";
+        return detail;
+    }
 }

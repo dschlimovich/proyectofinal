@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Calculos {
 
-    public double[] calcRendimiento(double volMosto, double densEspecif, double kgMalta){
+    public static double[] calcRendimiento(double volMosto, double densEspecif, double kgMalta){
         //Densidad Especifica que mido
         double gradosPlato=(densEspecif-1)/0.004;
         double kgExhl = gradosPlato * densEspecif;
@@ -21,7 +21,7 @@ public class Calculos {
         return array;
     }
 
-    public double calcCantInsumoPrac(double volMosto, double densEspecif, double porcRend){
+    public static double calcCantInsumoPrac(double volMosto, double densEspecif, double porcRend){
         //La densidad especifica que quiero tener antes de hervir
         double gradosPlato=(densEspecif-1)/0.004;
         double kgExhl = gradosPlato * densEspecif;
@@ -33,7 +33,7 @@ public class Calculos {
         return kgGrano;
     }
 
-    public double cantInsumoPorGrano( double kgGranoTotal, double porcentajeGrano, double extractoPotencial ){
+    public static double cantInsumoPorGrano( double kgGranoTotal, double porcentajeGrano, double extractoPotencial ){
         // supongando porcentaje con formato 0.9 para 90% y extracto potencia en formato 0.81
         // si no estan expersados en porcentaje, lo divido por cien :)
         if(porcentajeGrano > 1){
@@ -46,26 +46,26 @@ public class Calculos {
         return (kgGranoTotal * porcentajeGrano) / extractoPotencial;
     }
 
-    public double temperaturaAguaInicial( double tempTarget, double tempAmb, double volAgua, double kgMalta){
+    public static double temperaturaAguaInicial( double tempTarget, double tempAmb, double volAgua, double kgMalta){
         // de donde sacamos la temperatura ambiente? pinche mierda.
         double r = volAgua / kgMalta;
         return (0.41 / r) * (tempTarget - tempAmb) + tempTarget;
     }
 
-    public double escalonTemperatura( double tempMash, double tempTarget, double tempAmb, double volAgua, double kgMalta){
+    public static double escalonTemperatura( double tempMash, double tempTarget, double tempAmb, double volAgua, double kgMalta){
         //asi entendí la formula.
         return (tempTarget - tempAmb) * (0.41 * kgMalta + volAgua) / (tempMash - tempTarget);
     }
 
-    public double cantMostoRetirarDecoccion( double tempMash, double tempTarget, double volAgua){
+    public static double cantMostoRetirarDecoccion( double tempMash, double tempTarget, double volAgua){
         return ((tempTarget - tempMash) * volAgua) / (95 - tempMash);
     }
 
-    public double calcCantInsumoTeoRayDaniels(float densEspecif, float volLitros, List<Grain> granos, float rendEquipo){
+    public static double calcCantInsumoTeoRayDaniels(float densEspecif, float volLitros, List<Grain> granos, float rendEquipo){
         double factorDenso = (1- densEspecif)*1000; //densEspecif Objetivo!
         double ptosDensidad = factorDenso * volLitros; //Ptos de densidad de objetivo
 
-        //1 lb = 2,2 Kg ---- 3,78 l = 1 gal ---> 1 lb/ gal = 2.2/(1/3.78) Kg/l = 8.316
+        //1 kg = 2,2 lb ---- 3,78 l = 1 gal ---> 1 lb/ gal = 2.2/(1/3.78) Kg/l = 8.316
         //En una proporción de 100 g, divido por 10... = 0.8316
         //PPG a PKGL en (0.1Kg/l) = PPG * 0.8316
         //ppg = ExtractoPotencial en porcentaje (Ej 0.8) por 46 q sos los ppg del azucar cuyo ExPot es 100

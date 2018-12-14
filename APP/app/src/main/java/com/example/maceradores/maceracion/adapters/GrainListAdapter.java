@@ -16,11 +16,15 @@ public class GrainListAdapter extends BaseAdapter {
     private Context context;
     private List<Grain> grainList;
     private int layout;
+    private boolean planned = false;
 
     public GrainListAdapter(Context context, List<Grain> grainList, int layout) {
         this.context = context;
         this.grainList = grainList;
         this.layout = layout;
+        if(grainList.size() > 0){
+            planned = true;
+        }
     }
 
     @Override
@@ -45,9 +49,16 @@ public class GrainListAdapter extends BaseAdapter {
         convertView = inflater.inflate(this.layout, null);
 
         TextView grainDetail = (TextView) convertView.findViewById(R.id.textViewGrainDetail);
-        String detail = this.grainList.get(position).getName() + "\t porcentaje: " +
+        /*String detail = this.grainList.get(position).getName() + "\t porcentaje: " +
                 String.valueOf(this.grainList.get(position).getQuantity()) + "\t extracto: " +
                 String.valueOf(this.grainList.get(position).getExtractPotential());
+        */
+        String detail;
+        if( planned){
+            detail = grainList.get(position).getStringPlanning();
+        } else{
+            detail = grainList.get(position).getStringPlanning();
+        }
 
         grainDetail.setText(detail);
 
