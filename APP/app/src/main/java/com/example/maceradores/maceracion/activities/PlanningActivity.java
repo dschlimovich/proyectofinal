@@ -70,14 +70,6 @@ public class PlanningActivity extends AppCompatActivity {
     //Data - Fields to create the new mash.
     private Mash mash;
 
-    //private String type;
-    //private float volume;
-    //private float density;
-    //private List<MeasureInterval> intervals;
-    //private List<Grain> grains;
-    //private String nameMash;
-    //private int periodoMedicionTemp;
-    //private int periodoMedicionPh;
 
     // LifeCycle functions.
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -436,13 +428,9 @@ public class PlanningActivity extends AppCompatActivity {
                         Toast.makeText(PlanningActivity.this, "El intervalo de medicion de ph debe ser multiplo del intervalo de medicion de temperatura", Toast.LENGTH_SHORT).show();
                     } else {
                         //At this moment, i need to insert this new mash in the database
-                        String[] tipos = getResources().getStringArray(R.array.tiposMaceracion);
-                        //Log.d("Planning", "Cantidad de tipos " + tipos.length);
-                        List<String> tiposMaceracion = Arrays.asList(tipos);
-                        //Log.d("Planning", "longitud de tipos: " + tiposMaceracion.size());
-                        mash.setTipo( tiposMaceracion.get(spinner.getSelectedItemPosition()).trim());
-                        //Log.d("Planning", "el indice es: " + spinner.getSelectedItemPosition());
-                        //Log.d("Planning", "El tipo de maceracion es :" + mash.getTipo());
+
+                        mash.setTipo(spinner.getSelectedItem().toString());
+
                         insertNewPlanning();
                         //startActivity(new Intent(PlanningActivity.this, MainActivity.class));
                         finish();

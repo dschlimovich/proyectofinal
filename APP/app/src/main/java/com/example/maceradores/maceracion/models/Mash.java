@@ -150,7 +150,7 @@ public class Mash {
     }
 
     public void removeGrain(int index){
-        if( index > 0 && index < grains.size())
+        if( index >= 0 && index < grains.size())
             grains.remove(index);
     }
 
