@@ -22,8 +22,10 @@ public class Mash {
     //Empty Constructor.
     public Mash(){}
 
-    public Mash(String name) {
+    public Mash(int id, String name, String type) {
+        this.id = id;
         this.name = name;
+        this.tipo = type;
     }
 
     public Mash(int id, String name) {

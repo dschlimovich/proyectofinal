@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,6 +45,7 @@ import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PlanningActivity extends AppCompatActivity {
@@ -434,6 +436,13 @@ public class PlanningActivity extends AppCompatActivity {
                         Toast.makeText(PlanningActivity.this, "El intervalo de medicion de ph debe ser multiplo del intervalo de medicion de temperatura", Toast.LENGTH_SHORT).show();
                     } else {
                         //At this moment, i need to insert this new mash in the database
+                        String[] tipos = getResources().getStringArray(R.array.tiposMaceracion);
+                        //Log.d("Planning", "Cantidad de tipos " + tipos.length);
+                        List<String> tiposMaceracion = Arrays.asList(tipos);
+                        //Log.d("Planning", "longitud de tipos: " + tiposMaceracion.size());
+                        mash.setTipo( tiposMaceracion.get(spinner.getSelectedItemPosition()).trim());
+                        //Log.d("Planning", "el indice es: " + spinner.getSelectedItemPosition());
+                        //Log.d("Planning", "El tipo de maceracion es :" + mash.getTipo());
                         insertNewPlanning();
                         //startActivity(new Intent(PlanningActivity.this, MainActivity.class));
                         finish();
