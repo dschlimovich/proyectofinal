@@ -82,8 +82,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
+        setToolbar();
 
     } //end OnCreate
 
@@ -111,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        setToolbar();
+
+
     }
 
     private List<Mash> getAllMash() {
