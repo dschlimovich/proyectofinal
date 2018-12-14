@@ -1,5 +1,7 @@
 package com.example.maceradores.maceracion.models;
 
+import com.example.maceradores.maceracion.utils.Calculos;
+
 public class Grain {
     private String name;
     private float quantity;
@@ -37,13 +39,22 @@ public class Grain {
 
     public String getStringPlanning(){
         return  getName() +
-                "\t porcentaje: " + String.valueOf(getQuantity()) +
+                "\t Porcentaje: " + String.valueOf(getQuantity()) +
                 "\t Extracto: " + String.valueOf(getExtractPotential());
     }
 
-    public String getStringPlanned(float rendimiento){
-        String detail = getName() +
-                "\t Cantidad: " + String.valueOf(1) + " kg ";
-        return detail;
+    public String getStringPlanned(float densEspecif, float volLitros, float rendEquipoTeorico){
+        double kg = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipoTeorico);
+        return getName() +
+                "\t Cantidad: " + String.valueOf(kg) + " kg ";
     }
+
+    public String getStringPlanned(float densEspecif, float volLitros, float rendEquipoTeorico, float rendEquipoPractico){
+        double kg = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipoTeorico);
+        double kgPractico = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipoPractico);
+        return getName() +
+                "\t Cantidad Teórica: " + String.valueOf(kg) + " kg " +
+                "\t Cantidad Práctica: " + String.valueOf(kgPractico) + " kg";
+    }
+
 }
