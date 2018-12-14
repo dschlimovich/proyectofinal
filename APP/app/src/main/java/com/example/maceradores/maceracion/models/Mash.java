@@ -141,6 +141,15 @@ public class Mash {
         this.grains = grains;
     }
 
+    public void addGrain(Grain grain){
+        this.grains.add(grain);
+    }
+
+    public void removeGrain(int index){
+        if( index > 0 && index < grains.size())
+            grains.remove(index);
+    }
+
     public int getPeriodMeasureTemperature() {
         return periodMeasureTemperature;
     }

@@ -66,14 +66,16 @@ public class PlanningActivity extends AppCompatActivity {
     private IntervalListAdapter intervalListAdapter;
 
     //Data - Fields to create the new mash.
-    private String type;
-    private float volume;
-    private float density;
-    private List<MeasureInterval> intervals;
-    private List<Grain> grains;
-    private String nameMash;
-    private int periodoMedicionTemp;
-    private int periodoMedicionPh;
+    private Mash mash;
+
+    //private String type;
+    //private float volume;
+    //private float density;
+    //private List<MeasureInterval> intervals;
+    //private List<Grain> grains;
+    //private String nameMash;
+    //private int periodoMedicionTemp;
+    //private int periodoMedicionPh;
 
     // LifeCycle functions.
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -82,12 +84,14 @@ public class PlanningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning);
 
+        this.mash = new Mash();
         chargeUI();
 
         // If i receive an intent, i need to charge with the data and block the elements of UI.
         Intent intent = getIntent();
         if(intent.hasExtra("idMash")){
             int idMash = intent.getIntExtra("idMash", -1);
+            mash.setId(idMash);
             fillUI(idMash);
             // tengo que deshabilitar el boton del action bar.
             blockUI();
@@ -120,18 +124,22 @@ public class PlanningActivity extends AppCompatActivity {
                     Toast.makeText(this, "No se insertó la densidad deseada de maceración", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                this.volume = Float.valueOf(volumePlanning.getText().toString().trim());
-                this.density = Float.valueOf(densityPlanning.getText().toString().trim());
+                //this.volume = Float.valueOf(volumePlanning.getText().toString().trim());
+                mash.setVolumen(Float.valueOf(volumePlanning.getText().toString().trim()));
+                //this.density = Float.valueOf(densityPlanning.getText().toString().trim());
+                mash.setDensidadObjetivo(Float.valueOf(densityPlanning.getText().toString().trim()));
                 //y el correspondiente al tipo de maceracion.
                 Spinner spinner = findViewById(R.id.spinnerTiposMaceracion);
-                this.type = spinner.getSelectedItem().toString().trim();
+                //this.type = spinner.getSelectedItem().toString().trim();
+                mash.setTipo(spinner.getSelectedItem().toString().trim());
 
                 //válido los granos y los intervalos.
-                if(grains.isEmpty()){
+                //if(grains.isEmpty()){
+                if(mash.getGrains().isEmpty()){
                     Toast.makeText(this, "No se insertó ningun grano para la maceración", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                if(intervals.isEmpty()){
+                if(mash.getPlan().isEmpty()){
                     Toast.makeText(this, "No se insertó ningun intervalo de medición para la maceración", Toast.LENGTH_SHORT).show();
                     return false;
                 }
@@ -148,8 +156,8 @@ public class PlanningActivity extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        menu.setHeaderTitle( this.grains.get(info.position).getName());
-
+        //menu.setHeaderTitle( this.grains.get(info.position).getName());
+        menu.setHeaderTitle( mash.getGrains().get(info.position).getName());
         inflater.inflate(R.menu.context_menu_grains, menu);
     }
 
@@ -161,7 +169,8 @@ public class PlanningActivity extends AppCompatActivity {
             case R.id.deleteGrainsContextMenu:
                 // aprete en el context menu la opcion eliminar.
                 //tengo que obtener la posicion en la que estoy y eliminarla.
-                this.grains.remove(info.position);
+                //this.grains.remove(info.position);
+                mash.removeGrain(info.position);
                 //notifico a los adaptadores
                 this.grainListAdapter.notifyDataSetChanged();
                 Toast.makeText(PlanningActivity.this, "Grano eliminado", Toast.LENGTH_SHORT).show();
@@ -185,20 +194,24 @@ public class PlanningActivity extends AppCompatActivity {
         spinner.setAdapter(adapterSpinner);
 
         // List of Grains
-        grains = new ArrayList<Grain>();
+        //grains = new ArrayList<Grain>();
+        //mash.setGrains(grains);
+        mash.setGrains(new ArrayList<Grain>());
         listGrains = (ListView) findViewById(R.id.listViewPlanningGrains);
-        grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
+        //grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
+        grainListAdapter = new GrainListAdapter(this, mash.getGrains(), R.layout.item_list_grain);
         listGrains.setAdapter(grainListAdapter);
         registerForContextMenu(this.listGrains);
 
         // List of intervals
-        intervals = new ArrayList<MeasureInterval>();
+        mash.setPlan(new ArrayList<MeasureInterval>());
         layoutManager = new LinearLayoutManager(this);
-        intervalListAdapter = new IntervalListAdapter(intervals, R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
+        intervalListAdapter = new IntervalListAdapter(mash.getPlan(), R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
             @Override
             public void onItemClick(MeasureInterval interval, int position) {
                 Toast.makeText(PlanningActivity.this, "Intervalo Borrado", Toast.LENGTH_SHORT).show();
-                intervals.remove(position);
+                mash.removeMeasureInterval(position);
+                //intervals.remove(position);
                 //intervalListAdapter.notifyItemRemoved(position);
                 intervalListAdapter.notifyDataSetChanged();
             }
@@ -283,19 +296,22 @@ public class PlanningActivity extends AppCompatActivity {
             setTitle("Planificación " + nameMash);
 
             //tipo de maceracion : spinner.
-            type = cursor.getString(cursor.getColumnIndexOrThrow("tipo"));
-            int spinnerPosition = adapterSpinner.getPosition(type);
+            mash.setTipo(cursor.getString(cursor.getColumnIndexOrThrow("tipo")));
+            //type = cursor.getString(cursor.getColumnIndexOrThrow("tipo"));
+            int spinnerPosition = adapterSpinner.getPosition(mash.getTipo());
             spinner.setSelection(spinnerPosition);
 
             // volumen
-            volume = cursor.getFloat(cursor.getColumnIndexOrThrow("volumen"));
+            mash.setVolumen(cursor.getFloat(cursor.getColumnIndexOrThrow("volumen")));
+            //volume = cursor.getFloat(cursor.getColumnIndexOrThrow("volumen"));
             EditText volumePlanning = findViewById(R.id.editTextPlanningVolumen);
-            volumePlanning.setText(String.valueOf(volume));
+            volumePlanning.setText(String.valueOf(mash.getVolumen()));
 
             //densidad
-            density = cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo"));
+            mash.setDensidadObjetivo(cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo")));
+            //density = cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo"));
             EditText densityPlanning = findViewById(R.id.editTextPlanningDensidad);
-            densityPlanning.setText(String.valueOf(density));
+            densityPlanning.setText(String.valueOf(mash.getDensidadObjetivo()));
 
             // A los intervalos de medicion mandale saludos a cagaste. De la forma que lo plantemaos.
             // no es facil mostrarlo.
@@ -326,7 +342,8 @@ public class PlanningActivity extends AppCompatActivity {
             Float extract = cursor.getFloat(cursor.getColumnIndexOrThrow("extractoPotencial"));
              //con estos tres valores puedo crear el grano y agregarlo.
             Grain grain = new Grain(name, quantity, extract);
-            grains.add(grain);
+            //grains.add(grain);
+            mash.addGrain(grain);
         }//end while
         grainListAdapter.notifyDataSetChanged();
         cursor.close();
@@ -365,7 +382,8 @@ public class PlanningActivity extends AppCompatActivity {
 
             //con estos tres valores puedo crear el intervalo y agregarlo.
             MeasureInterval interval = new MeasureInterval(order, temperature, temperatureDeviation, temperatureDecoccion, temperatureDecoccionDeviation, ph, phDeviation, duration);
-            intervals.add(interval);
+            //intervals.add(interval);
+            mash.addMeasureInterval(interval);
         }//end while
         intervalListAdapter.notifyDataSetChanged();
 
@@ -402,14 +420,17 @@ public class PlanningActivity extends AppCompatActivity {
                     //dialog.cancel();
                 } else {
                     //save values. Note the beautiful development without any violation
-                    PlanningActivity.this.nameMash = nombre.getText().toString().trim();
-                    PlanningActivity.this.periodoMedicionTemp = Integer.valueOf(medTemp.getText().toString().trim());
-                    PlanningActivity.this.periodoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
+                    //PlanningActivity.this.nameMash = nombre.getText().toString().trim();
+                    PlanningActivity.this.mash.setName(nombre.getText().toString().trim());
+                    //PlanningActivity.this.periodoMedicionTemp = Integer.valueOf(medTemp.getText().toString().trim());
+                    PlanningActivity.this.mash.setPeriodMeasureTemperature(Integer.valueOf(medTemp.getText().toString().trim()));
+                    //PlanningActivity.this.periodoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
+                    PlanningActivity.this.mash.setPeriodMeasurePh(Integer.valueOf(medPh.getText().toString().trim()));
 
-                    if( periodoMedicionPh < periodoMedicionTemp){
+                    if( mash.getPeriodMeasurePh() < mash.getPeriodMeasureTemperature()){
                         // el sistema no lo permite.
                         Toast.makeText(PlanningActivity.this, "El intervalo de medición de ph no puede ser menor que el intervalor de medición de temperatura.", Toast.LENGTH_SHORT).show();
-                    } else if(periodoMedicionPh % periodoMedicionTemp != 0){
+                    } else if(mash.getPeriodMeasurePh() % mash.getPeriodMeasureTemperature() != 0){
                         Toast.makeText(PlanningActivity.this, "El intervalo de medicion de ph debe ser multiplo del intervalo de medicion de temperatura", Toast.LENGTH_SHORT).show();
                     } else {
                         //At this moment, i need to insert this new mash in the database
@@ -441,7 +462,8 @@ public class PlanningActivity extends AppCompatActivity {
 
         //le pongo el numerito de etapa que iria a agregar.
         TextView numberInterval = (TextView) addIntervalView.findViewById(R.id.textViewNumberInterval);
-        numberInterval.append(String.valueOf(intervals.size() + 1));
+        //numberInterval.append(String.valueOf(intervals.size() + 1));
+        numberInterval.append(String.valueOf(mash.getPlan().size() + 1));
 
         //Necesito todas las referencias a los editText.
         final EditText duration = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalDuration);
@@ -519,7 +541,8 @@ public class PlanningActivity extends AppCompatActivity {
                     float extractPotential = Float.valueOf(grainExtractPotential.getText().toString());
 
                     Grain grain = new Grain(name, quantity, extractPotential);
-                    grains.add(grain);
+                    //grains.add(grain);
+                    mash.addGrain(grain);
 
                     grainListAdapter.notifyDataSetChanged();
                 }
@@ -538,7 +561,8 @@ public class PlanningActivity extends AppCompatActivity {
 
     //BD functions
     private void addInterval(MeasureInterval interval){
-        this.intervals.add(interval);
+        //this.intervals.add(interval);
+        mash.addMeasureInterval(interval);
         this.intervalListAdapter.notifyDataSetChanged();
     }
 
@@ -547,12 +571,19 @@ public class PlanningActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         //Ahora puedo escribir en la base de datos,
         ContentValues mashValues = new ContentValues();
-        mashValues.put( "nombre", nameMash); //el nombre tiene la clausula unique
-        mashValues.put( "tipo", PlanningActivity.this.type);
-        mashValues.put( "volumen", PlanningActivity.this.volume);
-        mashValues.put( "densidadObjetivo", PlanningActivity.this.density);
-        mashValues.put( "intervaloMedTemp", periodoMedicionTemp);
-        mashValues.put( "intervaloMedPh", periodoMedicionPh);
+        //mashValues.put( "nombre", nameMash); //el nombre tiene la clausula unique
+        mashValues.put( "nombre", mash.getName()); //el nombre tiene la clausula unique
+        //mashValues.put( "tipo", PlanningActivity.this.type);
+        mashValues.put( "tipo", PlanningActivity.this.mash.getTipo());
+        //mashValues.put( "volumen", PlanningActivity.this.volume);
+        mashValues.put( "volumen", PlanningActivity.this.mash.getVolumen());
+        //mashValues.put( "densidadObjetivo", PlanningActivity.this.density);
+        mashValues.put( "densidadObjetivo", PlanningActivity.this.mash.getDensidadObjetivo());
+        //mashValues.put( "intervaloMedTemp", periodoMedicionTemp);
+        mashValues.put( "intervaloMedTemp", PlanningActivity.this.mash.getPeriodMeasureTemperature());
+        //mashValues.put( "intervaloMedPh", periodoMedicionPh);
+        mashValues.put( "intervaloMedPh", mash.getPeriodMeasurePh());
+
 
         long newMashId = db.insert("Maceracion", null, mashValues);
 
@@ -562,11 +593,16 @@ public class PlanningActivity extends AppCompatActivity {
             // Si inserto la maceración, tengo que insertar ademas los granos y las etapas de medicion.
             // Comencemos por los granos.
             ContentValues grainValues;
-            for(int i = 0; i < grains.size(); i++){
+            //for(int i = 0; i < grains.size(); i++){
+            for(int i = 0; i < mash.getGrains().size(); i++){
                 grainValues = new ContentValues();
-                grainValues.put("nombre", grains.get(i).getName());
-                grainValues.put("cantidad", grains.get(i).getQuantity());
-                grainValues.put("extractoPotencial", grains.get(i).getExtractPotential());
+                // TODO hacerlo sin violacion de clases
+                //grainValues.put("nombre", grains.get(i).getName());
+                grainValues.put("nombre", mash.getGrains().get(i).getName());
+                //grainValues.put("cantidad", grains.get(i).getQuantity());
+                grainValues.put("cantidad", mash.getGrains().get(i).getQuantity());
+                //grainValues.put("extractoPotencial", grains.get(i).getExtractPotential());
+                grainValues.put("extractoPotencial", mash.getGrains().get(i).getExtractPotential());
                 grainValues.put("maceracion", newMashId);
 
                 long newGrainId = db.insert("Grano",null, grainValues );
@@ -577,17 +613,19 @@ public class PlanningActivity extends AppCompatActivity {
 
             //Ahora agregamos los intervalos de medicion.
             ContentValues intervalValues;
-            for( int i = 0; i < intervals.size(); i++){
+            //for( int i = 0; i < intervals.size(); i++){
+            for( int i = 0; i < mash.getPlan().size(); i++){
                 intervalValues = new ContentValues();
 
                 intervalValues.put("orden", i+1); // como le quedo definido, los pongo en ese orden
-                intervalValues.put("duracion", intervals.get(i).getDuration());
-                intervalValues.put("temperatura", intervals.get(i).getMainTemperature());
-                intervalValues.put("desvioTemperatura", intervals.get(i).getMainTemperatureDeviation());
-                intervalValues.put("ph", intervals.get(i).getpH());
-                intervalValues.put("desvioPh", intervals.get(i).getPhDeviation());
-                intervalValues.put("tempDecoccion", intervals.get(i).getSecondTemperature());
-                intervalValues.put("desvioTempDecoccion", intervals.get(i).getSecondTemperatureDeviation());
+                //intervalValues.put("duracion", intervals.get(i).getDuration());
+                intervalValues.put("duracion", mash.getPlan().get(i).getDuration());
+                intervalValues.put("temperatura", mash.getPlan().get(i).getMainTemperature());
+                intervalValues.put("desvioTemperatura", mash.getPlan().get(i).getMainTemperatureDeviation());
+                intervalValues.put("ph", mash.getPlan().get(i).getpH());
+                intervalValues.put("desvioPh", mash.getPlan().get(i).getPhDeviation());
+                intervalValues.put("tempDecoccion", mash.getPlan().get(i).getSecondTemperature());
+                intervalValues.put("desvioTempDecoccion", mash.getPlan().get(i).getSecondTemperatureDeviation());
                 intervalValues.put("maceracion", newMashId);
 
                 long newIntervalId = db.insert("Intervalo", null, intervalValues);
