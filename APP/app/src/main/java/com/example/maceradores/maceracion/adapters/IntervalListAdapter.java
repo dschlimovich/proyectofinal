@@ -10,8 +10,6 @@ import android.widget.TextView;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapter.ViewHolder> {

@@ -15,7 +15,7 @@
         android:id="@+id/tabLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/toolbar_MashExpActivity"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:minHeight="?attr/actionBarSize"
@@ -25,5 +25,5 @@
         android:id="@+id/viewPager2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tabLayout" />
+        android:layout_below="@id/tabLayout2" />
 </RelativeLayout>

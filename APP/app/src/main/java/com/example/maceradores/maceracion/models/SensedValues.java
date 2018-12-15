@@ -1,7 +1,5 @@
 package com.example.maceradores.maceracion.models;
 
-import java.util.Date;
-
 public class SensedValues {
 
     private int id;

@@ -41,5 +41,8 @@ dependencies {
     //WorkManager dependencies
     def work_version = "1.0.0-alpha11"
 
+    //MPCharts
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
+
     implementation "android.arch.work:work-runtime:$work_version"
 }

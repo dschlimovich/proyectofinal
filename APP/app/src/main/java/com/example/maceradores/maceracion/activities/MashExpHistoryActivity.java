@@ -11,18 +11,18 @@ import android.support.v7.widget.Toolbar;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.ViewPagerAdapterStatics;
+import com.github.mikephil.charting.data.Entry;
 
-import java.util.UUID;
+import java.util.ArrayList;
 
 public class MashExpHistoryActivity extends AppCompatActivity {
-
 
 
     //UI
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapterStatics adapter;
-    private UUID workId;
+
 
     private int idMash;
 
@@ -67,6 +67,18 @@ public class MashExpHistoryActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_MashExpActivity);
         setSupportActionBar(toolbar);
         getSupportActionBar().show();
+    }
+
+    private ArrayList<Entry> MeanTempeatureSet(){
+
+        //Primero hacer un select con todos los idExp relacionados a este idMash
+        //Armar un Array q tenga tantas filas como idExp.
+        //Recorrer los idExp haciendo Select de Sensed Values y ubicarlos en cada Fila de la Matriz.
+        //Validar que la cant de Sensed Values q vienen por IdExp sea == a los q deberia de tener un Exp completo.
+        
+    ArrayList<Entry> retorno = new ArrayList<>();
+    return retorno;
+
     }
 
 }

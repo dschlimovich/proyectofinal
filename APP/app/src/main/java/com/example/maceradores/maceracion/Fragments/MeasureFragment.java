@@ -3,9 +3,7 @@ package com.example.maceradores.maceracion.Fragments;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,16 +19,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
-import com.example.maceradores.maceracion.activities.CurrentExperienceActivity;
-import com.example.maceradores.maceracion.activities.MainActivity;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.models.SensedValues;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

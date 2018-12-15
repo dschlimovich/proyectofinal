@@ -6,10 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.maceradores.maceracion.Fragments.StageFragment;
 import com.example.maceradores.maceracion.Fragments.MeasureFragment;
-
-import java.util.UUID;
+import com.example.maceradores.maceracion.Fragments.StageFragment;
 
 public class ViewPagerAdapterCurrent extends FragmentPagerAdapter {
     private int numberOfTabs;
