@@ -10,8 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.example.maceradores.maceracion.R;
-import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
-import com.example.maceradores.maceracion.adapters.ViewPagerAdapter2;
+import com.example.maceradores.maceracion.adapters.ViewPagerAdapterStatics;
 
 import java.util.UUID;
 
@@ -22,7 +21,7 @@ public class MashExpHistoryActivity extends AppCompatActivity {
     //UI
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private ViewPagerAdapter2 adapter;
+    private ViewPagerAdapterStatics adapter;
     private UUID workId;
 
     private int idMash;
@@ -57,7 +56,7 @@ public class MashExpHistoryActivity extends AppCompatActivity {
 
     private void setViewPager(){
         viewPager = (ViewPager) findViewById(R.id.viewPager2);
-        adapter = new ViewPagerAdapter2(getSupportFragmentManager(),this,tabLayout.getTabCount());
+        adapter = new ViewPagerAdapterStatics(getSupportFragmentManager(),this,tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }

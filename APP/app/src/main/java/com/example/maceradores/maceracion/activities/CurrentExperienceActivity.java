@@ -17,17 +17,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.WorkManager.MyWorker;
-import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
+import com.example.maceradores.maceracion.adapters.ViewPagerAdapterCurrent;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
 import com.google.gson.JsonObject;
@@ -54,7 +51,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     //UI
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private ViewPagerAdapter adapter;
+    private ViewPagerAdapterCurrent adapter;
     private UUID workId;
 
     // LifeCycle functions.
@@ -188,7 +185,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     private void setViewPager(){
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager(),this,tabLayout.getTabCount(),idMash, idExperiment);
+        adapter = new ViewPagerAdapterCurrent(getSupportFragmentManager(),this,tabLayout.getTabCount(),idMash, idExperiment);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }

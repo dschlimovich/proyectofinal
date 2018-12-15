@@ -138,7 +138,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.staticsAllExperiments:
-                Intent intent2 = new Intent(ExperimentActivity.this, PlanningActivity.class);
+                Intent intent2 = new Intent(ExperimentActivity.this, MashExpHistoryActivity.class);
                 intent2.putExtra("idMash", idMash);
                 startActivity(intent2);
 

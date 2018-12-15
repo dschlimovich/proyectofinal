@@ -8,13 +8,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.example.maceradores.maceracion.Fragments.GraficGeneralFragment;
 import com.example.maceradores.maceracion.Fragments.GraficExperimentsFragment;
 
-public class ViewPagerAdapter2  extends FragmentPagerAdapter {
+public class ViewPagerAdapterStatics extends FragmentPagerAdapter {
     private int numberOfTabs;
     private Fragment GeneralFragment = null;
     private Fragment ExperimentsFragment = null;
 
 
-    public ViewPagerAdapter2(FragmentManager fm, Context context, int numberOfTabs) {
+    public ViewPagerAdapterStatics(FragmentManager fm, Context context, int numberOfTabs) {
         super(fm);
         this.numberOfTabs=numberOfTabs;
     }
