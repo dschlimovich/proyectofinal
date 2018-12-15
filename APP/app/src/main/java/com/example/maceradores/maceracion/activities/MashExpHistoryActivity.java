@@ -1,5 +1,6 @@
 package com.example.maceradores.maceracion.activities;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -24,6 +25,8 @@ public class MashExpHistoryActivity extends AppCompatActivity {
     private ViewPagerAdapter2 adapter;
     private UUID workId;
 
+    private int idMash;
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -31,6 +34,14 @@ public class MashExpHistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mash_exp_history);
+
+
+        Intent intent = getIntent();
+        if(intent.hasExtra("idMash")){
+            this.idMash = intent.getIntExtra("idMash", -1);
+
+        }
+
 
         setToolbar();
         setTabLayout();

@@ -138,7 +138,10 @@ public class ExperimentActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.staticsAllExperiments:
-                Toast.makeText(this, "Ver la estadistica completa de la maceracion", Toast.LENGTH_SHORT).show();
+                Intent intent2 = new Intent(ExperimentActivity.this, PlanningActivity.class);
+                intent2.putExtra("idMash", idMash);
+                startActivity(intent2);
+
             default:
                 return super.onOptionsItemSelected(item);
 
