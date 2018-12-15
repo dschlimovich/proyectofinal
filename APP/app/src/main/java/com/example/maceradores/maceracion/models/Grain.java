@@ -45,6 +45,7 @@ public class Grain {
 
     public String getStringPlanned(float densEspecif, float volLitros, float rendEquipoTeorico){
         double kg = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipoTeorico);
+        kg = kg - kg % 0.01; // despues dos comas decimales lo corto.
         return getName() +
                 "\t Cantidad: " + String.valueOf(kg) + " kg ";
     }

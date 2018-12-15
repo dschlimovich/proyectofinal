@@ -79,14 +79,18 @@ public class PlanningActivity extends AppCompatActivity {
         setContentView(R.layout.activity_planning);
 
         this.mash = new Mash();
-        chargeUI();
-
-        // If i receive an intent, i need to charge with the data and block the elements of UI.
         Intent intent = getIntent();
         if(intent.hasExtra("idMash")){
+            this.planned = true;
             int idMash = intent.getIntExtra("idMash", -1);
             mash.setId(idMash);
-            fillUI(idMash);
+
+        }
+
+        chargeUI();
+
+        if(planned){
+            fillUI(mash.getId());
             // tengo que deshabilitar el boton del action bar.
             blockUI();
         }
@@ -193,25 +197,28 @@ public class PlanningActivity extends AppCompatActivity {
         mash.setGrains(new ArrayList<Grain>());
         listGrains = (ListView) findViewById(R.id.listViewPlanningGrains);
         //grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
-        grainListAdapter = new GrainListAdapter(this, mash.getGrains(), R.layout.item_list_grain);
+        grainListAdapter = new GrainListAdapter(this, mash, planned, R.layout.item_list_grain);
         listGrains.setAdapter(grainListAdapter);
         registerForContextMenu(this.listGrains);
 
         // List of intervals
         mash.setPlan(new ArrayList<MeasureInterval>());
         layoutManager = new LinearLayoutManager(this);
-        intervalListAdapter = new IntervalListAdapter(mash.getPlan(), R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(MeasureInterval interval, int position) {
-                if(!planned){
+        if(planned){
+            intervalListAdapter = new IntervalListAdapter(mash, planned, R.layout.item_list_interval, null);
+        } else {
+            intervalListAdapter = new IntervalListAdapter(mash, planned, R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
+                @Override
+                public void onItemClick(MeasureInterval interval, int position) {
                     Toast.makeText(PlanningActivity.this, "Intervalo Borrado", Toast.LENGTH_SHORT).show();
                     mash.removeMeasureInterval(position);
                     //intervals.remove(position);
                     //intervalListAdapter.notifyItemRemoved(position);
                     intervalListAdapter.notifyDataSetChanged();
                 }
-            }
-        });
+            });
+        }
+
         listsIntervals = (RecyclerView) findViewById(R.id.recyclerViewIntervalPlanning);
         listsIntervals.setAdapter(intervalListAdapter);
         listsIntervals.setLayoutManager(layoutManager);
@@ -246,7 +253,7 @@ public class PlanningActivity extends AppCompatActivity {
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.framePlanning);
         blockView(frameLayout);
         // necesito bloquear el menu tambien...
-        this.planned = true;
+
 
     }
 

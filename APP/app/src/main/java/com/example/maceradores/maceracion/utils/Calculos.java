@@ -62,7 +62,7 @@ public class Calculos {
     }
 
     public static double calcCantInsumoTeoRayDaniels(float densEspecif, float volLitros, Grain grano, float rendEquipo){
-        double factorDenso = (1- densEspecif)*1000; //densEspecif Objetivo!
+        double factorDenso = (densEspecif -1)*1000; //densEspecif Objetivo!
         double ptosDensidad = factorDenso * volLitros; //Ptos de densidad de objetivo
 
         //1 lb = 2,2 Kg ---- 3,78 l = 1 gal ---> 1 lb/ gal = 2.2/(1/3.78) Kg/l = 8.316
@@ -73,10 +73,42 @@ public class Calculos {
 
         double KgdeMalta = 0;
         double PKglx100g = 0.8316 * grano.getExtractPotential();
-        double kgdeMalta =  (ptosDensidad * grano.getQuantity())/PKglx100g/rendEquipo/10; // RendEquipo tiene q estar como 0.8 o 0.7...
+        double kgMalta =  (ptosDensidad * grano.getQuantity())/PKglx100g/rendEquipo/10; // RendEquipo tiene q estar como 0.8 o 0.7...
 
-
-        return kgdeMalta;
+        //kgMalta = kgMalta - kgMalta % 0.01; //le quito lo que esta despues de las 2 cifras decimales.
+        return kgMalta;
     }
 
+    public static double cantAguaPrimerEscalon(float volAgua, double kgMalta, ArrayList<Float> temperaturas ){
+        // primero calulo la constante mistica
+        float constanteEscalonada = constanteEscalonada(temperaturas);
+        // lo que retorno aca es la cantidad de agua a utilizar.
+        return (volAgua - 0.41*kgMalta*constanteEscalonada) / (1 + constanteEscalonada);
+    }
+
+    private static float constanteEscalonada(ArrayList<Float> temperaturas) {
+
+        ArrayList<Float> desvios = new ArrayList<Float>();
+        for(int i = 1; i < temperaturas.size(); i++){
+            float t = ( temperaturas.get(i) - temperaturas.get(i-1)) / (99 - temperaturas.get(i));
+            desvios.add(t);
+        }
+
+        float constante = 0; // aca se va a ir acumulando la constante.
+
+        for(int i = 0; i < desvios.size(); i++){
+            // aca tengo que llamar a la funcion recursiva magica.
+            constante = constante + recursivaMagica( desvios, i);
+        }
+
+        return constante;
+    }
+
+    private static float recursivaMagica(ArrayList<Float> desvios, int i) {
+        if( desvios.size()-1 == i ){
+            return desvios.get(i);
+        } else {
+            return desvios.get(i) * ( 1 + recursivaMagica(desvios, i+1));
+        }
+    }
 }

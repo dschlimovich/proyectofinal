@@ -186,4 +186,50 @@ public class Mash {
         this.tipo = tipo;
     }
 
+    public String getPlanning(int position){
+        // Necesito saber la cantidad de grano que tengo que usaer.
+        double cantMalta = 0;
+        for( int i = 0; i < this.getGrains().size(); i++){
+            //TODO calcular el rendimiento a partir de la base de datos.
+            cantMalta = cantMalta + Calculos.calcCantInsumoTeoRayDaniels(this.densidadObjetivo, this.volumen, this.grains.get(i), 0.7f);
+        }
+
+
+        if( this.tipo.equals( "Simple") ){
+            // aca retorno la termperatura de inicio nomas.
+            double tempInicio = Calculos.temperaturaAguaInicial(this.getPlan().get(0).getMainTemperature(), 20f, this.volumen, cantMalta );
+            tempInicio = tempInicio - tempInicio % 0.01;
+            return "Temperatura de agua: " + String.valueOf(tempInicio) + " °C \n" +
+                    "Cantidad de agua: " + String.valueOf(this.volumen) + "litros \n";
+        }
+
+        if(this.tipo.equals("Escalonada")){
+            // que comience la fiesta. la cuestion aca es que calculo
+            // la cosa es asi el primer intervalo es como una maceracion simple.
+            // lo que si tengo que conocer el volumen de agua para ese primer calculo.
+            ArrayList<Float> temperaturas = new ArrayList<Float>();
+            for(int i = 0; i < getPlan().size(); i++){
+                temperaturas.add(plan.get(i).getMainTemperature());
+            }
+            double volAguaPrimerEscalon = Calculos.cantAguaPrimerEscalon( this.volumen, cantMalta, temperaturas);
+            if( position == 0){
+                // como maceracion simple pero cambio el volumen de agua.
+                double tempInicio = Calculos.temperaturaAguaInicial(this.getPlan().get(0).getMainTemperature(), 20f, volAguaPrimerEscalon, cantMalta );
+                tempInicio = tempInicio - tempInicio % 0.01;
+                return "Temperatura de agua: " + String.valueOf(tempInicio) + " °C \n" +
+                        "Cantidad de agua: " + String.valueOf(volAguaPrimerEscalon) + "litros \n";
+            } else{
+                // aca hay que hacer algo mas jugoso
+                // la temperatura siempre es 100°C -> agua hirviendo.
+
+            }
+        }
+
+
+        return "";
+    }
+
+
+
+
 }
