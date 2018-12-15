@@ -25,7 +25,7 @@
         <activity android:name=".activities.CurrentExperienceActivity" />
         <activity android:name=".activities.ExperimentActivity" />
         <activity
-            android:name=".activities.MashExpHistory"
+            android:name=".activities.MashExpHistoryActivity"
             android:label="@string/title_activity_mash_exp_history"
             android:theme="@style/AppTheme"></activity>
     </application>

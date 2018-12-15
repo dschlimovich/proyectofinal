@@ -153,7 +153,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         Log.d("Mediciones a realizar: ",String.valueOf(medicionesARealizar));
         Log.d("Mediciones realizadas: ",String.valueOf(medicionesRealizadas));
 
-        if( medicionesRealizadas == medicionesARealizar){
+        if( medicionesRealizadas == medicionesARealizar/2){
             // Mostrar el alertDialog para finalizar la experiencia.
             // Tiene que insertar la densidad obtenida en el experimento.
             showAlertFinishExperience();

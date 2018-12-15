@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         dataSet.setValueTextColor(Color.GREEN);
 
 
+
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
 //        lineChart.getAxisLeft().setEnabled(false);
