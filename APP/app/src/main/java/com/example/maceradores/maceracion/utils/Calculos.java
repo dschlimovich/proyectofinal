@@ -72,7 +72,7 @@ public class Calculos {
         //Kg de Malta = Sum (PD/EXTPOT/RENDIMIENTO/10)
 
         //double KgdeMalta = 0;
-        double PKglx100g = 0.8316 * grano.getExtractPotential();
+        double PKglx100g = 0.8316 * 46 * grano.getExtractPotential();
         double kgMalta =  (ptosDensidad * grano.getQuantity())/PKglx100g/rendEquipo/10; // RendEquipo tiene q estar como 0.8 o 0.7...
 
         //kgMalta = kgMalta - kgMalta % 0.01; //le quito lo que esta despues de las 2 cifras decimales.

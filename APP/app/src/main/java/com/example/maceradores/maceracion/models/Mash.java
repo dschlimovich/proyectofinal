@@ -216,8 +216,9 @@ public class Mash {
                 // como maceracion simple pero cambio el volumen de agua.
                 double tempInicio = Calculos.temperaturaAguaInicial(this.getPlan().get(0).getMainTemperature(), 20f, volAguaPrimerEscalon, cantMalta );
                 tempInicio = tempInicio - tempInicio % 0.01;
-                return "Temperatura de agua: " + String.valueOf(tempInicio) + " °C \n" +
-                        "Cantidad de agua: " + String.valueOf(volAguaPrimerEscalon) + "litros \n";
+                volAguaPrimerEscalon = volAguaPrimerEscalon - volAguaPrimerEscalon % 0.01;
+                return "Temperatura de agua: " + String.valueOf((float)tempInicio) + " °C \n" +
+                        "Cantidad de agua: " + String.valueOf((float)volAguaPrimerEscalon) + "litros \n";
             } else{
                 // aca hay que hacer algo mas jugoso
                 // la temperatura siempre es 100°C -> agua hirviendo.
