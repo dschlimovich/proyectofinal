@@ -221,6 +221,10 @@ public class Mash {
             } else{
                 // aca hay que hacer algo mas jugoso
                 // la temperatura siempre es 100°C -> agua hirviendo.
+                double cantAgua = Calculos.cantAguaEscalon(volAguaPrimerEscalon, cantMalta, temperaturas.subList(0, position + 1));
+                cantAgua = cantAgua - cantAgua % 0.01;
+                return "Temperatura de agua: " + String.valueOf(100) + " °C \n" +
+                        "Cantidad de agua: " + String.valueOf(cantAgua) + "litros \n";
 
             }
         }

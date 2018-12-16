@@ -65,13 +65,13 @@ public class Calculos {
         double factorDenso = (densEspecif -1)*1000; //densEspecif Objetivo!
         double ptosDensidad = factorDenso * volLitros; //Ptos de densidad de objetivo
 
-        //1 lb = 2,2 Kg ---- 3,78 l = 1 gal ---> 1 lb/ gal = 2.2/(1/3.78) Kg/l = 8.316
+        //1 kg = 2,2 lb ---- 3,78 l = 1 gal ---> 1 lb/ gal = 2.2/(1/3.78) Kg/l = 8.316
         //En una proporción de 100 g, divido por 10... = 0.8316
         //PPG a PKGL en (0.1Kg/l) = PPG * 0.8316
         //ppg = ExtractoPotencial en porcentaje (Ej 0.8) por 46 q sos los ppg del azucar cuyo ExPot es 100
         //Kg de Malta = Sum (PD/EXTPOT/RENDIMIENTO/10)
 
-        double KgdeMalta = 0;
+        //double KgdeMalta = 0;
         double PKglx100g = 0.8316 * grano.getExtractPotential();
         double kgMalta =  (ptosDensidad * grano.getQuantity())/PKglx100g/rendEquipo/10; // RendEquipo tiene q estar como 0.8 o 0.7...
 
@@ -79,14 +79,42 @@ public class Calculos {
         return kgMalta;
     }
 
-    public static double cantAguaPrimerEscalon(float volAgua, double kgMalta, ArrayList<Float> temperaturas ){
+    public static double cantAguaEscalon(double volPrimerEscalon, double kgMalta, List<Float> temperaturas){
+        float constanteEscalon = constanteEscalon(temperaturas);
+        return constanteEscalon*(0.41 * kgMalta + volPrimerEscalon);
+    }
+
+    private static float constanteEscalon(List<Float> temperaturas) {
+        //primero armo las constantes.
+        ArrayList<Float> desvios = new ArrayList<Float>();
+        for(int i = 1; i < temperaturas.size(); i++){
+            float t = ( temperaturas.get(i) - temperaturas.get(i-1)) / (99 - temperaturas.get(i));
+            desvios.add(t);
+        }
+
+        return constanteRecursivaEscalon(desvios, desvios.size());
+    }
+
+    private static float constanteRecursivaEscalon(List<Float> desvios, int i) {
+        if( i == 0){
+            return 1;
+        } else {
+            float constante = 0;
+            for(int j=0; j < i; j++){
+                constante = constante + constanteRecursivaEscalon(desvios, j);
+            }
+            return desvios.get(i-1) * constante;
+        }
+    }
+
+    public static double cantAguaPrimerEscalon(float volAgua, double kgMalta, List<Float> temperaturas ){
         // primero calulo la constante mistica
-        float constanteEscalonada = constanteEscalonada(temperaturas);
+        float constanteEscalonada = constantePrimerEscalon(temperaturas);
         // lo que retorno aca es la cantidad de agua a utilizar.
         return (volAgua - 0.41*kgMalta*constanteEscalonada) / (1 + constanteEscalonada);
     }
 
-    private static float constanteEscalonada(ArrayList<Float> temperaturas) {
+    private static float constantePrimerEscalon(List<Float> temperaturas) {
 
         ArrayList<Float> desvios = new ArrayList<Float>();
         for(int i = 1; i < temperaturas.size(); i++){
@@ -98,17 +126,17 @@ public class Calculos {
 
         for(int i = 0; i < desvios.size(); i++){
             // aca tengo que llamar a la funcion recursiva magica.
-            constante = constante + recursivaMagica( desvios, i);
+            constante = constante + constanteRecursivaPrimerEscalon( desvios, i);
         }
 
         return constante;
     }
 
-    private static float recursivaMagica(ArrayList<Float> desvios, int i) {
+    private static float constanteRecursivaPrimerEscalon(List<Float> desvios, int i) {
         if( desvios.size()-1 == i ){
             return desvios.get(i);
         } else {
-            return desvios.get(i) * ( 1 + recursivaMagica(desvios, i+1));
+            return desvios.get(i) * ( 1 + constanteRecursivaPrimerEscalon(desvios, i+1));
         }
     }
 }
