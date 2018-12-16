@@ -253,8 +253,6 @@ public class PlanningActivity extends AppCompatActivity {
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.framePlanning);
         blockView(frameLayout);
         // necesito bloquear el menu tambien...
-
-
     }
 
     private void blockView(View view){

@@ -2,7 +2,6 @@ package com.example.maceradores.maceracion.utils;
 
 import com.example.maceradores.maceracion.models.Grain;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,11 +49,6 @@ public class Calculos {
         // de donde sacamos la temperatura ambiente? pinche mierda.
         double r = volAgua / kgMalta;
         return (0.41 / r) * (tempTarget - tempAmb) + tempTarget;
-    }
-
-    public static double escalonTemperatura( double tempMash, double tempTarget, double tempAmb, double volAgua, double kgMalta){
-        //asi entendí la formula.
-        return (tempTarget - tempAmb) * (0.41 * kgMalta + volAgua) / (tempMash - tempTarget);
     }
 
     public static double cantMostoRetirarDecoccion( double tempMash, double tempTarget, double volAgua){

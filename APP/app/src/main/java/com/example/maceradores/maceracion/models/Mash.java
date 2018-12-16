@@ -190,7 +190,7 @@ public class Mash {
         // Necesito saber la cantidad de grano que tengo que usaer.
         double cantMalta = 0;
         for( int i = 0; i < this.getGrains().size(); i++){
-            //TODO calcular el rendimiento a partir de la base de datos.
+            //TODO calcular la cantidad de grano a partir del rendimiento practico.
             cantMalta = cantMalta + Calculos.calcCantInsumoTeoRayDaniels(this.densidadObjetivo, this.volumen, this.grains.get(i), 0.7f);
         }
 
@@ -201,12 +201,9 @@ public class Mash {
             tempInicio = tempInicio - tempInicio % 0.01;
             return "Temperatura de agua: " + String.valueOf(tempInicio) + " °C \n" +
                     "Cantidad de agua: " + String.valueOf(this.volumen) + "litros \n";
-        }
+        } // Simple
 
         if(this.tipo.equals("Escalonada")){
-            // que comience la fiesta. la cuestion aca es que calculo
-            // la cosa es asi el primer intervalo es como una maceracion simple.
-            // lo que si tengo que conocer el volumen de agua para ese primer calculo.
             ArrayList<Float> temperaturas = new ArrayList<Float>();
             for(int i = 0; i < getPlan().size(); i++){
                 temperaturas.add(plan.get(i).getMainTemperature());
@@ -224,11 +221,12 @@ public class Mash {
                 // la temperatura siempre es 100°C -> agua hirviendo.
                 double cantAgua = Calculos.cantAguaEscalon(volAguaPrimerEscalon, cantMalta, temperaturas.subList(0, position + 1));
                 cantAgua = cantAgua - cantAgua % 0.01;
+
                 return "Temperatura de agua: " + String.valueOf(100) + " °C \n" +
                         "Cantidad de agua: " + String.valueOf(cantAgua) + "litros \n";
 
             }
-        }
+        } // Escalonada
 
 
         return "";
