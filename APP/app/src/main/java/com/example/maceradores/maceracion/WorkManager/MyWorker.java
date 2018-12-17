@@ -111,7 +111,7 @@ public class MyWorker extends Worker {
         }
         cursor.close();
         db.close();
-        if(intervaloMedicion<30)intervaloMedicion=30; // Minimo Intervalo de Medicion es de 30 seg
+        if(intervaloMedicion<60)intervaloMedicion=60; // Minimo Intervalo de Medicion es de 60 seg
 
         return intervaloMedicion;
     }

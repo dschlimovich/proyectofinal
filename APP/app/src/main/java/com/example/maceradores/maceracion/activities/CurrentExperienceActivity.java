@@ -114,7 +114,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
         if(cursor.moveToFirst()){
             String name = cursor.getString(0); //como tengo una sola columna, devuelvo la primera nomas.
-            setTitle("Maceración" + name);
+            setTitle("Maceración " + name);
         }
         cursor.close();
         db.close();
