@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -15,6 +16,7 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -84,6 +86,7 @@ public class MeasureFragment extends Fragment {
             public boolean onLongClick(View v) {
                 //Toast.makeText(getContext(), "Anduvo pereeeque", Toast.LENGTH_SHORT).show();
                 //aca tengo que mostrar un alert dialog para que me guarde la configuración.
+                showAlertDialogConfigTemp();
                 return false;
             }
         });
@@ -183,6 +186,31 @@ public class MeasureFragment extends Fragment {
         thread1.start();
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void showAlertDialogConfigTemp() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Configuración de Medición");
+
+        View currentValuesView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_config_measure_temp, null);
+        builder.setView(currentValuesView);
+
+        //agrego boton para cerrar el dialogo
+        builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.create().show();
     }
 
     @Override

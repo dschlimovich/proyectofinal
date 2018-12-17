@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textViewTitleConfigTemp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sensores Habilitados"
+        android:textAlignment="center"
+        android:textSize="18dp"/>
+
+    <CheckBox
+        android:id="@+id/checkboxSensor1ConfigTemp"
+        android:layout_below="@+id/textViewTitleConfigTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:checked="true"
+        android:text=" Sensor 1"/>
+
+    <CheckBox
+        android:id="@+id/checkboxSensor2ConfigTemp"
+        android:layout_below="@+id/textViewTitleConfigTemp"
+        android:layout_toRightOf="@+id/checkboxSensor1ConfigTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:checked="true"
+        android:text=" Sensor 2"/>
+
+    <CheckBox
+        android:id="@+id/checkboxSensor3ConfigTemp"
+        android:layout_below="@+id/checkboxSensor1ConfigTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:checked="true"
+        android:text=" Sensor 3"/>
+
+    <CheckBox
+        android:id="@+id/checkboxSensor4ConfigTemp"
+        android:layout_below="@+id/checkboxSensor2ConfigTemp"
+        android:layout_toRightOf="@+id/checkboxSensor3ConfigTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:checked="true"
+        android:text=" Sensor 4"/>
+
+    <TextView
+        android:id="@+id/textViewStrategyConfigTemp"
+        android:layout_below="@+id/checkboxSensor3ConfigTemp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Método de Cálculo"
+        android:textAlignment="center"
+        android:textSize="18dp"/>
+
+    <RadioGroup
+        android:id="@+id/radiogroupConfigTemp"
+        android:layout_below="@+id/textViewStrategyConfigTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/radiobuttonPromedioConfigTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Promedio"/>
+        <RadioButton
+            android:id="@+id/radiobuttonMedianaConfigTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mediana"/>
+        <RadioButton
+            android:id="@+id/radiobuttonExtremosConfigTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Promedio Valores Extremos"/>
+    </RadioGroup>
+
+</RelativeLayout>
