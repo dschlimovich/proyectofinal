@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="3dp"
+    app:cardCornerRadius="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!-- Numero de etapa-->
+        <TextView
+            android:id="@+id/textViewNumberStage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text=" ETAPA "
+            android:textAlignment="center" />
+        <!-- Estado etapa   NO LO USAMOS PORQUE NO VAMOS A USAR THREAD.-->
+        <!-- TextView
+            android:id="@+id/textViewStateStage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewNumberStage"
+            android:text=" Estado: "
+            android:layout_margin="2dp"
+            /> -->
+        <!-- Duracion etapa-->
+        <LinearLayout
+            android:id="@+id/linearLayoutDurationStage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewNumberStage"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Duración: " />
+
+            <Chronometer
+                android:id="@+id/chronometerDurationStage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- Tiempo Restante-->
+        <LinearLayout
+            android:id="@+id/linearLayoutRemainingStage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewNumberStage"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/linearLayoutDurationStage"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Comienzo en: " />
+
+            <Chronometer
+                android:id="@+id/chronometerRemainingStage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- Temperatura etapa-->
+        <TextView
+            android:id="@+id/textViewTemperatureStage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayoutDurationStage"
+            android:layout_margin="2dp"
+            android:text=" Temperatura: " />
+        <!-- PH-->
+        <TextView
+            android:id="@+id/textViewPhStage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayoutDurationStage"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="27dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_toRightOf="@+id/textViewTemperatureStage"
+            android:text=" pH: " />
+        <!-- Temperatura Decoccion -->
+        <TextView
+            android:id="@+id/textViewTemperatureDecoccionStage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewTemperatureStage"
+            android:layout_margin="2dp"
+            android:text=" Temperatura Olla Decoccion: " />
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

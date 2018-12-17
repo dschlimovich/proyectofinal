@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "maceraciones";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     public DatabaseHelper( Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -20,20 +20,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //Tabla Maceracion - se agrega el tipo de maceracion: Simple, Escalonada o Decoccion.
         // además se incorpora los tiempos de medicion correspondientes a la temperatura y pH
         // Si fueramos pro le agregariamos la constraint para indicar que el tiempo del pH
-        // debe ser mayor a 2 minutos y ser multiplo del de temperatura.
-        db.execSQL( "CREATE TABLE Maceracion (id INTEGER PRIMARY KEY," +
+        // debe ser mayor a 2 minutos (120) y ser multiplo del de temperatura.
+        db.execSQL( "CREATE TABLE Maceracion ("+
+                "id INTEGER PRIMARY KEY," +
                 "nombre VARCHAR(190) UNIQUE," +
-                "tipo VARCHAR(16)," +
-                "frecMedTemp INTEGER, " +
-                "frecMedPh INTEGER)");
+                "tipo VARCHAR(64)," +
+                "volumen FLOAT,"+
+                "densidadObjetivo FLOAT,"+
+                "intervaloMedTemp INTEGER, " + //segundos o minutos
+                "intervaloMedPh INTEGER)"); //segundos o minutos?
 
         // Tabla Intervalo - Maceraciones complejas llevan muchos intervalos de medicion.
         db.execSQL("CREATE TABLE Intervalo(" +
                 "id INTEGER PRIMARY KEY, " +
-                "duracion INTEGER," +  //deberia ser un flotante?
+                "orden INTEGER,"+
+                "duracion INTEGER," +  //minutos. deberia ser un flotante?
                 "temperatura FLOAT, " +
+                "desvioTemperatura FLOAT,"+
                 "ph FLOAT," +
+                "desvioPh FLOAT,"+
                 "tempDecoccion FLOAT, " +
+                "desvioTempDecoccion FLOAT,"+
                 "maceracion INTEGER, " +
                 "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");
 
@@ -42,8 +49,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE Grano(" +
                 "id INTEGER PRIMARY KEY, " +
                 "nombre VARCHAR(190), " +
-                "porcentaje FLOAT, " +
-                "rendimiento FLOAT, " +
+                "cantidad FLOAT, " +
+                "extractoPotencial FLOAT, " +
                 "maceracion INTEGER," +
                 "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");
 
@@ -59,6 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE SensedValues( "+
                 "id INTEGER PRIMARY KEY," +
+                "idRaspi INTEGER, " +
                 "id_exp INTEGER," +
                 "fechayhora DATETIME DEFAULT CURRENT_TIMESTAMP," +
                 "temp1 FLOAT," +
@@ -78,6 +86,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Borro las tablas
         db.execSQL("DROP TABLE IF EXISTS " + "Maceracion");
+        db.execSQL("DROP TABLE IF EXISTS " + "Intervalo");
+        db.execSQL("DROP TABLE IF EXISTS " + "Grano");
         db.execSQL("DROP TABLE IF EXISTS " + "Experimento");
         db.execSQL("DROP TABLE IF EXISTS " + "SensedValues");
         //las vuelvo a crear.

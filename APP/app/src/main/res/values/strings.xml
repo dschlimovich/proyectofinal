@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Maceracion</string>
+    <string-array name="tiposMaceracion">
+        <item>Simple</item>
+        <item>Escalonada</item>
+        <item>Decocción</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_mash_exp_history">MashExpHistory</string>
 </resources>
+
+

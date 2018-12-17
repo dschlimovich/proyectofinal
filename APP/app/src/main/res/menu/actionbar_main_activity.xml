@@ -5,6 +5,10 @@
         android:title="Add New Mash"
         android:id="@+id/addNewMash"
         app:showAsAction="ifRoom"
-        android:icon="@mipmap/ic_plus"
+        android:icon="@mipmap/ic_add_round"
         />
+    <item android:title="Borrar Base de Datos"
+        android:id="@+id/deleteDatabase"
+        app:showAsAction="ifRoom"
+        android:icon="@mipmap/ic_cancel_round"></item>
 </menu>
