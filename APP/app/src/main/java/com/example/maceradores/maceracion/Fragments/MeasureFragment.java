@@ -15,6 +15,7 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class MeasureFragment extends Fragment {
+    private CardView cardViewTemp;
     private TextView tvMeasureTemp;
     private TextView tvMeasurePh;
     private TextView tvMeasureEnzyme;
@@ -74,6 +76,17 @@ public class MeasureFragment extends Fragment {
         chronometer = view.findViewById(R.id.chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime()); //esto debería ser el tiempo en el que hice la inserción o que tuve la primer medida.
         chronometer.start();
+
+        // configuracion de temperatura.
+        cardViewTemp = view.findViewById(R.id.cardViewMeasureTemperature);
+        cardViewTemp.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                //Toast.makeText(getContext(), "Anduvo pereeeque", Toast.LENGTH_SHORT).show();
+                //aca tengo que mostrar un alert dialog para que me guarde la configuración.
+                return false;
+            }
+        });
 
 
         //---Thread con Handler
@@ -181,7 +194,6 @@ public class MeasureFragment extends Fragment {
         this.tvMeasureEnviroment = (TextView) getView().findViewById(R.id.textViewMeasureEnviroment);
         this.tvMeasureSecondMacerator = (TextView) getView().findViewById(R.id.textViewMeasureSecondMaserator);
         this.tvMeasureStage= (TextView) getView().findViewById(R.id.textViewMeasureStage);
-
 
         //----Handler para manejo de mensajes con el thread
         mHandlerThread = new Handler(){
