@@ -9,10 +9,7 @@ def concat( cadena, valor):
 # funcion para que concatene la cadena //valor// al final de la cadena
     if (cadena == ""):
         return valor
-    else:
-        cadena.join("&")
-        cadena.join(valor)
-    return cadena
+    return cadena+"&"+valor
 
 def make_string(datos):
     cadena = ""
@@ -23,7 +20,7 @@ def make_string(datos):
 
 
 datos = primer_funcion.funcion_uno(1)
-
+print(datos)
 #temp = (datos[0]+datos[1]+datos[2]+datos[3])/4
 #ph = datos[6]
 #salida = str(temp) + "&" + str(ph)

@@ -30,8 +30,8 @@ def funcion_uno(mido_ph):
     ruta_sensor.append('28-000008e270f2') #posicion 6 es para pH
     
     for i in range(0,6):
-        if os.path.isdir(ruta_sensores + ruta_sensor[i]):
-            datos.append( mediciones.medir_temperatura( ruta_sensores + ruta_sensor[i] ) )
+        if os.path.isdir(ruta_sensores.join(ruta_sensor[i])):
+            datos.append( mediciones.medir_temperatura( ruta_sensores.join(ruta_sensor[i]) ) )
         else:
             datos.append(-1000)
 
