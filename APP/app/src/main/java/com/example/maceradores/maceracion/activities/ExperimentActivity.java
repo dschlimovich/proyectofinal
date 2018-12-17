@@ -57,6 +57,7 @@ public class ExperimentActivity extends AppCompatActivity {
         }
         else{
             startActivity(new Intent(ExperimentActivity.this, MainActivity.class));
+            finish();
         }
 
 

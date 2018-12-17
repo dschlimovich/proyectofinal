@@ -43,6 +43,7 @@ import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Grain;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
+import com.example.maceradores.maceracion.utils.Calculos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +56,7 @@ public class PlanningActivity extends AppCompatActivity {
 
     //flag.
     private boolean planned = false;
+    private float rendimientoPractico = -1;
 
     //Container
     Spinner spinner;
@@ -197,7 +199,7 @@ public class PlanningActivity extends AppCompatActivity {
         mash.setGrains(new ArrayList<Grain>());
         listGrains = (ListView) findViewById(R.id.listViewPlanningGrains);
         //grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
-        grainListAdapter = new GrainListAdapter(this, mash, planned, R.layout.item_list_grain);
+        grainListAdapter = new GrainListAdapter(this, mash, planned, R.layout.item_list_grain, this.rendimientoPractico);
         listGrains.setAdapter(grainListAdapter);
         registerForContextMenu(this.listGrains);
 
@@ -246,6 +248,42 @@ public class PlanningActivity extends AppCompatActivity {
         //Ocultar el teclado cuando arranca el activity... es bastante molesto
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setToolbar();
+    }
+
+    private float getRendimientoPractico(int idMash) {
+        //hago la consulta de la base de datos.
+        // me traigo la lista de id de experiencias.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"densidad"};
+        String selection = "maceracion = ? AND densidad IS NOT NULL";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
+        List<Float> yieldList = new ArrayList<>();
+        float volMosto = mash.getVolumen();
+        double kgMalta = mash.kgMalta();
+
+        while( cursor.moveToNext()){
+            double yield = Calculos.calcRendimiento(volMosto, cursor.getFloat(0), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
+            yieldList.add( (float) yield);
+        }
+        cursor.close();
+        dbHelper.close();
+
+        if(yieldList.size() < 3){
+            return -1;
+        } else {
+            //devuelvo el promedio.
+            float acumulado = 0;
+            for( int i = 0; i < yieldList.size(); i++){
+                acumulado = acumulado + yieldList.get(i);
+            }
+            return acumulado / yieldList.size();
+        }
+
+
     }
 
     private void blockUI() {
@@ -346,7 +384,13 @@ public class PlanningActivity extends AppCompatActivity {
             //grains.add(grain);
             mash.addGrain(grain);
         }//end while
+
+        this.rendimientoPractico = getRendimientoPractico(this.mash.getId());
+        Log.d("PlanningActivity", "el rendimiento practico es: " + rendimientoPractico);
         grainListAdapter.notifyDataSetChanged();
+
+
+
         cursor.close();
     }
 

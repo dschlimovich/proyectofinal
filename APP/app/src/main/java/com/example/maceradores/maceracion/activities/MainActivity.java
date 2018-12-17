@@ -110,8 +110,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-
-
     }
 
     private List<Mash> getAllMash() {
@@ -150,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
 
         return resultados;
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -272,9 +269,5 @@ public class MainActivity extends AppCompatActivity {
 
         builder.create().show();
     }
-
-
-
-
 
 } //end MainActivity

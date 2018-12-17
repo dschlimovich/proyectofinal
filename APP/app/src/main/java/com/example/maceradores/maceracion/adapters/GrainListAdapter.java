@@ -15,16 +15,17 @@ import java.util.List;
 
 public class GrainListAdapter extends BaseAdapter {
     private Context context;
-    //private List<Grain> grainList;
+    private float rendimientoPractico;
     private Mash mash;
     private int layout;
     private boolean planned;
 
-    public GrainListAdapter(Context context, Mash mash, boolean planned, int layout) {
+    public GrainListAdapter(Context context, Mash mash, boolean planned, int layout, float rendimientoPractico) {
         this.context = context;
         this.mash = mash;
         this.layout = layout;
         this.planned = planned;
+        this.rendimientoPractico = rendimientoPractico;
     }
 
     @Override
@@ -55,8 +56,12 @@ public class GrainListAdapter extends BaseAdapter {
             detail = "";
             // Tengo que saber si tengo la cantidad de experiencias alcanza para saber
             // el rendimiento practico-
+            if(rendimientoPractico == -1)
             detail = mash.getGrains().get(position)
                     .getStringPlanned(mash.getDensidadObjetivo(), mash.getVolumen(), 0.7f);
+            else
+                detail = mash.getGrains().get(position)
+                        .getStringPlanned(mash.getDensidadObjetivo(), mash.getVolumen(), 0.7f, rendimientoPractico);
         } else{
             detail = mash.getGrains().get(position)
                     .getStringPlanning();
