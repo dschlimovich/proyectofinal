@@ -14,8 +14,8 @@ public class Calculos {
 
 
         double kgExtObtenido = volMosto * kgExhl/100;
-        double porcRendimiento = 100 * kgExtObtenido / kgMalta;// Recordar que un 80% es un valor excelente, ya el otro 20% es bagazo
-
+        //double porcRendimiento = 100 * kgExtObtenido / kgMalta;// Recordar que un 80% es un valor excelente, ya el otro 20% es bagazo
+        double porcRendimiento = kgExtObtenido / kgMalta;
         double [] array = {kgExhl,kgExtObtenido,porcRendimiento};
         return array;
     }

@@ -47,15 +47,17 @@ public class Grain {
         double kg = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipoTeorico);
         kg = kg - kg % 0.01; // despues dos comas decimales lo corto.
         return getName() +
-                "\t Cantidad: " + String.valueOf(kg) + " kg ";
+                "\t Cantidad: " + String.valueOf((float) kg) + "kg ";
     }
 
     public String getStringPlanned(float densEspecif, float volLitros, float rendEquipoTeorico, float rendEquipoPractico){
         double kg = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipoTeorico);
         double kgPractico = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipoPractico);
+        kg = kg - kg % 0.01;
+        kgPractico = kgPractico - kgPractico % 0.01;
         return getName() +
-                "\t Cantidad Teórica: " + String.valueOf(kg) + " kg " +
-                "\t Cantidad Práctica: " + String.valueOf(kgPractico) + " kg";
+                "\t Cant. Teór.: " + String.valueOf((float)kg) + "kg " +
+                " Práct.: " + String.valueOf((float)kgPractico) + "kg";
     }
 
 }

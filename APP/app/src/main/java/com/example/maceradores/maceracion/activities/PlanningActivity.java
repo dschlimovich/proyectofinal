@@ -386,8 +386,15 @@ public class PlanningActivity extends AppCompatActivity {
         }//end while
 
         this.rendimientoPractico = getRendimientoPractico(this.mash.getId());
-        Log.d("PlanningActivity", "el rendimiento practico es: " + rendimientoPractico);
-        grainListAdapter.notifyDataSetChanged();
+        if(rendimientoPractico != -1){
+            Log.d("PlanningActivity", "el rendimiento practico es: " + rendimientoPractico);
+            grainListAdapter = new GrainListAdapter(this, this.mash, this.planned,R.layout.item_list_grain, this.rendimientoPractico );
+            listGrains.setAdapter(grainListAdapter);
+        } else{
+            grainListAdapter.notifyDataSetChanged();
+        }
+
+
 
 
 
