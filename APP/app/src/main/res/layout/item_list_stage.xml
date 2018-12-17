@@ -97,6 +97,14 @@
             android:layout_below="@+id/textViewTemperatureStage"
             android:layout_margin="2dp"
             android:text=" Temperatura Olla Decoccion: " />
+        <!-- Detalle de planificacion -->
+        <TextView
+            android:id="@+id/textViewPlanningStage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewTemperatureDecoccionStage"
+            android:layout_margin="2dp"
+            android:text="" />
     </RelativeLayout>
 
 
