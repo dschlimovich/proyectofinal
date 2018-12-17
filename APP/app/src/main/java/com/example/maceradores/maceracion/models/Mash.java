@@ -1,5 +1,11 @@
 package com.example.maceradores.maceracion.models;
 
+import android.widget.Toast;
+
+import com.example.maceradores.maceracion.activities.PlanningActivity;
+import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.utils.Calculos;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +26,10 @@ public class Mash {
     //Empty Constructor.
     public Mash(){}
 
-    public Mash(String name) {
+    public Mash(int id, String name, String type) {
+        this.id = id;
         this.name = name;
+        this.tipo = type;
     }
 
     public Mash(int id, String name) {
@@ -146,7 +154,7 @@ public class Mash {
     }
 
     public void removeGrain(int index){
-        if( index > 0 && index < grains.size())
+        if( index >= 0 && index < grains.size())
             grains.remove(index);
     }
 
@@ -180,5 +188,89 @@ public class Mash {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public double kgMalta(){
+        double cantMalta = 0;
+        for( int i = 0; i < this.getGrains().size(); i++){
+            //TODO calcular la cantidad de grano a partir del rendimiento practico.
+            cantMalta = cantMalta + Calculos.calcCantInsumoTeoRayDaniels(this.densidadObjetivo, this.volumen, this.grains.get(i), 0.7f);
+        }
+        return cantMalta;
+    }
+
+    public String getPlanning(int position){
+        // Necesito saber la cantidad de grano que tengo que usaer.
+        double cantMalta = this.kgMalta();
+
+        if( this.tipo.equals( "Simple") ){
+            // aca retorno la termperatura de inicio nomas.
+            double tempInicio = Calculos.temperaturaAguaInicial(this.getPlan().get(0).getMainTemperature(), 20f, this.volumen, cantMalta );
+            tempInicio = tempInicio - tempInicio % 0.01;
+            return "Temperatura de agua: " + String.valueOf(tempInicio) + " °C \n" +
+                    "Cantidad de agua a agregar: " + String.valueOf(this.volumen) + "litros \n";
+        } // Simple
+
+        if(this.tipo.equals("Escalonada")){
+            ArrayList<Float> temperaturas = new ArrayList<Float>();
+            for(int i = 0; i < getPlan().size(); i++){
+                temperaturas.add(plan.get(i).getMainTemperature());
+            }
+            double volAguaPrimerEscalon = Calculos.cantAguaPrimerEscalon( this.volumen, cantMalta, temperaturas);
+            if( position == 0){
+                // como maceracion simple pero cambio el volumen de agua.
+                double tempInicio = Calculos.temperaturaAguaInicial(this.getPlan().get(0).getMainTemperature(), 20f, volAguaPrimerEscalon, cantMalta );
+                tempInicio = tempInicio - tempInicio % 0.01;
+                volAguaPrimerEscalon = volAguaPrimerEscalon - volAguaPrimerEscalon % 0.01;
+                return "Temperatura de agua: " + String.valueOf((float)tempInicio) + " °C \n" +
+                        "Cantidad de agua a agregar: " + String.valueOf((float)volAguaPrimerEscalon) + "litros \n";
+            } else{
+                // aca hay que hacer algo mas jugoso
+                // la temperatura siempre es 100°C -> agua hirviendo.
+                double cantAgua = Calculos.cantAguaEscalon(volAguaPrimerEscalon, cantMalta, temperaturas.subList(0, position + 1));
+                cantAgua = cantAgua - cantAgua % 0.01;
+
+                return "Temperatura de agua: " + String.valueOf(100) + " °C \n" +
+                        "Cantidad de agua a agregar: " + String.valueOf((float)cantAgua) + "litros \n";
+
+            }
+        } // Escalonada
+
+        if(this.tipo.equals("Decocción")){
+            // la cuestion aqui es que si tengo un intervalo adelante
+            // aca retorno la termperatura de inicio nomas.
+            String primerEtapa = "";
+            if(position == 0){
+                double tempInicio = Calculos.temperaturaAguaInicial(this.getPlan().get(0).getMainTemperature(), 20f, this.volumen, cantMalta );
+                tempInicio = tempInicio - tempInicio % 0.01;
+                primerEtapa = "Temperatura de agua: " + String.valueOf(tempInicio) + " °C \n" +
+                        "Cantidad de agua a agregar: " + String.valueOf(this.volumen) + "litros \n";
+            }
+
+            if(position < getPlan().size() - 1){
+                // me asegure que no estoy en la ultima posicion asi que puedo preguntar por la siguiente.
+                double tempMash = plan.get(position).getMainTemperature();
+                double tempTarget = plan.get(position + 1).getMainTemperature();
+                double volAgua = this.volumen;
+                double cantMosto = Calculos.cantMostoRetirarDecoccion(tempMash, tempTarget, volAgua);
+                cantMosto = cantMosto - cantMosto % 0.01;
+
+                return  primerEtapa + "Cantidad de mosto a retirar: " + String.valueOf((float)cantMosto) + "litros \n" +
+                        "Reincorporar a temperatura de hervor \n" ;
+
+            } else
+                // si estoy en la ultima etapa no tengo que tocar nada.
+                return "";
+        } //Decoccion
+
+        return "ERROR - Tipo de Maceracion Incorrecta";
+    }
+
+    public boolean validateMash(){
+        
+        return (getPeriodMeasurePh() > getPeriodMeasureTemperature()) && // validacion que la temperatura se mide mas rapido que el ph
+               (getPeriodMeasurePh() % getPeriodMeasureTemperature() == 0) &&
+               (getPeriodMeasureTemperature() >=60) ;
+
     }
 }

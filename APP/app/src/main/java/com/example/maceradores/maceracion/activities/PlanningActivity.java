@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,8 +40,13 @@ import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Grain;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
+import com.example.maceradores.maceracion.utils.Calculos;
 
 import java.util.ArrayList;
+
+import java.util.Arrays;
+import java.util.List;
+
 
 public class PlanningActivity extends AppCompatActivity {
     //Buttons
@@ -48,7 +54,8 @@ public class PlanningActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
     //flag.
-    private boolean showMenu = true;
+    private boolean planned = false;
+    private float rendimientoPractico = -1;
 
     //Container
     Spinner spinner;
@@ -64,14 +71,6 @@ public class PlanningActivity extends AppCompatActivity {
     //Data - Fields to create the new mash.
     private Mash mash;
 
-    //private String type;
-    //private float volume;
-    //private float density;
-    //private List<MeasureInterval> intervals;
-    //private List<Grain> grains;
-    //private String nameMash;
-    //private int periodoMedicionTemp;
-    //private int periodoMedicionPh;
 
     // LifeCycle functions.
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -81,14 +80,18 @@ public class PlanningActivity extends AppCompatActivity {
         setContentView(R.layout.activity_planning);
 
         this.mash = new Mash();
-        chargeUI();
-
-        // If i receive an intent, i need to charge with the data and block the elements of UI.
         Intent intent = getIntent();
         if(intent.hasExtra("idMash")){
+            this.planned = true;
             int idMash = intent.getIntExtra("idMash", -1);
             mash.setId(idMash);
-            fillUI(idMash);
+
+        }
+
+        chargeUI();
+
+        if(planned){
+            fillUI(mash.getId());
             // tengo que deshabilitar el boton del action bar.
             blockUI();
         }
@@ -98,7 +101,7 @@ public class PlanningActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if( this.showMenu){
+        if( !this.planned){
             getMenuInflater().inflate(R.menu.action_bar_planning_activity, menu);
             return super.onCreateOptionsMenu(menu);
         }
@@ -195,23 +198,28 @@ public class PlanningActivity extends AppCompatActivity {
         mash.setGrains(new ArrayList<Grain>());
         listGrains = (ListView) findViewById(R.id.listViewPlanningGrains);
         //grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
-        grainListAdapter = new GrainListAdapter(this, mash.getGrains(), R.layout.item_list_grain);
+        grainListAdapter = new GrainListAdapter(this, mash, planned, R.layout.item_list_grain, this.rendimientoPractico);
         listGrains.setAdapter(grainListAdapter);
         registerForContextMenu(this.listGrains);
 
         // List of intervals
         mash.setPlan(new ArrayList<MeasureInterval>());
         layoutManager = new LinearLayoutManager(this);
-        intervalListAdapter = new IntervalListAdapter(mash.getPlan(), R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(MeasureInterval interval, int position) {
-                Toast.makeText(PlanningActivity.this, "Intervalo Borrado", Toast.LENGTH_SHORT).show();
-                mash.removeMeasureInterval(position);
-                //intervals.remove(position);
-                //intervalListAdapter.notifyItemRemoved(position);
-                intervalListAdapter.notifyDataSetChanged();
-            }
-        });
+        if(planned){
+            intervalListAdapter = new IntervalListAdapter(mash, planned, R.layout.item_list_interval, null);
+        } else {
+            intervalListAdapter = new IntervalListAdapter(mash, planned, R.layout.item_list_interval, new IntervalListAdapter.onItemClickListener() {
+                @Override
+                public void onItemClick(MeasureInterval interval, int position) {
+                    Toast.makeText(PlanningActivity.this, "Intervalo Borrado", Toast.LENGTH_SHORT).show();
+                    mash.removeMeasureInterval(position);
+                    //intervals.remove(position);
+                    //intervalListAdapter.notifyItemRemoved(position);
+                    intervalListAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
         listsIntervals = (RecyclerView) findViewById(R.id.recyclerViewIntervalPlanning);
         listsIntervals.setAdapter(intervalListAdapter);
         listsIntervals.setLayoutManager(layoutManager);
@@ -241,13 +249,47 @@ public class PlanningActivity extends AppCompatActivity {
         setToolbar();
     }
 
+    private float getRendimientoPractico(int idMash) {
+        //hago la consulta de la base de datos.
+        // me traigo la lista de id de experiencias.
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"densidad"};
+        String selection = "maceracion = ? AND densidad IS NOT NULL";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
+        List<Float> yieldList = new ArrayList<>();
+        float volMosto = mash.getVolumen();
+        double kgMalta = mash.kgMalta();
+
+        while( cursor.moveToNext()){
+            double yield = Calculos.calcRendimiento(volMosto, cursor.getFloat(0), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
+            yieldList.add( (float) yield);
+        }
+        cursor.close();
+        dbHelper.close();
+
+        if(yieldList.size() < 3){
+            return -1;
+        } else {
+            //devuelvo el promedio.
+            float acumulado = 0;
+            for( int i = 0; i < yieldList.size(); i++){
+                acumulado = acumulado + yieldList.get(i);
+            }
+            return acumulado / yieldList.size();
+        }
+
+
+    }
+
     private void blockUI() {
         // I need to block all elements. or can i block the complete activity
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.framePlanning);
         blockView(frameLayout);
         // necesito bloquear el menu tambien...
-        this.showMenu = false;
-
     }
 
     private void blockView(View view){
@@ -341,7 +383,20 @@ public class PlanningActivity extends AppCompatActivity {
             //grains.add(grain);
             mash.addGrain(grain);
         }//end while
-        grainListAdapter.notifyDataSetChanged();
+
+        this.rendimientoPractico = getRendimientoPractico(this.mash.getId());
+        if(rendimientoPractico != -1){
+            Log.d("PlanningActivity", "el rendimiento practico es: " + rendimientoPractico);
+            grainListAdapter = new GrainListAdapter(this, this.mash, this.planned,R.layout.item_list_grain, this.rendimientoPractico );
+            listGrains.setAdapter(grainListAdapter);
+        } else{
+            grainListAdapter.notifyDataSetChanged();
+        }
+
+
+
+
+
         cursor.close();
     }
 
@@ -423,17 +478,15 @@ public class PlanningActivity extends AppCompatActivity {
                     //PlanningActivity.this.periodoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
                     PlanningActivity.this.mash.setPeriodMeasurePh(Integer.valueOf(medPh.getText().toString().trim()));
 
-                    if( mash.getPeriodMeasurePh() < mash.getPeriodMeasureTemperature()){
-                        // el sistema no lo permite.
-                        Toast.makeText(PlanningActivity.this, "El intervalo de medición de ph no puede ser menor que el intervalor de medición de temperatura.", Toast.LENGTH_SHORT).show();
-                    } else if(mash.getPeriodMeasurePh() % mash.getPeriodMeasureTemperature() != 0){
-                        Toast.makeText(PlanningActivity.this, "El intervalo de medicion de ph debe ser multiplo del intervalo de medicion de temperatura", Toast.LENGTH_SHORT).show();
-                    } else {
-                        //At this moment, i need to insert this new mash in the database
+                    if(mash.validateMash()){
+
+                        mash.setTipo(spinner.getSelectedItem().toString());
+
                         insertNewPlanning();
                         //startActivity(new Intent(PlanningActivity.this, MainActivity.class));
                         finish();
                     }
+
                 } //end if validate planning
             }
         }); //end Accept Button

@@ -54,7 +54,7 @@ public class MashListAdapter extends RecyclerView.Adapter<MashListAdapter.ViewHo
         public void bind(final Mash mash, final onItemClickListener listener) {
             //Here i load the values of my model in the UI
             // and link the listener
-            tvNameMash.setText(mash.getName());
+            tvNameMash.setText(mash.getName() + " \t\t\t\t\t\t\t\t\t " + mash.getTipo());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

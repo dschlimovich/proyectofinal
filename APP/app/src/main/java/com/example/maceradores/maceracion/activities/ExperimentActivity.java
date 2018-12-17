@@ -53,6 +53,7 @@ public class ExperimentActivity extends AppCompatActivity {
         }
         else{
             startActivity(new Intent(ExperimentActivity.this, MainActivity.class));
+            finish();
         }
 
 
@@ -189,6 +190,10 @@ public class ExperimentActivity extends AppCompatActivity {
 
         String selection = "maceracion = ?";
         String [] selectionArgs = new String[] { String.valueOf(this.idMash)};
+
+        //Eliminar los sensedValues.
+        db.execSQL("DELETE FROM SensedValues WHERE id_exp IN (SELECT id FROM Experimento WHERE maceracion = ?)", selectionArgs);
+        //db.rawQuery("DELETE FROM SensedValues WHERE id_exp IN (SELECT id FROM Experimento WHERE maceracion = ?)", selectionArgs);
 
         db.delete("Experimento", selection, selectionArgs);
 

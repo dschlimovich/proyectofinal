@@ -3,9 +3,7 @@
     <string-array name="tiposMaceracion">
         <item>Simple</item>
         <item>Escalonada</item>
-        <item>Decoccion Simple</item>
-        <item>Decoccion Doble</item>
-        <item>Decoccion Triple</item>
+        <item>Decocción</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

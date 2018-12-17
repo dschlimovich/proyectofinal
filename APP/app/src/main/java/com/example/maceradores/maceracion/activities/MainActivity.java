@@ -99,8 +99,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-
-
     }
 
     private List<Mash> getAllMash() {
@@ -113,7 +111,8 @@ public class MainActivity extends AppCompatActivity {
         // you will actually use after this query.
         String[] projection = {
                 "id",
-                "nombre"
+                "nombre",
+                "tipo"
         };
         //String selection = "id = ?";
         //String[] selectionArgs = { String.valueOf(newRowId)};
@@ -127,15 +126,17 @@ public class MainActivity extends AppCompatActivity {
             int id = cursor.getInt(
                     cursor.getColumnIndexOrThrow("id")
             );
+            String tipo = cursor.getString(
+                    cursor.getColumnIndexOrThrow("tipo")
+            );
 
-            resultados.add(new Mash(id, itemName));
+            resultados.add(new Mash(id, itemName, tipo));
             //itemNames.add(itemName);
         }
         cursor.close();
 
         return resultados;
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -257,9 +258,5 @@ public class MainActivity extends AppCompatActivity {
 
         builder.create().show();
     }
-
-
-
-
 
 } //end MainActivity

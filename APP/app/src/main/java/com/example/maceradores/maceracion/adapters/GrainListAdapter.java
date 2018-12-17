@@ -9,28 +9,33 @@ import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.models.Grain;
+import com.example.maceradores.maceracion.models.Mash;
 
 import java.util.List;
 
 public class GrainListAdapter extends BaseAdapter {
     private Context context;
-    private List<Grain> grainList;
+    private float rendimientoPractico;
+    private Mash mash;
     private int layout;
+    private boolean planned;
 
-    public GrainListAdapter(Context context, List<Grain> grainList, int layout) {
+    public GrainListAdapter(Context context, Mash mash, boolean planned, int layout, float rendimientoPractico) {
         this.context = context;
-        this.grainList = grainList;
+        this.mash = mash;
         this.layout = layout;
+        this.planned = planned;
+        this.rendimientoPractico = rendimientoPractico;
     }
 
     @Override
     public int getCount() {
-        return grainList.size();
+        return this.mash.getGrains().size();
     }
 
     @Override
     public Grain getItem(int position) {
-        return grainList.get(position);
+        return mash.getGrains().get(position);
     }
 
     @Override
@@ -45,9 +50,22 @@ public class GrainListAdapter extends BaseAdapter {
         convertView = inflater.inflate(this.layout, null);
 
         TextView grainDetail = (TextView) convertView.findViewById(R.id.textViewGrainDetail);
-        String detail = this.grainList.get(position).getName() + "\t porcentaje: " +
-                String.valueOf(this.grainList.get(position).getQuantity()) + "\t extracto: " +
-                String.valueOf(this.grainList.get(position).getExtractPotential());
+
+        String detail;
+        if( planned){
+            detail = "";
+            // Tengo que saber si tengo la cantidad de experiencias alcanza para saber
+            // el rendimiento practico-
+            if(rendimientoPractico == -1)
+            detail = mash.getGrains().get(position)
+                    .getStringPlanned(mash.getDensidadObjetivo(), mash.getVolumen(), 0.7f);
+            else
+                detail = mash.getGrains().get(position)
+                        .getStringPlanned(mash.getDensidadObjetivo(), mash.getVolumen(), 0.7f, rendimientoPractico);
+        } else{
+            detail = mash.getGrains().get(position)
+                    .getStringPlanning();
+        }
 
         grainDetail.setText(detail);
 

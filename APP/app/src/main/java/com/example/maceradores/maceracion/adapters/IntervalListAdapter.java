@@ -8,19 +8,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 
 import java.util.List;
 
 public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapter.ViewHolder> {
-    List<MeasureInterval> intervals;
-    int layout;
-    IntervalListAdapter.onItemClickListener listener;
+    private Mash mash;
+    private boolean planned;
+    //private List<MeasureInterval> intervals;
+    private int layout;
+    private IntervalListAdapter.onItemClickListener listener;
 
-    public IntervalListAdapter(List<MeasureInterval> intervals, int layout, onItemClickListener listener) {
-        this.intervals = intervals;
+    public IntervalListAdapter(Mash mash, boolean planned, int layout, onItemClickListener listener) {
+        //this.intervals = intervals;
+        this.mash = mash;
         this.layout = layout;
         this.listener = listener;
+        this.planned = planned;
     }
 
     @NonNull
@@ -32,12 +37,18 @@ public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.bind(this.intervals.get(i), this.listener);
+        //viewHolder.bind(this.intervals.get(i), this.listener);
+        if(planned) {
+            // no puedo pasar el mash.
+            viewHolder.bind(this.mash, i);
+        } else {
+            viewHolder.bind(this.mash.getPlan().get(i), this.listener);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return intervals.size();
+        return this.mash.getPlan().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -56,7 +67,7 @@ public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapte
             //Here i load the values of my model in the UI
             // and link the listener
             //tengo que setear todos los campos-
-            this.stage.setText( "INTERVALO " + (getAdapterPosition() + 1));
+            this.stage.setText( "ETAPA " + (getAdapterPosition() + 1));
             this.detail.setText(interval.getDescription());
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -66,13 +77,15 @@ public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapte
                     return false;
                 }
             });
-            /*itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(interval, getAdapterPosition());
-                }
-            });*/
 
+        }
+
+        public void bind(Mash mash, int position) {
+            // si cai aca es porque ya esta planificado y tengo que hacer algo distinto.
+            //Ahora es cuando se arma la batuta muajajajaja.
+            this.stage.setText( "ETAPA " + (getAdapterPosition() + 1));
+            this.detail.setText(mash.getPlan().get(position).getDescription());
+            this.detail.append(mash.getPlanning(position));
         }
     }
 

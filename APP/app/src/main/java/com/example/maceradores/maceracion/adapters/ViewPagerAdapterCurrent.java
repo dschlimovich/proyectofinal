@@ -51,9 +51,7 @@ public class ViewPagerAdapterCurrent extends FragmentPagerAdapter {
     public int getCount() {
         return numberOfTabs;
     }
-//    public UUID getMeasurId(){
-//
-//
-//
-//    }
+
+
+
 }

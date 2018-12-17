@@ -97,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="INTERVALOS"/>
+                    android:text="ETAPAS"/>
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerViewIntervalPlanning"
                     android:layout_width="match_parent"
