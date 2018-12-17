@@ -53,8 +53,10 @@ public class StageFragment extends Fragment {
         this.idExp=idExp;
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewStage);
-        List<MeasureInterval> intervals = getIntervals(idMash);
-        adapter = new StageFragmentAdapter(intervals, R.layout.item_list_stage);
+        //List<MeasureInterval> intervals = getIntervals(idMash);
+        //adapter = new StageFragmentAdapter(intervals, R.layout.item_list_stage);
+        Mash mash = getMash(idMash);
+        adapter = new StageFragmentAdapter(mash, R.layout.item_list_stage);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -68,7 +70,7 @@ public class StageFragment extends Fragment {
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String[] columns = {"id", "nombre", "tipo", "volumen"};
+        String[] columns = {"id", "nombre", "tipo", "volumen", "densidadObjetivo"};
         String selection = "id = ?";
         String[] selectionArgs = { String.valueOf(idMash)};
         //Log.d("StageFragment", "el id de maceracion es: " + idMash);
@@ -84,8 +86,11 @@ public class StageFragment extends Fragment {
 
             float volume = cursor.getFloat(cursor.getColumnIndexOrThrow("volumen"));
 
+            float density = cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo"));
+
             mash = new Mash(id, name, type);
             mash.setVolumen(volume);
+            mash.setDensidadObjetivo(density);
         } else
             return null;
 
@@ -113,7 +118,7 @@ public class StageFragment extends Fragment {
 
             String name= cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
 
-            float quantity = cursor.getFloat(cursor.getColumnIndexOrThrow("porcentaje"));
+            float quantity = cursor.getFloat(cursor.getColumnIndexOrThrow("cantidad"));
 
             float extract = cursor.getFloat(cursor.getColumnIndexOrThrow("extractoPotencial"));
 
