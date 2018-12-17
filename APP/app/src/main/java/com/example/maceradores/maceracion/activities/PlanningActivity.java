@@ -479,13 +479,7 @@ public class PlanningActivity extends AppCompatActivity {
                     //PlanningActivity.this.periodoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
                     PlanningActivity.this.mash.setPeriodMeasurePh(Integer.valueOf(medPh.getText().toString().trim()));
 
-                    if( mash.getPeriodMeasurePh() < mash.getPeriodMeasureTemperature()){
-                        // el sistema no lo permite.
-                        Toast.makeText(PlanningActivity.this, "El intervalo de medición de ph no puede ser menor que el intervalor de medición de temperatura.", Toast.LENGTH_SHORT).show();
-                    } else if(mash.getPeriodMeasurePh() % mash.getPeriodMeasureTemperature() != 0){
-                        Toast.makeText(PlanningActivity.this, "El intervalo de medicion de ph debe ser multiplo del intervalo de medicion de temperatura", Toast.LENGTH_SHORT).show();
-                    } else {
-                        //At this moment, i need to insert this new mash in the database
+                    if(mash.validateMash()){
 
                         mash.setTipo(spinner.getSelectedItem().toString());
 
@@ -493,6 +487,7 @@ public class PlanningActivity extends AppCompatActivity {
                         //startActivity(new Intent(PlanningActivity.this, MainActivity.class));
                         finish();
                     }
+
                 } //end if validate planning
             }
         }); //end Accept Button
