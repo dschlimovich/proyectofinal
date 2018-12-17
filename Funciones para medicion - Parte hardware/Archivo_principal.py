@@ -28,7 +28,7 @@ for i in range(num_medidas):
 	
 	segunda_funcion.escribe(idExp,datos) #Funcion q escribe en la BD
 	#print('Termino la iteracion: '+str(i))
-	time.sleep(intervalo_temp)
+	time.sleep(intervalo_temp-40)#Las funciones funcion_uno y Escribir tardan ya 40 seg, desde la APP interv siempre va a ser mayor a 40, entonces, reducimos el tiempo de sleep y podemos calcular mejor la cantidad de mediciones.
 print('Devuelvo algo')
 
 

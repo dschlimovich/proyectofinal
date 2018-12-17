@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         LineChart lineChart = findViewById(R.id.lineChart);
         ArrayList<Entry> entries = new ArrayList<>();
 

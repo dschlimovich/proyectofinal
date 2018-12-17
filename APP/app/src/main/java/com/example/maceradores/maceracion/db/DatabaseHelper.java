@@ -93,4 +93,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //las vuelvo a crear.
         onCreate(db);
     }
+
+
+
+
 }

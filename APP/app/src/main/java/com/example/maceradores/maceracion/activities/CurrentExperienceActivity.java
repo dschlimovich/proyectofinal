@@ -147,7 +147,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         int medicionesRealizadas = amountSensedValue(idExperiment);
         int cadaCuantoMido = intervaloMedicion(idMash);
         int medicionesARealizar = cantMediciones( idMash, cadaCuantoMido);
-        Log.d("Mediciones a realizar: ",String.valueOf(medicionesARealizar));
+        Log.d("Mediciones a realizar: ",String.valueOf(medicionesARealizar/2));
         Log.d("Mediciones realizadas: ",String.valueOf(medicionesRealizadas));
 
         if( medicionesRealizadas == medicionesARealizar/2){
