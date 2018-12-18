@@ -18,6 +18,7 @@ import com.example.maceradores.maceracion.adapters.FragmentChartAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Experiment;
 import com.example.maceradores.maceracion.models.SensedValues;
+import com.example.maceradores.maceracion.utils.Calculos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,14 +80,16 @@ public class ChartExperimentsFragment extends Fragment {
 
     private List<Integer> getAllExperiments(int idMash) {
         List<Integer> resultados = new ArrayList<>();
+
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        // Filter results WHERE "title" = 'My Title'
-        //String selection = "id = ?";
+        String[] columns = {"id"};
+        String selection = "maceracion = ? AND densidad IS NOT NULL";
         String[] selectionArgs = { String.valueOf(idMash)};
-        //TODO CAMBIAR RAWQUERY POR QUERY NOMAL
-        Cursor cursor = db.rawQuery("SELECT id FROM Experimento  WHERE maceracion = ? ORDER BY fecha DESC", selectionArgs);
+
+        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
+        List<Float> yieldList = new ArrayList<>();
 
         //List itemNames = new ArrayList<>();
         while(cursor.moveToNext()) {
