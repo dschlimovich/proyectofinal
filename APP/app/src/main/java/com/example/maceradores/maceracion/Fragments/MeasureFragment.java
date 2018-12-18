@@ -5,7 +5,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,12 +17,15 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.Chronometer;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,10 +35,12 @@ import com.example.maceradores.maceracion.activities.MainActivity;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.models.SensedValues;
+import com.example.maceradores.maceracion.utils.Calculos;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,6 +55,15 @@ public class MeasureFragment extends Fragment {
     private TextView tvMeasureSecondMacerator;
     private TextView tvMeasureStage;
     private Chronometer chronometer;
+
+    //---- Config----
+    private boolean[] sensoresHabilitados = new boolean[4];
+
+    private int metodoCalculo;
+    public static int PROMEDIO = R.id.radiobuttonPromedioConfigTemp;
+    public static int MEDIANA = R.id.radiobuttonMedianaConfigTemp;
+    public static int PROMEDIO_EXTREMOS = R.id.radiobuttonExtremosConfigTemp;
+
     //---Handler---
     Handler mHandlerThread;
     Thread thread1;
@@ -78,12 +94,23 @@ public class MeasureFragment extends Fragment {
         chronometer.start();
 
         // configuracion de temperatura.
+        // TODO traerlo de un SharedPreferences.
+        // veamos que sale de esto.
+        Arrays.fill(this.sensoresHabilitados, true);
+        this.metodoCalculo = PROMEDIO;
+
+        loadSharedPreferences();
+
+
+
+
         cardViewTemp = view.findViewById(R.id.cardViewMeasureTemperature);
         cardViewTemp.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 //Toast.makeText(getContext(), "Anduvo pereeeque", Toast.LENGTH_SHORT).show();
                 //aca tengo que mostrar un alert dialog para que me guarde la configuración.
+                showAlertDialogConfigTemp(sensoresHabilitados, metodoCalculo);
                 return false;
             }
         });
@@ -185,15 +212,134 @@ public class MeasureFragment extends Fragment {
         return view;
     }
 
+    private void loadSharedPreferences() {
+        SharedPreferences settings = getActivity().getSharedPreferences("Config Temp", 0);
+        if(settings.contains("Sensor 1")){
+            sensoresHabilitados[0] = settings.getBoolean("Sensor 1", true);
+        }
+
+        if(settings.contains("Sensor 2")){
+            sensoresHabilitados[1] = settings.getBoolean("Sensor 2", true);
+        }
+
+        if(settings.contains("Sensor 3")){
+            sensoresHabilitados[2] = settings.getBoolean("Sensor 3", true);
+        }
+
+        if(settings.contains("Sensor 4")){
+            sensoresHabilitados[3] = settings.getBoolean("Sensor 4", true);
+        }
+
+        if(settings.contains("Metodo Calculo")){
+            metodoCalculo = settings.getInt("Metodo Calculo", PROMEDIO);
+        }
+
+    }
+
+    private void saveSharedPreferences(){
+        SharedPreferences settings = getActivity().getSharedPreferences("Config Temp", 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        editor.putBoolean("Sensor 1", sensoresHabilitados[0]);
+        editor.putBoolean("Sensor 2", sensoresHabilitados[1]);
+        editor.putBoolean("Sensor 3", sensoresHabilitados[2]);
+        editor.putBoolean("Sensor 4", sensoresHabilitados[3]);
+
+        editor.putInt("Metodo Calculo", metodoCalculo);
+
+        editor.commit();
+    }
+
+    private void showAlertDialogConfigTemp(final boolean[] sensoresHabilitados, final int metodoCalculo) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Configuración de Medición");
+
+        View configView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_config_measure_temp, null);
+        builder.setView(configView);
+
+        // ahora me tengo que traer todas las referencias.
+        // Son 4 chech button de los sensores.
+        final CheckBox sensor1 = configView.findViewById(R.id.checkboxSensor1ConfigTemp);
+        final CheckBox sensor2 = configView.findViewById(R.id.checkboxSensor2ConfigTemp);
+        final CheckBox sensor3 = configView.findViewById(R.id.checkboxSensor3ConfigTemp);
+        final CheckBox sensor4 = configView.findViewById(R.id.checkboxSensor4ConfigTemp);
+
+        // son 3 radio button de radio group
+        final RadioGroup radioGroup = configView.findViewById(R.id.radiogroupConfigTemp);
+
+        //Inicializo los valores
+        sensor1.setChecked( sensoresHabilitados[0]);
+        sensor2.setChecked( sensoresHabilitados[1]);
+        sensor3.setChecked( sensoresHabilitados[2]);
+        sensor4.setChecked( sensoresHabilitados[3]);
+
+        radioGroup.check(metodoCalculo);
+
+        //agrego boton para cerrar el dialogo
+        builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                setSensoresHabilitados(
+                        sensor1.isChecked(),
+                        sensor2.isChecked(),
+                        sensor3.isChecked(),
+                        sensor4.isChecked()
+                );
+
+                switch (radioGroup.getCheckedRadioButtonId()){
+                    case R.id.radiobuttonPromedioConfigTemp:
+                        setMetodoCalculo(PROMEDIO);
+                        //metodoCalculo = PROMEDIO;
+                        break;
+                    case R.id.radiobuttonMedianaConfigTemp:
+                        setMetodoCalculo(MEDIANA);
+                        break;
+                    case R.id.radiobuttonExtremosConfigTemp:
+                        setMetodoCalculo(PROMEDIO_EXTREMOS);
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+        });
+
+        builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.create().show();
+    } // en Show Alert Dialog Config Temp
+
+    private void setSensoresHabilitados(boolean checked1, boolean checked2, boolean checked3, boolean checked4) {
+        this.sensoresHabilitados[0] = checked1;
+        this.sensoresHabilitados[1] = checked2;
+        this.sensoresHabilitados[2] = checked3;
+        this.sensoresHabilitados[3] = checked4;
+    }
+
+    public void setMetodoCalculo(int calculo){
+        this.metodoCalculo = calculo;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        this.tvMeasureTemp = (TextView) getView().findViewById(R.id.textViewMeasureTemp); //podria estar en el oncreate.
-        this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
-        this.tvMeasureEnzyme = (TextView) getView().findViewById(R.id.textViewMeasureEnzyme);
-        this.tvMeasureEnviroment = (TextView) getView().findViewById(R.id.textViewMeasureEnviroment);
-        this.tvMeasureSecondMacerator = (TextView) getView().findViewById(R.id.textViewMeasureSecondMaserator);
-        this.tvMeasureStage= (TextView) getView().findViewById(R.id.textViewMeasureStage);
+        if(getView() != null){
+            this.tvMeasureTemp = (TextView) getView().findViewById(R.id.textViewMeasureTemp); //podria estar en el oncreate.
+            this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
+            this.tvMeasureEnzyme = (TextView) getView().findViewById(R.id.textViewMeasureEnzyme);
+            this.tvMeasureEnviroment = (TextView) getView().findViewById(R.id.textViewMeasureEnviroment);
+            this.tvMeasureSecondMacerator = (TextView) getView().findViewById(R.id.textViewMeasureSecondMaserator);
+            this.tvMeasureStage= (TextView) getView().findViewById(R.id.textViewMeasureStage);
+        } else
+            Log.d("Measure Fragment", "No se cargo el layout correctamente");
+
 
         //----Handler para manejo de mensajes con el thread
         mHandlerThread = new Handler(){
@@ -207,7 +353,9 @@ public class MeasureFragment extends Fragment {
                     float t2 = bundle.getFloat("temp2");
                     float t3 = bundle.getFloat("temp3");
                     float t4 = bundle.getFloat("temp4");
-                    float tPromedio = validatedTempMean(t1, t2, t3, t4);
+                    //float tPromedio = validatedTempMean(t1, t2, t3, t4);
+                    float[] t = new float[]{t1,t2,t3,t4};
+                    float tPromedio = theTemp(t, sensoresHabilitados, metodoCalculo);
                     float ph = bundle.getFloat("pH");
                     float tempPh = bundle.getFloat("tempPH");
                     float tempSecondary =  bundle.getFloat("tempSecondary");
@@ -423,6 +571,23 @@ public class MeasureFragment extends Fragment {
         notificationManager.notify(1, notification.build());
     }
 
+    private float theTemp( float[] temps, boolean[] sensAllow, int metodo ){
+        // get validated Temps.
+        List<Float> t = new ArrayList<>();
+        for( int i = 0; i < 4; i++){
+            if( sensAllow[i] && temps[i] != -1000 )
+                t.add(temps[i]);
+        }
+
+        if( ! t.isEmpty()){
+            if(metodo == PROMEDIO) return Calculos.promedio(t);
+            if(metodo == MEDIANA) return Calculos.mediana(t);
+            if(metodo == PROMEDIO_EXTREMOS) return Calculos.promedio_extremos(t);
+        }
+
+        return -1000;
+    }
+
     private float validatedTempMean(float t1, float t2, float t3, float t4){
         int divisor=4;
         float dividendo=0;
@@ -531,4 +696,9 @@ public class MeasureFragment extends Fragment {
         return measureInterval;
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        saveSharedPreferences();
+    }
 }

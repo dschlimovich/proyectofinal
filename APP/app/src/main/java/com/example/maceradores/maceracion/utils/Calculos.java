@@ -2,11 +2,15 @@ package com.example.maceradores.maceracion.utils;
 
 import com.example.maceradores.maceracion.models.Grain;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class Calculos {
 
+    // ---------------------- INSUMOS Y RENDIMIENTO -------------------------------
     public static double[] calcRendimiento(double volMosto, double densEspecif, double kgMalta){
         //Densidad Especifica que mido
         double gradosPlato=(densEspecif-1)/0.004;
@@ -45,16 +49,6 @@ public class Calculos {
         return (kgGranoTotal * porcentajeGrano) / extractoPotencial;
     }
 
-    public static double temperaturaAguaInicial( double tempTarget, double tempAmb, double volAgua, double kgMalta){
-        // de donde sacamos la temperatura ambiente? pinche mierda.
-        double r = volAgua / kgMalta;
-        return (0.41 / r) * (tempTarget - tempAmb) + tempTarget;
-    }
-
-    public static double cantMostoRetirarDecoccion( double tempMash, double tempTarget, double volAgua){
-        return ((tempTarget - tempMash) * volAgua) / (95 - tempMash);
-    }
-
     public static double calcCantInsumoTeoRayDaniels(float densEspecif, float volLitros, Grain grano, float rendEquipo){
         double factorDenso = (densEspecif -1)*1000; //densEspecif Objetivo!
         double ptosDensidad = factorDenso * volLitros; //Ptos de densidad de objetivo
@@ -72,7 +66,23 @@ public class Calculos {
         //kgMalta = kgMalta - kgMalta % 0.01; //le quito lo que esta despues de las 2 cifras decimales.
         return kgMalta;
     }
+    // ---------------------- INSUMOS Y RENDIMIENTO -------------------------------
 
+    // ---------------------- SIMPLE ----------------------------------------------
+    public static double temperaturaAguaInicial( double tempTarget, double tempAmb, double volAgua, double kgMalta){
+        // de donde sacamos la temperatura ambiente? pinche mierda.
+        double r = volAgua / kgMalta;
+        return (0.41 / r) * (tempTarget - tempAmb) + tempTarget;
+    }
+    // ---------------------- SIMPLE ----------------------------------------------
+
+    // ---------------------- DECOCCION ----------------------------------------------
+    public static double cantMostoRetirarDecoccion( double tempMash, double tempTarget, double volAgua){
+        return ((tempTarget - tempMash) * volAgua) / (95 - tempMash);
+    }
+    // ---------------------- DECOCCION ----------------------------------------------
+
+    // ---------------------  ESCALONADA ---------------------------------------------
     public static double cantAguaEscalon(double volPrimerEscalon, double kgMalta, List<Float> temperaturas){
         float constanteEscalon = constanteEscalon(temperaturas);
         return constanteEscalon*(0.41 * kgMalta + volPrimerEscalon);
@@ -133,4 +143,38 @@ public class Calculos {
             return desvios.get(i) * ( 1 + constanteRecursivaPrimerEscalon(desvios, i+1));
         }
     }
+    // ---------------------  ESCALONADA ---------------------------------------------
+
+    // ---------------------  MATEMATICAS --------------------------------------------
+    public static float promedio(List<Float> values){
+        float value = 0;
+        for( int i = 0; i < values.size(); i++ ){
+            value = value + values.get(i);
+        }
+        return value / values.size();
+    }
+
+    public static float mediana(List<Float> values){
+        // tengo que ordenar la lista de menor a mayor
+            Float[] v = (Float[]) values.toArray();
+            Arrays.sort(v);
+
+            int middle = values.size()/2;
+
+            if (values.size() % 2 == 1) {
+                return v[middle];
+            } else {
+                return (v[middle-1] + v[middle]) / 2.0f;
+            }
+
+    }
+
+    public static float promedio_extremos(List<Float> values){
+        Float[] v = (Float[]) values.toArray();
+        Arrays.sort(v);
+
+        return (v[values.size()-1] + v[0]) / 2.0f;
+    }
+    // ---------------------  MATEMATICAS --------------------------------------------
+
 }
