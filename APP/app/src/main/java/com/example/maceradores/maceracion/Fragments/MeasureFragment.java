@@ -22,7 +22,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.Chronometer;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,7 @@ import com.example.maceradores.maceracion.models.SensedValues;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -50,6 +53,15 @@ public class MeasureFragment extends Fragment {
     private TextView tvMeasureSecondMacerator;
     private TextView tvMeasureStage;
     private Chronometer chronometer;
+
+    //---- Config----
+    private boolean[] sensoresHabilitados = new boolean[4];
+
+    private int metodoCalculo;
+    public static int PROMEDIO = R.id.radiobuttonPromedioConfigTemp;
+    public static int MEDIANA = R.id.radiobuttonMedianaConfigTemp;
+    public static int PROMEDIO_EXTREMOS = R.id.radiobuttonExtremosConfigTemp;
+
     //---Handler---
     Handler mHandlerThread;
     Thread thread1;
@@ -80,13 +92,16 @@ public class MeasureFragment extends Fragment {
         chronometer.start();
 
         // configuracion de temperatura.
+        Arrays.fill(this.sensoresHabilitados, true);
+        this.metodoCalculo = PROMEDIO;
+
         cardViewTemp = view.findViewById(R.id.cardViewMeasureTemperature);
         cardViewTemp.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 //Toast.makeText(getContext(), "Anduvo pereeeque", Toast.LENGTH_SHORT).show();
                 //aca tengo que mostrar un alert dialog para que me guarde la configuración.
-                showAlertDialogConfigTemp();
+                showAlertDialogConfigTemp(sensoresHabilitados, metodoCalculo);
                 return false;
             }
         });
@@ -188,18 +203,60 @@ public class MeasureFragment extends Fragment {
         return view;
     }
 
-    private void showAlertDialogConfigTemp() {
+    private void showAlertDialogConfigTemp(final boolean[] sensoresHabilitados, final int metodoCalculo) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Configuración de Medición");
 
-        View currentValuesView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_config_measure_temp, null);
-        builder.setView(currentValuesView);
+        View configView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_config_measure_temp, null);
+        builder.setView(configView);
+
+        // ahora me tengo que traer todas las referencias.
+        // Son 4 chech button de los sensores.
+        final CheckBox sensor1 = configView.findViewById(R.id.checkboxSensor1ConfigTemp);
+        final CheckBox sensor2 = configView.findViewById(R.id.checkboxSensor2ConfigTemp);
+        final CheckBox sensor3 = configView.findViewById(R.id.checkboxSensor3ConfigTemp);
+        final CheckBox sensor4 = configView.findViewById(R.id.checkboxSensor4ConfigTemp);
+
+        // son 3 radio button de radio group
+        final RadioGroup radioGroup = configView.findViewById(R.id.radiogroupConfigTemp);
+
+        //Inicializo los valores
+        sensor1.setChecked( sensoresHabilitados[0]);
+        sensor2.setChecked( sensoresHabilitados[1]);
+        sensor3.setChecked( sensoresHabilitados[2]);
+        sensor4.setChecked( sensoresHabilitados[3]);
+
+        radioGroup.check(metodoCalculo);
 
         //agrego boton para cerrar el dialogo
         builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+
+                setSensoresHabilitados(
+                        sensor1.isChecked(),
+                        sensor2.isChecked(),
+                        sensor3.isChecked(),
+                        sensor4.isChecked()
+                );
+
+                switch (radioGroup.getCheckedRadioButtonId()){
+                    case R.id.radiobuttonPromedioConfigTemp:
+                        setMetodoCalculo(PROMEDIO);
+                        //metodoCalculo = PROMEDIO;
+                        break;
+                    case R.id.radiobuttonMedianaConfigTemp:
+                        setMetodoCalculo(MEDIANA);
+                        break;
+                    case R.id.radiobuttonExtremosConfigTemp:
+                        setMetodoCalculo(PROMEDIO_EXTREMOS);
+                        break;
+                    default:
+                        break;
+                }
+
+                //respuesta = "Sensores Activados: " + sensoresActivados.toString() + " Calculo:" + calculo;
             }
         });
 
@@ -211,6 +268,17 @@ public class MeasureFragment extends Fragment {
         });
 
         builder.create().show();
+    } // en Show Alert Dialog Config Temp
+
+    private void setSensoresHabilitados(boolean checked1, boolean checked2, boolean checked3, boolean checked4) {
+        this.sensoresHabilitados[0] = checked1;
+        this.sensoresHabilitados[1] = checked2;
+        this.sensoresHabilitados[2] = checked3;
+        this.sensoresHabilitados[3] = checked4;
+    }
+
+    public void setMetodoCalculo(int calculo){
+        this.metodoCalculo = calculo;
     }
 
     @Override
