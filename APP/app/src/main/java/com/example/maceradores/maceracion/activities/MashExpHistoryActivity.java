@@ -52,6 +52,7 @@ public class MashExpHistoryActivity extends AppCompatActivity {
         setToolbar();
         setTabLayout();
         setViewPager();
+        setListenerTabLayout(viewPager);
 
 
     }
@@ -68,7 +69,26 @@ public class MashExpHistoryActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
+    private void setListenerTabLayout (final ViewPager viewPager){
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                viewPager.setCurrentItem(position);
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
     private void setToolbar(){

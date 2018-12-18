@@ -5,10 +5,8 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +16,10 @@ import android.widget.Toast;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.SensedValues;
-import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +43,7 @@ public class ChartGeneralFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_grafic_general, container, false);
+        View view = inflater.inflate(R.layout.fragment_chart_general, container, false);
         final int idMash = getArguments().getInt("idMash");
         this.idMash=idMash;
 
@@ -88,8 +84,6 @@ public class ChartGeneralFragment extends Fragment {
         dataSetPh.enableDashedLine(1f,1f,1f);
         dataSetPh.setDrawFilled(true);
         dataSetPh.setFillColor(Color.BLUE);
-
-
 
 
         //As a last step, you need to add the LineDataSet object (or objects) you created to a
@@ -279,7 +273,7 @@ public class ChartGeneralFragment extends Fragment {
         }
         cursor.close();
         db.close();
-        if(intervaloMedicion<30)intervaloMedicion=30; // Minimo Intervalo de Medicion es de 30 seg
+        if(intervaloMedicion<60)intervaloMedicion=60; // Minimo Intervalo de Medicion es de 30 seg
 
         return intervaloMedicion;
     }
