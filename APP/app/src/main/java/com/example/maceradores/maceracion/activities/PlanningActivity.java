@@ -485,6 +485,8 @@ public class PlanningActivity extends AppCompatActivity {
                         insertNewPlanning();
                         //startActivity(new Intent(PlanningActivity.this, MainActivity.class));
                         finish();
+                    } else {
+                        Toast.makeText(PlanningActivity.this, "Los intervalos de medicion insertados no son válidos", Toast.LENGTH_SHORT).show();
                     }
 
                 } //end if validate planning

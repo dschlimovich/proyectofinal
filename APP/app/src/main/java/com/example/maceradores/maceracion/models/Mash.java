@@ -267,7 +267,6 @@ public class Mash {
     }
 
     public boolean validateMash(){
-        
         return (getPeriodMeasurePh() > getPeriodMeasureTemperature()) && // validacion que la temperatura se mide mas rapido que el ph
                (getPeriodMeasurePh() % getPeriodMeasureTemperature() == 0) &&
                (getPeriodMeasureTemperature() >=60) ;
