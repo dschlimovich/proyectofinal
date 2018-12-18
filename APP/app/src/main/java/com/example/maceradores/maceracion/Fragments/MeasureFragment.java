@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -94,8 +95,14 @@ public class MeasureFragment extends Fragment {
 
         // configuracion de temperatura.
         // TODO traerlo de un SharedPreferences.
+        // veamos que sale de esto.
         Arrays.fill(this.sensoresHabilitados, true);
         this.metodoCalculo = PROMEDIO;
+
+        loadSharedPreferences();
+
+
+
 
         cardViewTemp = view.findViewById(R.id.cardViewMeasureTemperature);
         cardViewTemp.setOnLongClickListener(new View.OnLongClickListener() {
@@ -203,6 +210,44 @@ public class MeasureFragment extends Fragment {
         thread1.start();
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void loadSharedPreferences() {
+        SharedPreferences settings = getActivity().getSharedPreferences("Config Temp", 0);
+        if(settings.contains("Sensor 1")){
+            sensoresHabilitados[0] = settings.getBoolean("Sensor 1", true);
+        }
+
+        if(settings.contains("Sensor 2")){
+            sensoresHabilitados[1] = settings.getBoolean("Sensor 2", true);
+        }
+
+        if(settings.contains("Sensor 3")){
+            sensoresHabilitados[2] = settings.getBoolean("Sensor 3", true);
+        }
+
+        if(settings.contains("Sensor 4")){
+            sensoresHabilitados[3] = settings.getBoolean("Sensor 4", true);
+        }
+
+        if(settings.contains("Metodo Calculo")){
+            metodoCalculo = settings.getInt("Metodo Calculo", PROMEDIO);
+        }
+
+    }
+
+    private void saveSharedPreferences(){
+        SharedPreferences settings = getActivity().getSharedPreferences("Config Temp", 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        editor.putBoolean("Sensor 1", sensoresHabilitados[0]);
+        editor.putBoolean("Sensor 2", sensoresHabilitados[1]);
+        editor.putBoolean("Sensor 3", sensoresHabilitados[2]);
+        editor.putBoolean("Sensor 4", sensoresHabilitados[3]);
+
+        editor.putInt("Metodo Calculo", metodoCalculo);
+
+        editor.commit();
     }
 
     private void showAlertDialogConfigTemp(final boolean[] sensoresHabilitados, final int metodoCalculo) {
@@ -651,4 +696,9 @@ public class MeasureFragment extends Fragment {
         return measureInterval;
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        saveSharedPreferences();
+    }
 }
