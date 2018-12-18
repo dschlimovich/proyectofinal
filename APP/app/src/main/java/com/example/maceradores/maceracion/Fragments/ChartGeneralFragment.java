@@ -5,8 +5,10 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,21 +66,31 @@ public class ChartGeneralFragment extends Fragment {
 
         List<Entry> entriesTemp = new ArrayList<Entry>();
         List<Entry> entriespH = new ArrayList<Entry>();
+        List<Integer> intervalos = intervaloMedicionTempPh(idMash);
 
         for ( int x=0;x<MeanTempAndPh.get(0).size();x++){
 
             // turn your data into Entry objects
-            entriesTemp.add(new Entry(x,(float)(double) MeanTempAndPh.get(0).get(x)));//Hay Double (objeto) en el vector, y esto necesita primitiva float. Por eso el doble casteo
-            entriespH.add(new Entry(x,(float)(double) MeanTempAndPh.get(1).get(x)));//Hay Double (objeto) en el vector, y esto necesita primitiva float. Por eso el doble casteo
+            entriesTemp.add(new Entry(x*(intervalos.get(0)/60),(float)(double) MeanTempAndPh.get(0).get(x)));//Hay Double (objeto) en el vector, y esto necesita primitiva float. Por eso el doble casteo
+            entriespH.add(new Entry(x*(intervalos.get(1)/60),(float)(double) MeanTempAndPh.get(1).get(x)));//Hay Double (objeto) en el vector, y esto necesita primitiva float. Por eso el doble casteo
         }
 
         //DataSet objects hold data which belongs together, and allow individual styling of that data
         LineDataSet dataSetTemp = new LineDataSet(entriesTemp,"Temperatura");
         dataSetTemp.setColor(Color.RED);
-        dataSetTemp.enableDashedLine(0.2f,0.2f,0.2f);
+        dataSetTemp.enableDashedLine(1f,1f,1f);
+        dataSetTemp.setDrawFilled(true);
+        dataSetTemp.setFillColor(Color.RED);
+
 
         LineDataSet dataSetPh = new LineDataSet(entriespH,"pH");
         dataSetPh.setColor(Color.BLUE);
+        dataSetPh.enableDashedLine(1f,1f,1f);
+        dataSetPh.setDrawFilled(true);
+        dataSetPh.setFillColor(Color.BLUE);
+
+
+
 
         //As a last step, you need to add the LineDataSet object (or objects) you created to a
         // LineData object. This object holds all data that is represented by a Chart instance
@@ -86,12 +99,15 @@ public class ChartGeneralFragment extends Fragment {
 
         tempChart.setData(lineDataTemp);
         tempChart.getAxisLeft().setEnabled(false);
+
         //tempChart.
         tempChart.invalidate(); //refresh
+
 
         LineData lineDataPh = new LineData(dataSetPh);
 
         phChart.setData(lineDataPh);
+        phChart.getAxisLeft().setEnabled(false);
         phChart.invalidate(); //refresh
     }
 
@@ -299,5 +315,28 @@ public class ChartGeneralFragment extends Fragment {
         int amount = (int) DatabaseUtils.queryNumEntries(db, "SensedValues", "id_exp=?", new String[] {String.valueOf(idExp)});
         db.close();
         return amount;
+    }
+
+    private List<Integer> intervaloMedicionTempPh (int idMash){
+
+        // saber el periodo de medicion.
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        List<Integer> retorno = new ArrayList<>();
+
+        String[] columns = {"intervaloMedTemp","intervaloMedPh"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            retorno.add(cursor.getInt(0)); //como tengo una sola columna, devuelvo la primera nomas.
+            retorno.add(cursor.getInt(1));
+        }
+        cursor.close();
+        db.close();
+
+        return retorno;
     }
 }
