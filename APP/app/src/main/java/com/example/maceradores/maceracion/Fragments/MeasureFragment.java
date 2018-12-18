@@ -34,6 +34,7 @@ import com.example.maceradores.maceracion.activities.MainActivity;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.models.SensedValues;
+import com.example.maceradores.maceracion.utils.Calculos;
 
 import org.w3c.dom.Text;
 
@@ -92,6 +93,7 @@ public class MeasureFragment extends Fragment {
         chronometer.start();
 
         // configuracion de temperatura.
+        // TODO traerlo de un SharedPreferences.
         Arrays.fill(this.sensoresHabilitados, true);
         this.metodoCalculo = PROMEDIO;
 
@@ -256,7 +258,6 @@ public class MeasureFragment extends Fragment {
                         break;
                 }
 
-                //respuesta = "Sensores Activados: " + sensoresActivados.toString() + " Calculo:" + calculo;
             }
         });
 
@@ -284,12 +285,16 @@ public class MeasureFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        this.tvMeasureTemp = (TextView) getView().findViewById(R.id.textViewMeasureTemp); //podria estar en el oncreate.
-        this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
-        this.tvMeasureEnzyme = (TextView) getView().findViewById(R.id.textViewMeasureEnzyme);
-        this.tvMeasureEnviroment = (TextView) getView().findViewById(R.id.textViewMeasureEnviroment);
-        this.tvMeasureSecondMacerator = (TextView) getView().findViewById(R.id.textViewMeasureSecondMaserator);
-        this.tvMeasureStage= (TextView) getView().findViewById(R.id.textViewMeasureStage);
+        if(getView() != null){
+            this.tvMeasureTemp = (TextView) getView().findViewById(R.id.textViewMeasureTemp); //podria estar en el oncreate.
+            this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
+            this.tvMeasureEnzyme = (TextView) getView().findViewById(R.id.textViewMeasureEnzyme);
+            this.tvMeasureEnviroment = (TextView) getView().findViewById(R.id.textViewMeasureEnviroment);
+            this.tvMeasureSecondMacerator = (TextView) getView().findViewById(R.id.textViewMeasureSecondMaserator);
+            this.tvMeasureStage= (TextView) getView().findViewById(R.id.textViewMeasureStage);
+        } else
+            Log.d("Measure Fragment", "No se cargo el layout correctamente");
+
 
         //----Handler para manejo de mensajes con el thread
         mHandlerThread = new Handler(){
@@ -303,7 +308,9 @@ public class MeasureFragment extends Fragment {
                     float t2 = bundle.getFloat("temp2");
                     float t3 = bundle.getFloat("temp3");
                     float t4 = bundle.getFloat("temp4");
-                    float tPromedio = validatedTempMean(t1, t2, t3, t4);
+                    //float tPromedio = validatedTempMean(t1, t2, t3, t4);
+                    float[] t = new float[]{t1,t2,t3,t4};
+                    float tPromedio = theTemp(t, sensoresHabilitados, metodoCalculo);
                     float ph = bundle.getFloat("pH");
                     float tempPh = bundle.getFloat("tempPH");
                     float tempSecondary =  bundle.getFloat("tempSecondary");
@@ -517,6 +524,23 @@ public class MeasureFragment extends Fragment {
                 .setSmallIcon(R.mipmap.ic_launcher);
 
         notificationManager.notify(1, notification.build());
+    }
+
+    private float theTemp( float[] temps, boolean[] sensAllow, int metodo ){
+        // get validated Temps.
+        List<Float> t = new ArrayList<>();
+        for( int i = 0; i < 4; i++){
+            if( sensAllow[i] && temps[i] != -1000 )
+                t.add(temps[i]);
+        }
+
+        if( ! t.isEmpty()){
+            if(metodo == PROMEDIO) return Calculos.promedio(t);
+            if(metodo == MEDIANA) return Calculos.mediana(t);
+            if(metodo == PROMEDIO_EXTREMOS) return Calculos.promedio_extremos(t);
+        }
+
+        return -1000;
     }
 
     private float validatedTempMean(float t1, float t2, float t3, float t4){
