@@ -229,7 +229,9 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<TempPh> call, Response<TempPh> response) {
                 TempPh tempPh = response.body();
                 //agrego los valores obtenidos a los textviews
-                tvCurrentValues.append("Temperatura: " + tempPh.getTemp1() + "\n");
+                float temp=validatedTempMean(Float.valueOf(tempPh.getTemp1()),Float.valueOf(tempPh.getTemp2()),
+                        Float.valueOf(tempPh.getTemp3()),Float.valueOf(tempPh.getTemp4()));
+                tvCurrentValues.append("Temperatura: " + String.valueOf(temp) + "\n");
                 tvCurrentValues.append("pH: " + tempPh.getPh() + "\n");
                 tvCurrentValues.append("Temp. Ambiente: " + tempPh.getTempAmb() + "\n");
                 tvCurrentValues.append("Humedad Ambiente: " + tempPh.getHumidity() + "\n");
@@ -257,6 +259,30 @@ public class MainActivity extends AppCompatActivity {
         });
 
         builder.create().show();
+
+    }
+    private float validatedTempMean(float t1, float t2, float t3, float t4){
+        int divisor=4;
+        float dividendo=0;
+        if(t1==-1000){
+            divisor--;
+        }else{dividendo = dividendo + t1;}
+        if(t2==-1000){
+            divisor--;
+        }else{dividendo = dividendo + t2;}
+        if(t3==-1000){
+            divisor--;
+        }else{dividendo = dividendo + t3;}
+        if(t4==-1000){
+            divisor--;
+        }else{dividendo = dividendo + t4;}
+        if(dividendo==0){//Asi evito la division por cero
+            return -1000;//Devuelvo, una temperatura invalida
+        }else {
+            float promedio = dividendo / divisor;
+            return promedio;
+        }
+
     }
 
 } //end MainActivity
