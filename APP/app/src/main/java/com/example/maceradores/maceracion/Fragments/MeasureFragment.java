@@ -152,7 +152,9 @@ public class MeasureFragment extends Fragment {
                         mHandlerThread.sendMessage(message);
 
                         //-------Aca va tmb lo de la verificacion para las NOTIFICACIONES DE DESVIOS!
-                        float temp = validatedTempMean(sensedValues.getTemp1(),sensedValues.getTemp2(),sensedValues.getTemp3(),sensedValues.getTemp4()); //Hardcod
+                        //float temp = validatedTempMean(sensedValues.getTemp1(),sensedValues.getTemp2(),sensedValues.getTemp3(),sensedValues.getTemp4()); //Hardcod
+                        float[] t = new float[] {sensedValues.getTemp1(),sensedValues.getTemp2(),sensedValues.getTemp3(),sensedValues.getTemp4()};
+                        float temp = theTemp(t, sensoresHabilitados, metodoCalculo);
                         int intervaloDuracion = intervaloMedicion(idMash);
                         List<Integer> ListmedicionesxInter = medicionesPorIntervalo(idMash,intervaloDuracion);
                         int cantSensedValues = amountSensedValue(idExp);
