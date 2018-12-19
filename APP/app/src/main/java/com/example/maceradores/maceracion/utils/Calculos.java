@@ -24,6 +24,19 @@ public class Calculos {
         return array;
     }
 
+    public static double rendimientoGeneral( List<Float> densities, double volMosto, double kgMalta){
+        double rendimiento = -1;
+        double acumulado = 0;
+        for( int i = 0; i < densities.size(); i++){
+            double yield = Calculos.calcRendimiento(volMosto, densities.get(i), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
+            acumulado = acumulado + yield;
+        }
+        if( acumulado != 0){
+            rendimiento = acumulado / densities.size();
+        }
+        return rendimiento;
+    }
+
     public static double calcCantInsumoPrac(double volMosto, double densEspecif, double porcRend){
         //La densidad especifica que quiero tener antes de hervir
         double gradosPlato=(densEspecif-1)/0.004;

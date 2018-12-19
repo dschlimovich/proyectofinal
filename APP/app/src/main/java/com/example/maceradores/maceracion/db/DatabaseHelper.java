@@ -9,7 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.maceradores.maceracion.models.Experiment;
+import com.example.maceradores.maceracion.models.Grain;
 import com.example.maceradores.maceracion.models.Mash;
+import com.example.maceradores.maceracion.models.MeasureInterval;
+import com.example.maceradores.maceracion.utils.Calculos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -196,6 +199,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cant;
     } //end deleteMash
 
+    public Mash getMash(int idMash){
+        Mash mash = new Mash();
+        mash.setId(idMash);
+        try{
+
+            SQLiteDatabase db = getReadableDatabase();
+            String selection = "id = ?";
+            String[] selectionArgs = { String.valueOf(idMash)};
+
+            Cursor cursor = db.query("Maceracion", null, selection, selectionArgs, null, null, null);
+            if( cursor.moveToFirst()){
+                // primero pongo el titulo con el nombre de la maceracion
+                mash.setName(cursor.getString(cursor.getColumnIndexOrThrow("nombre")));
+                //setTitle("Planificación " + nameMash);
+
+                //tipo de maceracion : spinner.
+                mash.setTipo(cursor.getString(cursor.getColumnIndexOrThrow("tipo")));
+                //type = cursor.getString(cursor.getColumnIndexOrThrow("tipo"));
+                //int spinnerPosition = adapterSpinner.getPosition(mash.getTipo());
+                //spinner.setSelection(spinnerPosition);
+
+                // volumen
+                mash.setVolumen(cursor.getFloat(cursor.getColumnIndexOrThrow("volumen")));
+                //volume = cursor.getFloat(cursor.getColumnIndexOrThrow("volumen"));
+                //EditText volumePlanning = findViewById(R.id.editTextPlanningVolumen);
+                //volumePlanning.setText(String.valueOf(mash.getVolumen()));
+
+                //densidad
+                mash.setDensidadObjetivo(cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo")));
+                //density = cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo"));
+                //EditText densityPlanning = findViewById(R.id.editTextPlanningDensidad);
+                //densityPlanning.setText(String.valueOf(mash.getDensidadObjetivo()));
+
+            }
+            cursor.close();
+        } catch (SQLException e){
+            Log.d("Error db", e.toString());
+        }
+
+        return mash;
+    }
+
     public String getNameMash(int idMash){
         String name = "";
 
@@ -219,12 +264,158 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return name;
     }
+
+    public List<Float> getDensities(int idMash){
+        List<Float> densities = new ArrayList<>();
+
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+
+            String[] columns = {"densidad"};
+            String selection = "maceracion = ? AND densidad IS NOT NULL";
+            String[] selectionArgs = { String.valueOf(idMash)};
+
+            Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
+
+            while( cursor.moveToNext()){
+                //double yield = Calculos.calcRendimiento(volMosto, cursor.getFloat(0), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
+                densities.add(cursor.getFloat(0));
+            }
+            cursor.close();
+        } catch ( SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return densities;
+    }
+
+    public int insertMash(Mash mash){
+        int resultado = 1;
+        try{
+            SQLiteDatabase db = getWritableDatabase();
+
+            ContentValues mashValues = new ContentValues();
+
+            mashValues.put( "nombre", mash.getName()); //el nombre tiene la clausula unique
+            mashValues.put( "tipo", mash.getTipo());
+            mashValues.put( "volumen", mash.getVolumen());
+            mashValues.put( "densidadObjetivo", mash.getDensidadObjetivo());
+            mashValues.put( "intervaloMedTemp", mash.getPeriodMeasureTemperature());
+            mashValues.put( "intervaloMedPh", mash.getPeriodMeasurePh());
+
+            long newMashId = db.insert("Maceracion", null, mashValues);
+
+            if( newMashId != -1){
+                ContentValues grainValues;
+
+                for(int i = 0; i < mash.getGrains().size(); i++){
+                    grainValues = new ContentValues();
+                    grainValues.put("nombre", mash.getGrains().get(i).getName());
+                    grainValues.put("cantidad", mash.getGrains().get(i).getQuantity());
+                    grainValues.put("extractoPotencial", mash.getGrains().get(i).getExtractPotential());
+                    grainValues.put("maceracion", newMashId);
+
+                    long newGrainId = db.insert("Grano",null, grainValues );
+                } // end fir agregado de granos.
+
+                //Ahora agregamos los intervalos de medicion.
+                ContentValues intervalValues;
+
+                for( int i = 0; i < mash.getPlan().size(); i++){
+                    intervalValues = new ContentValues();
+
+                    intervalValues.put("orden", i+1); // como le quedo definido, los pongo en ese orden
+                    //intervalValues.put("duracion", intervals.get(i).getDuration());
+                    intervalValues.put("duracion", mash.getPlan().get(i).getDuration());
+                    intervalValues.put("temperatura", mash.getPlan().get(i).getMainTemperature());
+                    intervalValues.put("desvioTemperatura", mash.getPlan().get(i).getMainTemperatureDeviation());
+                    intervalValues.put("ph", mash.getPlan().get(i).getpH());
+                    intervalValues.put("desvioPh", mash.getPlan().get(i).getPhDeviation());
+                    intervalValues.put("tempDecoccion", mash.getPlan().get(i).getSecondTemperature());
+                    intervalValues.put("desvioTempDecoccion", mash.getPlan().get(i).getSecondTemperatureDeviation());
+                    intervalValues.put("maceracion", newMashId);
+
+                    long newIntervalId = db.insert("Intervalo", null, intervalValues);
+                }
+
+            } else {
+                resultado = -1;
+            }
+            db.close();
+        }catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return resultado;
+
+    }
     //------------------MASH-----------------------
 
     //------------------GRAIN-----------------------
+    public List<Grain> getGrains(int idMash){
+        List<Grain> grains = new ArrayList<>();
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            String selection = "maceracion = ?";
+            String [] selectionArgs = new String[] { String.valueOf(idMash)};
+            Cursor cursor = db.query("Grano", null, selection, selectionArgs, null, null, null);
+
+            while(cursor.moveToNext()){
+
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
+                Float quantity = cursor.getFloat(cursor.getColumnIndexOrThrow("cantidad"));
+                Float extract = cursor.getFloat(cursor.getColumnIndexOrThrow("extractoPotencial"));
+
+                Grain grain = new Grain(name, quantity, extract);
+
+                grains.add(grain);
+            }//end while
+
+            cursor.close();
+            db.close();
+        } catch (SQLException e){
+            Log.d("Error db", e.toString());
+        }
+
+        return grains;
+    }
     //------------------GRAIN-----------------------
 
     //------------------INTERVAL/STAGE-----------------------
+    public List<MeasureInterval> getMeasureIntervals(int idMash){
+        List<MeasureInterval> intervals = new ArrayList<>();
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            String selection = "maceracion = ?";
+            String [] selectionArgs = new String[] { String.valueOf(idMash)};
+            Cursor cursor = db.query("Intervalo", null, selection, selectionArgs, null, null, "orden ASC");
+
+            while(cursor.moveToNext()){
+                int order = cursor.getInt(cursor.getColumnIndexOrThrow("orden"));
+                int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duracion"));
+
+                float temperature = cursor.getFloat(cursor.getColumnIndexOrThrow("temperatura"));
+                float temperatureDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTemperatura"));
+
+                float ph = cursor.getFloat(cursor.getColumnIndexOrThrow("ph"));
+                float phDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioPh"));
+
+                float temperatureDecoccion = cursor.getFloat(cursor.getColumnIndexOrThrow("tempDecoccion"));
+                float temperatureDecoccionDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTempDecoccion"));
+
+                MeasureInterval interval = new MeasureInterval(order, temperature, temperatureDeviation, temperatureDecoccion, temperatureDecoccionDeviation, ph, phDeviation, duration);
+
+                intervals.add(interval);
+                //mash.addMeasureInterval(interval);
+            }//end while
+
+            cursor.close();
+            db.close();
+        }catch (SQLException e){
+            Log.d("Error db", e.toString());
+        }
+        return intervals;
+    }
 
     //------------------INTERVAL/STAGE-----------------------
 

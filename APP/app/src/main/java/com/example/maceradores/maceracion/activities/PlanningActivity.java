@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -93,7 +94,14 @@ public class PlanningActivity extends AppCompatActivity {
         chargeUI();
 
         if(planned){
-            fillUI(mash.getId());
+            DatabaseHelper db = new DatabaseHelper(this);
+            this.mash = db.getMash(mash.getId());
+            mash.setGrains( db.getGrains(mash.getId()));
+            mash.setPlan(db.getMeasureIntervals(mash.getId()));
+            db.close();
+
+
+            fillUI();
             // tengo que deshabilitar el boton del action bar.
             blockUI();
         }
@@ -256,33 +264,16 @@ public class PlanningActivity extends AppCompatActivity {
         //hago la consulta de la base de datos.
         // me traigo la lista de id de experiencias.
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] columns = {"densidad"};
-        String selection = "maceracion = ? AND densidad IS NOT NULL";
-        String[] selectionArgs = { String.valueOf(idMash)};
-
-        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
-        List<Float> yieldList = new ArrayList<>();
+        List<Float> densities = dbHelper.getDensities(idMash);
+        dbHelper.close();
         float volMosto = mash.getVolumen();
         double kgMalta = mash.kgMalta();
 
-        while( cursor.moveToNext()){
-            double yield = Calculos.calcRendimiento(volMosto, cursor.getFloat(0), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
-            yieldList.add( (float) yield);
-        }
-        cursor.close();
-        dbHelper.close();
 
-        if(yieldList.size() < 3){
+        if(densities.size() < 3){
             return -1;
         } else {
-            //devuelvo el promedio.
-            float acumulado = 0;
-            for( int i = 0; i < yieldList.size(); i++){
-                acumulado = acumulado + yieldList.get(i);
-            }
-            return acumulado / yieldList.size();
+            return (float) Calculos.rendimientoGeneral(densities, volMosto, kgMalta);
         }
 
 
@@ -314,134 +305,39 @@ public class PlanningActivity extends AppCompatActivity {
         }
     }
 
-    private void fillUI(int idMash) {
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+    private void fillUI() {
 
-        fillUIMash( idMash, db );
-        fillUIGrain(idMash, db);
-        fillUIInterval(idMash, db);
+        fillUIMash();
+        fillUIGrain();
+        fillUIInterval();
 
-        dbHelper.close();
     }
 
-    private void fillUIMash(int idMash, SQLiteDatabase db ){
-        // Filter results WHERE "title" = 'My Title'
-        String selection = "id = ?";
-        String[] selectionArgs = { String.valueOf(idMash)};
-
-        Cursor cursor = db.query("Maceracion", null, selection, selectionArgs, null, null, null);
-        if( cursor.moveToFirst()){
-            // primero pongo el titulo con el nombre de la maceracion
-            String nameMash = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
-            setTitle("Planificación " + nameMash);
-
-            //tipo de maceracion : spinner.
-            mash.setTipo(cursor.getString(cursor.getColumnIndexOrThrow("tipo")));
-            //type = cursor.getString(cursor.getColumnIndexOrThrow("tipo"));
+    private void fillUIMash( ){
+            setTitle("Planificación " + mash.getName());
             int spinnerPosition = adapterSpinner.getPosition(mash.getTipo());
             spinner.setSelection(spinnerPosition);
 
-            // volumen
-            mash.setVolumen(cursor.getFloat(cursor.getColumnIndexOrThrow("volumen")));
-            //volume = cursor.getFloat(cursor.getColumnIndexOrThrow("volumen"));
             EditText volumePlanning = findViewById(R.id.editTextPlanningVolumen);
             volumePlanning.setText(String.valueOf(mash.getVolumen()));
 
-            //densidad
-            mash.setDensidadObjetivo(cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo")));
-            //density = cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo"));
             EditText densityPlanning = findViewById(R.id.editTextPlanningDensidad);
             densityPlanning.setText(String.valueOf(mash.getDensidadObjetivo()));
-
-            // A los intervalos de medicion mandale saludos a cagaste. De la forma que lo plantemaos.
-            // no es facil mostrarlo.
-            // TODO Hacer algo para mostrar los intervalos de medición.
-
-            /*intervaloMedTemp INTEGER, " +
-            "intervaloMedPh INTEGER)");*/
-        }
-        cursor.close();
     }
 
-    private void fillUIGrain(int idMash, SQLiteDatabase db){
-        // Granos
-        String selection = "maceracion = ?";
-        String [] selectionArgs = new String[] { String.valueOf(idMash)};
-        Cursor cursor = db.query("Grano", null, selection, selectionArgs, null, null, null);
-        // Puedo y seguramente voy a tener mas de un grano.
-        while(cursor.moveToNext()){
-            /* db.execSQL("CREATE TABLE Grano(" +
-                "id INTEGER PRIMARY KEY, " +
-                "nombre VARCHAR(190), " +
-                "cantidad FLOAT, " +
-                "extractoPotencial FLOAT, " +
-                "maceracion INTEGER," +
-                "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");*/
-            String name = cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
-            Float quantity = cursor.getFloat(cursor.getColumnIndexOrThrow("cantidad"));
-            Float extract = cursor.getFloat(cursor.getColumnIndexOrThrow("extractoPotencial"));
-             //con estos tres valores puedo crear el grano y agregarlo.
-            Grain grain = new Grain(name, quantity, extract);
-            //grains.add(grain);
-            mash.addGrain(grain);
-        }//end while
+    private void fillUIGrain(){
 
         this.rendimientoPractico = getRendimientoPractico(this.mash.getId());
-        if(rendimientoPractico != -1){
-            Log.d("PlanningActivity", "el rendimiento practico es: " + rendimientoPractico);
-            grainListAdapter = new GrainListAdapter(this, this.mash, this.planned,R.layout.item_list_grain, this.rendimientoPractico );
-            listGrains.setAdapter(grainListAdapter);
-        } else{
-            grainListAdapter.notifyDataSetChanged();
-        }
+        grainListAdapter = new GrainListAdapter(this, this.mash, this.planned,R.layout.item_list_grain, this.rendimientoPractico );
+        listGrains.setAdapter(grainListAdapter);
 
 
-
-
-
-        cursor.close();
     }
 
-    private void fillUIInterval( int idMash, SQLiteDatabase db){
-        //Intervalos.
-        String selection = "maceracion = ?";
-        String [] selectionArgs = new String[] { String.valueOf(idMash)};
-        Cursor cursor = db.query("Intervalo", null, selection, selectionArgs, null, null, "orden ASC");
-        // Puedo tener mas de un intervalo. Hacemos un while.
-        while(cursor.moveToNext()){
-            /*         db.execSQL("CREATE TABLE Intervalo(" +
-                "id INTEGER PRIMARY KEY, " +
-                "orden INTEGER,"+
-                "duracion INTEGER," +  //minutos. deberia ser un flotante?
-                "temperatura FLOAT, " +
-                "desvioTemperatura FLOAT,"+
-                "ph FLOAT," +
-                "desvioPh FLOAT,"+
-                "tempDecoccion FLOAT, " +
-                "desvioTempDecoccion FLOAT,"+
-                "maceracion INTEGER, " +
-                "FOREIGN KEY (maceracion) REFERENCES Maceracion(id))");*/
-            int order = cursor.getInt(cursor.getColumnIndexOrThrow("orden"));
-            int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duracion"));
-
-            float temperature = cursor.getFloat(cursor.getColumnIndexOrThrow("temperatura"));
-            float temperatureDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTemperatura"));
-
-            float ph = cursor.getFloat(cursor.getColumnIndexOrThrow("ph"));
-            float phDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioPh"));
-
-            float temperatureDecoccion = cursor.getFloat(cursor.getColumnIndexOrThrow("tempDecoccion"));
-            float temperatureDecoccionDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTempDecoccion"));
-
-            //con estos tres valores puedo crear el intervalo y agregarlo.
-            MeasureInterval interval = new MeasureInterval(order, temperature, temperatureDeviation, temperatureDecoccion, temperatureDecoccionDeviation, ph, phDeviation, duration);
-            //intervals.add(interval);
-            mash.addMeasureInterval(interval);
-        }//end while
-        intervalListAdapter.notifyDataSetChanged();
-
-        cursor.close();
+    private void fillUIInterval( ){
+        intervalListAdapter = new IntervalListAdapter(mash, planned, R.layout.item_list_interval, null);
+        listsIntervals.setAdapter(intervalListAdapter);
+        //intervalListAdapter.notifyDataSetChanged();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
@@ -646,76 +542,12 @@ public class PlanningActivity extends AppCompatActivity {
 
     private void insertNewPlanning(){
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //Ahora puedo escribir en la base de datos,
-        ContentValues mashValues = new ContentValues();
-        //mashValues.put( "nombre", nameMash); //el nombre tiene la clausula unique
-        mashValues.put( "nombre", mash.getName()); //el nombre tiene la clausula unique
-        //mashValues.put( "tipo", PlanningActivity.this.type);
-        mashValues.put( "tipo", PlanningActivity.this.mash.getTipo());
-        //mashValues.put( "volumen", PlanningActivity.this.volume);
-        mashValues.put( "volumen", PlanningActivity.this.mash.getVolumen());
-        //mashValues.put( "densidadObjetivo", PlanningActivity.this.density);
-        mashValues.put( "densidadObjetivo", PlanningActivity.this.mash.getDensidadObjetivo());
-        //mashValues.put( "intervaloMedTemp", periodoMedicionTemp);
-        mashValues.put( "intervaloMedTemp", PlanningActivity.this.mash.getPeriodMeasureTemperature());
-        //mashValues.put( "intervaloMedPh", periodoMedicionPh);
-        mashValues.put( "intervaloMedPh", mash.getPeriodMeasurePh());
-
-
-        long newMashId = db.insert("Maceracion", null, mashValues);
-
-        // cuenta la leyenda que en newRowId tengo el id del ultimo valor insertado.
-        if( newMashId != -1){
-            //Toast.makeText(PlanningActivity.this, "Inserto sin problemas", Toast.LENGTH_SHORT).show();
-            // Si inserto la maceración, tengo que insertar ademas los granos y las etapas de medicion.
-            // Comencemos por los granos.
-            ContentValues grainValues;
-            //for(int i = 0; i < grains.size(); i++){
-            for(int i = 0; i < mash.getGrains().size(); i++){
-                grainValues = new ContentValues();
-                // TODO hacerlo sin violacion de clases
-                //grainValues.put("nombre", grains.get(i).getName());
-                grainValues.put("nombre", mash.getGrains().get(i).getName());
-                //grainValues.put("cantidad", grains.get(i).getQuantity());
-                grainValues.put("cantidad", mash.getGrains().get(i).getQuantity());
-                //grainValues.put("extractoPotencial", grains.get(i).getExtractPotential());
-                grainValues.put("extractoPotencial", mash.getGrains().get(i).getExtractPotential());
-                grainValues.put("maceracion", newMashId);
-
-                long newGrainId = db.insert("Grano",null, grainValues );
-                if(newGrainId == -1){
-                    Toast.makeText(PlanningActivity.this, "Hubo problemas insertando este grano", Toast.LENGTH_SHORT).show();
-                }
-            } // end fir agregado de granos.
-
-            //Ahora agregamos los intervalos de medicion.
-            ContentValues intervalValues;
-            //for( int i = 0; i < intervals.size(); i++){
-            for( int i = 0; i < mash.getPlan().size(); i++){
-                intervalValues = new ContentValues();
-
-                intervalValues.put("orden", i+1); // como le quedo definido, los pongo en ese orden
-                //intervalValues.put("duracion", intervals.get(i).getDuration());
-                intervalValues.put("duracion", mash.getPlan().get(i).getDuration());
-                intervalValues.put("temperatura", mash.getPlan().get(i).getMainTemperature());
-                intervalValues.put("desvioTemperatura", mash.getPlan().get(i).getMainTemperatureDeviation());
-                intervalValues.put("ph", mash.getPlan().get(i).getpH());
-                intervalValues.put("desvioPh", mash.getPlan().get(i).getPhDeviation());
-                intervalValues.put("tempDecoccion", mash.getPlan().get(i).getSecondTemperature());
-                intervalValues.put("desvioTempDecoccion", mash.getPlan().get(i).getSecondTemperatureDeviation());
-                intervalValues.put("maceracion", newMashId);
-
-                long newIntervalId = db.insert("Intervalo", null, intervalValues);
-                if(newIntervalId == -1)
-                    Toast.makeText(PlanningActivity.this, "Problemas insertando intervalo", Toast.LENGTH_SHORT).show();
-            }
-
-        } else {
-            Toast.makeText(PlanningActivity.this, "Problemas al insertar", Toast.LENGTH_SHORT).show();
+        if( dbHelper.insertMash(mash) == 1){
+            Toast.makeText(this, "Maceración correctamente planificada", Toast.LENGTH_SHORT).show();
+        } else{
+            Toast.makeText(this, "La planificación no se pudo insertar en la base de datos", Toast.LENGTH_SHORT).show();
         }
-        // chequeamos si me toma los cambios.
         dbHelper.close();
-        Toast.makeText(this, "Maceración correctamente planificada", Toast.LENGTH_SHORT).show();
+
     }
 } //end PlanningActivity
