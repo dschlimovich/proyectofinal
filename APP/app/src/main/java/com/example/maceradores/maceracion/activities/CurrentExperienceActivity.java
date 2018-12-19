@@ -67,11 +67,13 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         if( intent.hasExtra("idMash") ){
             idMash = intent.getIntExtra("idMash", 0);
             setTitleName(idMash);
-            //setTitle("Medición " + intent.getStringExtra("nameMash"));
             long newExperimentId = insertNewExperiment(idMash);
             if(newExperimentId == -1) {
                 Toast.makeText(this, "Error al insertar experiencia", Toast.LENGTH_SHORT).show();
-                // TODO volver al activity
+                startActivity(
+                        new Intent(CurrentExperienceActivity.this, ExperimentActivity.class)
+                                .putExtra("idMash", idMash));
+                finish();
             } else{
                 // pudo insertar
                 this.idExperiment = (int) newExperimentId;
@@ -99,7 +101,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
             }
         } else {
-            Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Usted ha llegado aquí de una manera misteriosa", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -160,7 +162,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             // Tiene que insertar la densidad obtenida en el experimento.
             showAlertFinishExperience();
         } else {
-            Toast.makeText(this, "Aun no se realizaron todas las mediciones correspondientes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Aún no se realizaron todas las mediciones correspondientes", Toast.LENGTH_SHORT).show();
         }
 
     }

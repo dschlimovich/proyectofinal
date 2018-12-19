@@ -57,7 +57,7 @@ public class PlanningActivity extends AppCompatActivity {
 
     //flag.
     private boolean planned = false;
-    private float rendimientoPractico = -1;
+
 
     //Container
     Spinner spinner;
@@ -72,7 +72,7 @@ public class PlanningActivity extends AppCompatActivity {
 
     //Data - Fields to create the new mash.
     private Mash mash;
-
+    private float rendimientoPractico = -1;
 
     // LifeCycle functions.
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
