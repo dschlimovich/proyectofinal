@@ -33,16 +33,31 @@ public class MeasureInterval {
         this.duration = duration;
     }
 
+    public MeasureInterval(float mainTemperature, float mainTemperatureDeviation, float pH, float phDeviation, int duration) {
+        this.mainTemperature = mainTemperature;
+        this.mainTemperatureDeviation = mainTemperatureDeviation;
+        this.pH = pH;
+        this.phDeviation = phDeviation;
+        this.duration = duration;
+        this.secondTemperature = -1000;
+        this.secondTemperatureDeviation = -1000;
+    }
+
     //Own Method.
     public void decrementOrder(){
         this.order = this.order - 1;
     }
 
     public String getDescription(){
-        return "Duración: " + this.duration + " minutos\n" +
-                "Temperatura: " + this.mainTemperature + "°C ± " + this.mainTemperatureDeviation + "\n" +
-                "pH: " + this.pH + " ± " + this.phDeviation + "\n" +
-                "Temperatura Decocción: " + this.secondTemperature + "°C ± " + this.secondTemperatureDeviation + "\n";
+        if( secondTemperature == -1000 || secondTemperatureDeviation == -1000 )
+            return "Duración: " + this.duration + " minutos\n" +
+                    "Temperatura: " + this.mainTemperature + "°C ± " + this.mainTemperatureDeviation + "\n" +
+                    "pH: " + this.pH + " ± " + this.phDeviation + "\n" ;
+        else
+            return "Duración: " + this.duration + " minutos\n" +
+                    "Temperatura: " + this.mainTemperature + "°C ± " + this.mainTemperatureDeviation + "\n" +
+                    "pH: " + this.pH + " ± " + this.phDeviation + "\n" +
+                    "Temperatura Decocción: " + this.secondTemperature + "°C ± " + this.secondTemperatureDeviation + "\n";
     }
 
     // Getters & Setters
