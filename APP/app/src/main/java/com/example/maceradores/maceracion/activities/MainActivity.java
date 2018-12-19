@@ -92,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         // aca hago la consulta a la base de datos y la muestro en el recycler.
-        mashList = getAllMash();
+        //mashList = getAllMash();
+        mashList = new DatabaseHelper(getApplicationContext()).getAllMash();
 
         rvAdapter = new MashListAdapter(mashList, R.layout.item_list_mash, new MashListAdapter.onItemClickListener() {
             @Override
@@ -112,42 +113,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private List<Mash> getAllMash() {
-        List<Mash> resultados = new ArrayList<Mash>();
-        // tengo que hacer una consulta SQL.
+    /*private List<Mash> getAllMash() {
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                "id",
-                "nombre",
-                "tipo"
-        };
-        //String selection = "id = ?";
-        //String[] selectionArgs = { String.valueOf(newRowId)};
-
-        Cursor cursor = db.query("Maceracion", projection, null, null, null, null, null);
-
-        //List itemNames = new ArrayList<>();
-        while(cursor.moveToNext()) {
-            String itemName = cursor.getString(
-                    cursor.getColumnIndexOrThrow("nombre"));
-            int id = cursor.getInt(
-                    cursor.getColumnIndexOrThrow("id")
-            );
-            String tipo = cursor.getString(
-                    cursor.getColumnIndexOrThrow("tipo")
-            );
-
-            resultados.add(new Mash(id, itemName, tipo));
-            //itemNames.add(itemName);
-        }
-        cursor.close();
-
-        return resultados;
-    }
+        return dbHelper.getAllMash();
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -168,23 +137,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 //finish();//No anda...
                 return true;
+
             case R.id.deleteDatabase:
                 DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-
-                SQLiteDatabase db = dbHelper.getReadableDatabase();
-                db.delete("Maceracion", null, null);
-                //db.execSQL("DROP TABLE IF EXISTS " + "Maceracion");
-                db.delete("Intervalo", null, null);
-                //db.execSQL("DROP TABLE IF EXISTS " + "Intervalo");
-                db.delete("Grano", null, null);
-                //db.execSQL("DROP TABLE IF EXISTS " + "Grano");
-                db.delete("Experimento", null, null);
-                //db.execSQL("DROP TABLE IF EXISTS " + "Experimento");
-                //db.execSQL("DROP TABLE IF EXISTS " + "SensedValues");
-                db.delete("SensedValues", null, null);
-                db.close();
-                
+                dbHelper.deleteDatabase();
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

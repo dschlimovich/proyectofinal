@@ -1,8 +1,16 @@
 package com.example.maceradores.maceracion.db;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.example.maceradores.maceracion.models.Mash;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -92,5 +100,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + "SensedValues");
         //las vuelvo a crear.
         onCreate(db);
+    }
+
+    public void deleteDatabase(){
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            db.delete("Maceracion", null, null);
+            //db.execSQL("DROP TABLE IF EXISTS " + "Maceracion");
+            db.delete("Intervalo", null, null);
+            //db.execSQL("DROP TABLE IF EXISTS " + "Intervalo");
+            db.delete("Grano", null, null);
+            //db.execSQL("DROP TABLE IF EXISTS " + "Grano");
+            db.delete("Experimento", null, null);
+            //db.execSQL("DROP TABLE IF EXISTS " + "Experimento");
+            //db.execSQL("DROP TABLE IF EXISTS " + "SensedValues");
+            db.delete("SensedValues", null, null);
+            db.close();
+        } catch (SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+    }
+
+    public List<Mash> getAllMash(){
+        List<Mash> resultados = new ArrayList<Mash>();
+        // tengo que hacer una consulta SQL.
+
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            String[] projection = {
+                    "id",
+                    "nombre",
+                    "tipo"
+            };
+
+            Cursor cursor = db.query("Maceracion", projection, null, null, null, null, null);
+
+            while(cursor.moveToNext()) {
+                String itemName = cursor.getString(
+                        cursor.getColumnIndexOrThrow("nombre"));
+                int id = cursor.getInt(
+                        cursor.getColumnIndexOrThrow("id")
+                );
+                String tipo = cursor.getString(
+                        cursor.getColumnIndexOrThrow("tipo")
+                );
+
+                resultados.add(new Mash(id, itemName, tipo));
+            }
+            cursor.close();
+
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return resultados;
     }
 }
