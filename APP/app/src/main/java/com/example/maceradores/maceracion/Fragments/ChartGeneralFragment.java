@@ -2,24 +2,27 @@ package com.example.maceradores.maceracion.Fragments;
 
 
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,7 @@ public class ChartGeneralFragment extends Fragment {
 
     private LineChart tempChart;
     private LineChart phChart;
+    private LineChart EnzymesChart;
     private int idMash;
 
     public ChartGeneralFragment() {
@@ -57,18 +61,30 @@ public class ChartGeneralFragment extends Fragment {
     private void loadCharts(int idMash,View view){
         tempChart = (LineChart) view.findViewById(R.id.chartTemp);
         phChart = (LineChart) view.findViewById(R.id.chartpH);
+        EnzymesChart = (LineChart) view.findViewById(R.id.chartEnzymes);
 
-        List<List<Double>> MeanTempAndPh =  meanSetsTempPh(idMash);
+        List<List<Double>> MeanTempAndPhAndEnzymes =  meanSetsTempPhandEnzymesAct(idMash);
 
         List<Entry> entriesTemp = new ArrayList<Entry>();
         List<Entry> entriespH = new ArrayList<Entry>();
+
+        List<Entry> entriesAlfa = new ArrayList<Entry>();
+        List<Entry> entriesBeta = new ArrayList<Entry>();
+        List<Entry> entriesGlucan = new ArrayList<Entry>();
+        List<Entry> entriesProte = new ArrayList<Entry>();
+
         List<Integer> intervalos = intervaloMedicionTempPh(idMash);
 
-        for ( int x=0;x<MeanTempAndPh.get(0).size();x++){
+        for ( int x=0;x<MeanTempAndPhAndEnzymes.get(0).size();x++){
 
             // turn your data into Entry objects
-            entriesTemp.add(new Entry(x*(intervalos.get(0)/60),(float)(double) MeanTempAndPh.get(0).get(x)));//Hay Double (objeto) en el vector, y esto necesita primitiva float. Por eso el doble casteo
-            entriespH.add(new Entry(x*(intervalos.get(1)/60),(float)(double) MeanTempAndPh.get(1).get(x)));//Hay Double (objeto) en el vector, y esto necesita primitiva float. Por eso el doble casteo
+            entriesTemp.add(new Entry(x*(intervalos.get(0)/60),(float)(double) MeanTempAndPhAndEnzymes.get(0).get(x)));//Hay Double (objeto) en el vector, y esto necesita primitiva float. Por eso el doble casteo
+            entriespH.add(new Entry(x*(intervalos.get(1)/60),(float)(double) MeanTempAndPhAndEnzymes.get(1).get(x)));//Hay Double (objeto) en el vector, y esto necesita primitiva float. Por eso el doble casteo
+
+            entriesAlfa.add(new Entry(x*(intervalos.get(0)/60),(float)(double) MeanTempAndPhAndEnzymes.get(2).get(x)));
+            entriesBeta.add(new Entry(x*(intervalos.get(0)/60),(float)(double) MeanTempAndPhAndEnzymes.get(3).get(x)));
+            entriesGlucan.add(new Entry(x*(intervalos.get(0)/60),(float)(double) MeanTempAndPhAndEnzymes.get(4).get(x)));
+            entriesProte.add(new Entry(x*(intervalos.get(0)/60),(float)(double) MeanTempAndPhAndEnzymes.get(5).get(x)));
         }
 
         //DataSet objects hold data which belongs together, and allow individual styling of that data
@@ -79,45 +95,104 @@ public class ChartGeneralFragment extends Fragment {
         dataSetTemp.setFillColor(Color.RED);
 
 
+        //As a last step, you need to add the LineDataSet object (or objects) you created to a
+        // LineData object. This object holds all data that is represented by a Chart instance
+        // and allows further styling.
+        //--Temp
+        LineData lineDataTemp = new LineData(dataSetTemp);
+
+        tempChart.setData(lineDataTemp);
+        tempChart.getAxisRight().setEnabled(false);
+
+        tempChart.getDescription().setText("x:tiempo[min]; y:temperatura[ºC]");
+        tempChart.getDescription().setTypeface(Typeface.DEFAULT_BOLD);
+        tempChart.getDescription().setTextSize(12.0f);
+
+        //tempChart.
+        tempChart.invalidate(); //refresh
+
+        //--pH
         LineDataSet dataSetPh = new LineDataSet(entriespH,"pH");
         dataSetPh.setColor(Color.BLUE);
         dataSetPh.enableDashedLine(1f,1f,1f);
         dataSetPh.setDrawFilled(true);
         dataSetPh.setFillColor(Color.BLUE);
 
-
-        //As a last step, you need to add the LineDataSet object (or objects) you created to a
-        // LineData object. This object holds all data that is represented by a Chart instance
-        // and allows further styling.
-        LineData lineDataTemp = new LineData(dataSetTemp);
-
-        tempChart.setData(lineDataTemp);
-        tempChart.getAxisLeft().setEnabled(false);
-
-        //tempChart.
-        tempChart.invalidate(); //refresh
-
-
         LineData lineDataPh = new LineData(dataSetPh);
 
         phChart.setData(lineDataPh);
-        phChart.getAxisLeft().setEnabled(false);
+        phChart.getAxisRight().setEnabled(false);
+        phChart.getDescription().setText("x:tiempo[min]; y:pH[sin unidad]");
+        phChart.getDescription().setTypeface(Typeface.DEFAULT_BOLD);
+        phChart.getDescription().setTextSize(12.0f);
         phChart.invalidate(); //refresh
+
+        //--Enzymes
+        LineDataSet dataSetAlfa = new LineDataSet(entriesAlfa,"AlfaAmilasa");
+        dataSetAlfa.setColor(Color.BLUE);
+
+        LineDataSet dataSetBeta = new LineDataSet(entriesBeta,"BetaAmilasa");
+        dataSetBeta.setColor(Color.RED);
+
+        LineDataSet dataSetGlucan = new LineDataSet(entriesGlucan,"BetaGlucanasa");
+        dataSetGlucan.setColor(Color.GREEN);
+
+        LineDataSet dataSetProt = new LineDataSet(entriesProte,"Proteasa");
+        dataSetProt.setColor(Color.MAGENTA);
+
+        LineData lineDataEnzymes = new LineData();
+        lineDataEnzymes.addDataSet(dataSetAlfa);
+        lineDataEnzymes.addDataSet(dataSetBeta);
+        lineDataEnzymes.addDataSet(dataSetGlucan);
+        lineDataEnzymes.addDataSet(dataSetProt);
+
+        EnzymesChart.setData(lineDataEnzymes);
+        EnzymesChart.getAxisRight().setEnabled(false);
+        EnzymesChart.getDescription().setText("x:tiempo[min]; y:Porcentaje de Activación[%]");
+        EnzymesChart.getDescription().setTypeface(Typeface.DEFAULT_BOLD);
+        EnzymesChart.getDescription().setTextSize(12.0f);
+
+
+        //yAxis labels
+        final ArrayList<String> yLabel = new ArrayList<>();
+        yLabel.add("00");
+        yLabel.add("10");
+        yLabel.add("20");
+        yLabel.add("30");
+        yLabel.add("40");
+        yLabel.add("50");
+        yLabel.add("60");
+        yLabel.add("70");
+        yLabel.add("80");
+        yLabel.add("90");
+        yLabel.add("100");
+
+
+        YAxis left = EnzymesChart.getAxisLeft();
+        left.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        left.setEnabled(true);
+        left.setAxisMinimum(0f);
+        left.setDrawGridLines(false);
+        left.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return yLabel.get((int)value);
+            }
+        });
+
+
+
+        EnzymesChart.invalidate(); //refresh
     }
 
-    private List<List<Double>> meanSetsTempPh(int idMash) {
+    private List<List<Double>> meanSetsTempPhandEnzymesAct(int idMash) {
+        //Devuelve una Lista de Listas, donde la listas interiores son en orden:
+        //MeanTemp,MeanPh,alfaamilasa,betaamilasa,betaglucanasa y proteasa (Las ultimas 4 son
+        // las activaciones de las enzimas)
 
         //Primero hacer un select con todos los idExp relacionados a este idMash
-        List<Integer> ListidExp = getAllExperiments(idMash);
+        List<Integer> ListidExp = getAllExperiments(idMash); //Ahora la lista viene validada.
 
-
-        //Validacion de ListidExp
-        for (int i = 0; i < ListidExp.size(); i++) {
-            if(!acceptExperiment(ListidExp.get(i),idMash)){//La funcion tira true si to-do esta ok, por eso el NOT
-                Log.d("IdExp invalido: ",String.valueOf(ListidExp.get(i)));
-                ListidExp.remove(i);
-            }
-        }
 
         //Armar un Array q tenga tantas filas como idExp.
         int NumMeasures = getMandatoryNumSensedValues(idMash);
@@ -154,22 +229,46 @@ public class ChartGeneralFragment extends Fragment {
             Log.d("Vector MeanpH: "+String.valueOf(j)+"=",String.valueOf(meanpH.get(j)));
         }
 
+        //----Enzymes Activation
+        List<Double> alphaAmylase = new ArrayList<>();
+        List<Double> betaAmylase = new ArrayList<>();
+        List<Double> betaGlucanase = new ArrayList<>();
+        List<Double> protease = new ArrayList<>();
+        for (int i=0;i<meanTemp.size();i++){
+            alphaAmylase.add((double)SensedValues.alphaAmylase( (float)(double) meanTemp.get(i),
+                    (float)(double)meanpH.get(i)));
+            betaAmylase.add((double)SensedValues.alphaAmylase( (float)(double) meanTemp.get(i),
+                    (float)(double)meanpH.get(i)));
+            betaGlucanase.add((double)SensedValues.alphaAmylase( (float)(double) meanTemp.get(i),
+                    (float)(double)meanpH.get(i)));
+            protease.add((double)SensedValues.alphaAmylase( (float)(double) meanTemp.get(i),
+                    (float)(double)meanpH.get(i)));
+        }
+
+
         List<List<Double>> retorno = new ArrayList<>();
         retorno.add(meanTemp);
         retorno.add(meanpH);
+        retorno.add(alphaAmylase);
+        retorno.add(betaAmylase);
+        retorno.add(betaGlucanase);
+        retorno.add(protease);
+
         return retorno;
     }
 
     private List<Integer> getAllExperiments(int idMash) {
         List<Integer> resultados = new ArrayList<>();
+
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        // Filter results WHERE "title" = 'My Title'
-        //String selection = "id = ?";
-        String[] selectionArgs = { String.valueOf(this.idMash)};
-        //TODO CAMBIAR RAWQUERY POR QUERY NOMAL
-        Cursor cursor = db.rawQuery("SELECT id FROM Experimento  WHERE maceracion = ? ORDER BY fecha DESC", selectionArgs);
+        String[] columns = {"id"};
+        String selection = "maceracion = ? AND densidad IS NOT NULL";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
+        List<Float> yieldList = new ArrayList<>();
 
         //List itemNames = new ArrayList<>();
         while(cursor.moveToNext()) {
@@ -208,6 +307,7 @@ public class ChartGeneralFragment extends Fragment {
 
             SensedValues sv = new SensedValues(id,idRaspi, date, temp1, temp2, temp3, temp4, temp5, tempPh, humidity, tempAmb, pH);
             listSensedValues.add(sv);
+
         }
         cursor.close();
         db.close();
@@ -222,23 +322,6 @@ public class ChartGeneralFragment extends Fragment {
         int cantMediciones = llamadasAPI/2;
 
         return cantMediciones;
-
-    }
-
-    private boolean acceptExperiment(int idExperiment, int idMash) {
-        // primero debería saber si ya se ejecutaron todas las mediciones planificadas.
-        int medicionesRealizadas = amountSensedValue(idExperiment);
-        int cadaCuantoMido = intervaloMedicion(idMash);
-        int medicionesARealizar = cantMediciones( idMash, cadaCuantoMido);
-        Log.d("Mediciones a realizar: ",String.valueOf(medicionesARealizar/2));
-        Log.d("Mediciones realizadas: ",String.valueOf(medicionesRealizadas));
-
-        if( medicionesRealizadas == medicionesARealizar/2){
-            return true;
-        } else {
-            Toast.makeText(getContext(), "El idExp="+String.valueOf(idExperiment)+" tiene menos SensedValues", Toast.LENGTH_SHORT).show();
-            return false;
-        }
 
     }
 
@@ -300,15 +383,6 @@ public class ChartGeneralFragment extends Fragment {
             return promedio;
         }
 
-    }
-
-    public int amountSensedValue(int idExp){
-        //int amount = 0;
-        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        int amount = (int) DatabaseUtils.queryNumEntries(db, "SensedValues", "id_exp=?", new String[] {String.valueOf(idExp)});
-        db.close();
-        return amount;
     }
 
     private List<Integer> intervaloMedicionTempPh (int idMash){

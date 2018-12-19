@@ -2,7 +2,6 @@ package com.example.maceradores.maceracion.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,16 +10,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
-import com.example.maceradores.maceracion.adapters.ViewPagerAdapterStatics;
+import com.example.maceradores.maceracion.adapters.ViewPagerAdapterStatistics;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
-import com.example.maceradores.maceracion.models.SensedValues;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MashExpHistoryActivity extends AppCompatActivity {
 
@@ -28,7 +21,7 @@ public class MashExpHistoryActivity extends AppCompatActivity {
     //UI
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private ViewPagerAdapterStatics adapter;
+    private ViewPagerAdapterStatistics adapter;
 
 
     private int idMash;
@@ -65,7 +58,7 @@ public class MashExpHistoryActivity extends AppCompatActivity {
 
     private void setViewPager(){
         viewPager = (ViewPager) findViewById(R.id.viewPager2);
-        adapter = new ViewPagerAdapterStatics(getSupportFragmentManager(),this,tabLayout.getTabCount(),this.idMash);
+        adapter = new ViewPagerAdapterStatistics(getSupportFragmentManager(),this,tabLayout.getTabCount(),this.idMash);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }

@@ -9,14 +9,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.example.maceradores.maceracion.Fragments.ChartGeneralFragment;
 import com.example.maceradores.maceracion.Fragments.ChartExperimentsFragment;
 
-public class ViewPagerAdapterStatics extends FragmentPagerAdapter {
+public class ViewPagerAdapterStatistics extends FragmentPagerAdapter {
     private int numberOfTabs;
     private Fragment GeneralFragment = null;
     private Fragment ExperimentsFragment = null;
     private int idMash;
 
 
-    public ViewPagerAdapterStatics(FragmentManager fm, Context context, int numberOfTabs,int idMash) {
+    public ViewPagerAdapterStatistics(FragmentManager fm, Context context, int numberOfTabs, int idMash) {
         super(fm);
         this.numberOfTabs=numberOfTabs;
         this.idMash=idMash;
