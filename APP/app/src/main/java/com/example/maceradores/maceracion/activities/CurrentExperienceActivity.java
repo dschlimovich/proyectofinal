@@ -459,5 +459,4 @@ public class CurrentExperienceActivity extends AppCompatActivity{
             Toast.makeText(this, "Valor de densidad insertado correctamente", Toast.LENGTH_SHORT).show();
     }
 
-
 }

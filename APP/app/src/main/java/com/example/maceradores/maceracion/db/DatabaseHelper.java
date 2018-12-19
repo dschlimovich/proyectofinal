@@ -1,5 +1,6 @@
 package com.example.maceradores.maceracion.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -7,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.maceradores.maceracion.models.Experiment;
 import com.example.maceradores.maceracion.models.Mash;
 
 import java.util.ArrayList;
@@ -122,6 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    //------------------MASH-----------------------
     public List<Mash> getAllMash(){
         List<Mash> resultados = new ArrayList<Mash>();
         // tengo que hacer una consulta SQL.
@@ -149,11 +152,142 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 resultados.add(new Mash(id, itemName, tipo));
             }
             cursor.close();
+            db.close();
 
         } catch(SQLException e){
             Log.d("Error DB", e.toString());
         }
 
         return resultados;
+    } //end getAllMash
+
+    public int deleteMash(int idMash){
+        int cant = 0;
+
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            //elimino primero todos los experimentos. Despues la maceracion
+
+            String selection = "maceracion = ?";
+            String [] selectionArgs = new String[] { String.valueOf(idMash)};
+
+            //Eliminar los sensedValues.
+            db.execSQL("DELETE FROM SensedValues WHERE id_exp IN (SELECT id FROM Experimento WHERE maceracion = ?)", selectionArgs);
+
+            db.delete("Experimento", selection, selectionArgs);
+
+            // Quito los granos
+            db.delete("Grano", selection, selectionArgs);
+
+            //Quito los intervalos de medicion
+            db.delete("Intervalo", selection, selectionArgs);
+
+            //Ahora elimino la maceracion y vuelvo al main activity
+            selection = "id = ?";
+            selectionArgs = new String[] { String.valueOf(idMash)};
+            cant = db.delete("Maceracion", selection, selectionArgs );
+
+            db.close();
+
+        } catch (SQLException e){
+            Log.d( "Error DB", e.toString());
+        }
+
+        return cant;
+    } //end deleteMash
+
+    public String getNameMash(int idMash){
+        String name = "";
+
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            //elimino primero todos los experimentos. Despues la maceracion
+
+            String[] columns = new String[]{"nombre"};
+            String selection = "id = ?";
+            String [] selectionArgs = new String[] { String.valueOf(idMash)};
+
+            Cursor c = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+            if(c.moveToFirst()){
+                name = c.getString(0);
+            }
+            c.close();
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return name;
     }
+    //------------------MASH-----------------------
+
+    //------------------GRAIN-----------------------
+    //------------------GRAIN-----------------------
+
+    //------------------INTERVAL/STAGE-----------------------
+
+    //------------------INTERVAL/STAGE-----------------------
+
+    //------------------EXPERIMENT-----------------------
+    public List<Experiment> getAllExperiments(int idMash) {
+        List<Experiment> resultados = new ArrayList<Experiment>();
+
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+
+            String[] selectionArgs = { String.valueOf(idMash)};
+            Cursor cursor = db.rawQuery("SELECT id, strftime('%d/%m/%Y %H:%M', fecha) AS 'fecha' FROM Experimento WHERE id = ? ORDER BY fecha DESC", selectionArgs);
+
+            while(cursor.moveToNext()) {
+                int id = cursor.getInt(
+                        cursor.getColumnIndexOrThrow("id")
+                );
+                String fecha = cursor.getString(
+                        cursor.getColumnIndexOrThrow("fecha")
+                );
+
+                resultados.add(new Experiment(id, fecha));
+            } // end while
+            cursor.close();
+
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return resultados;
+    } //end getAllExperiments
+
+    public int deleteExperiment(int idExp){
+        SQLiteDatabase db = getReadableDatabase();
+        String [] selectionArgs = new String[] { String.valueOf(idExp)};
+
+        db.delete("SensedValues", "id_exp = ?", selectionArgs);
+        int cant = db.delete("Experimento", "id = ?", selectionArgs);
+        db.close();
+        return cant;
+    }
+
+    //------------------EXPERIMENT-----------------------
+
+    //------------------SENSED VALUES-----------------------
+    private void updateSensedValue( int idSV, float[] v ){
+        //DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues sensedValues = new ContentValues();
+
+        sensedValues.put("temp1", v[0] );
+        sensedValues.put("temp2", v[1] );
+        sensedValues.put("temp3", v[2] );
+        sensedValues.put("temp4", v[3] );
+        sensedValues.put("ph", v[4] );
+
+        String whereClausule = "id = ?";
+        String[] whereClausuleArgs = new String[] {String.valueOf(idSV)};
+        int cant = db.update("SensedValues", sensedValues,whereClausule, whereClausuleArgs);
+        //dbHelper.close();
+    }
+
+    //------------------SENSED VALUES-----------------------
+
+
 }

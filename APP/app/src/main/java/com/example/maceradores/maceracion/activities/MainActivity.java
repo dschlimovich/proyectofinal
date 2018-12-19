@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         // aca hago la consulta a la base de datos y la muestro en el recycler.
-        //mashList = getAllMash();
-        mashList = new DatabaseHelper(getApplicationContext()).getAllMash();
+        mashList = getAllMash();
+
 
         rvAdapter = new MashListAdapter(mashList, R.layout.item_list_mash, new MashListAdapter.onItemClickListener() {
             @Override
@@ -113,10 +113,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*private List<Mash> getAllMash() {
+    private List<Mash> getAllMash() {
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        return dbHelper.getAllMash();
-    }*/
+        List<Mash> results = dbHelper.getAllMash();
+        dbHelper.close();
+        return results;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

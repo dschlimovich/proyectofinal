@@ -94,7 +94,6 @@ public class MeasureFragment extends Fragment {
         chronometer.start();
 
         // configuracion de temperatura.
-        // TODO traerlo de un SharedPreferences.
         // veamos que sale de esto.
         Arrays.fill(this.sensoresHabilitados, true);
         this.metodoCalculo = PROMEDIO;
@@ -102,13 +101,10 @@ public class MeasureFragment extends Fragment {
         loadSharedPreferences();
 
 
-
-
         cardViewTemp = view.findViewById(R.id.cardViewMeasureTemperature);
         cardViewTemp.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                //Toast.makeText(getContext(), "Anduvo pereeeque", Toast.LENGTH_SHORT).show();
                 //aca tengo que mostrar un alert dialog para que me guarde la configuración.
                 showAlertDialogConfigTemp(sensoresHabilitados, metodoCalculo);
                 return false;
