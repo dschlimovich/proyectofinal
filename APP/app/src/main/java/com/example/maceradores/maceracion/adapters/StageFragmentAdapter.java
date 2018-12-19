@@ -124,7 +124,10 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
             phStage.append( interval.getpH() + " ± " + interval.getPhDeviation());
 
             //temperatura decoccion
-            temperatureDecoccionStage.append( interval.getSecondTemperature() + " ± " + interval.getSecondTemperatureDeviation() + " °C " );
+            if(interval.getSecondTemperature() == -1000)
+                temperatureDecoccionStage.setText("");
+            else
+                temperatureDecoccionStage.append( interval.getSecondTemperature() + " ± " + interval.getSecondTemperatureDeviation() + " °C " );
 
             planningStage.setText( mash.getPlanning(position));
         }

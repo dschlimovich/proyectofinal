@@ -14,7 +14,7 @@
         android:id="@+id/editTextGrainName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Insertar el nombre aqui"/>
+        android:hint="Insertar el nombre aquí"/>
     <TextView
         android:text="Cantidad (%) a utilizar en la receta"
         android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
         android:id="@+id/editTextGrainExtractPotential"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="30 = 1,030 * 0,1kg/lt"
+        android:hint="0.8 = 80% PPG azúcar(46)"
         android:inputType="numberDecimal"/>
 
 </LinearLayout>

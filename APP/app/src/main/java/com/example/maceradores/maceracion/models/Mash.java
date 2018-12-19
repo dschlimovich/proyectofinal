@@ -76,7 +76,7 @@ public class Mash {
         }
         boolean finded = false;
         int it = plan.size() - 1; // arranco por el utlimo
-        while(finded){
+        while(!finded){
             if( it == position){
                 // lo encontre y lo elimino.
                 plan.remove(it);

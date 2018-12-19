@@ -18,7 +18,6 @@ import java.util.List;
 public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapter.ViewHolder> {
     private Mash mash;
     private boolean planned;
-    //private List<MeasureInterval> intervals;
     private int layout;
     private IntervalListAdapter.onItemClickListener listener;
 
