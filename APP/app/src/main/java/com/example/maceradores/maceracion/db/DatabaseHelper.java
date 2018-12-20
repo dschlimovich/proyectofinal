@@ -214,25 +214,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if( cursor.moveToFirst()){
                 // primero pongo el titulo con el nombre de la maceracion
                 mash.setName(cursor.getString(cursor.getColumnIndexOrThrow("nombre")));
-                //setTitle("Planificación " + nameMash);
 
                 //tipo de maceracion : spinner.
                 mash.setTipo(cursor.getString(cursor.getColumnIndexOrThrow("tipo")));
-                //type = cursor.getString(cursor.getColumnIndexOrThrow("tipo"));
-                //int spinnerPosition = adapterSpinner.getPosition(mash.getTipo());
-                //spinner.setSelection(spinnerPosition);
 
                 // volumen
                 mash.setVolumen(cursor.getFloat(cursor.getColumnIndexOrThrow("volumen")));
-                //volume = cursor.getFloat(cursor.getColumnIndexOrThrow("volumen"));
-                //EditText volumePlanning = findViewById(R.id.editTextPlanningVolumen);
-                //volumePlanning.setText(String.valueOf(mash.getVolumen()));
 
-                //densidad
                 mash.setDensidadObjetivo(cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo")));
-                //density = cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo"));
-                //EditText densityPlanning = findViewById(R.id.editTextPlanningDensidad);
-                //densityPlanning.setText(String.valueOf(mash.getDensidadObjetivo()));
+
+                //medicion temperatura
+                mash.setPeriodMeasureTemperature(cursor.getInt(cursor.getColumnIndexOrThrow("intervaloMedTemp")));
+
+                //medicion ph
+                mash.setPeriodMeasurePh(cursor.getInt(cursor.getColumnIndexOrThrow("intervaloMedPh")));
 
             }
             cursor.close();
@@ -515,6 +510,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //------------------INTERVAL/STAGE-----------------------
 
     //------------------EXPERIMENT-----------------------
+    public long insertNewExperiment(int idMash){
+        long newExperimentId = -1;
+        try{
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues experimentValues = new ContentValues();
+            experimentValues.put("maceracion", idMash);
+            newExperimentId = db.insert("Experimento", null, experimentValues);
+
+
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+        return newExperimentId;
+    }
+
     public List<Experiment> getAllExperiments(int idMash) {
         List<Experiment> resultados = new ArrayList<Experiment>();
 
@@ -550,6 +560,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete("SensedValues", "id_exp = ?", selectionArgs);
         int cant = db.delete("Experimento", "id = ?", selectionArgs);
         db.close();
+        return cant;
+    }
+
+    public int insertDensity(int idExp, float density){
+        int cant = 0;
+        try{
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues experimentValues = new ContentValues();
+            experimentValues.put("densidad", density );
+            String whereClausule = "id = ?";
+            String[] whereClausuleArgs = new String[] {String.valueOf(idExp)};
+            cant = db.update("Experimento", experimentValues,whereClausule, whereClausuleArgs);
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
         return cant;
     }
 

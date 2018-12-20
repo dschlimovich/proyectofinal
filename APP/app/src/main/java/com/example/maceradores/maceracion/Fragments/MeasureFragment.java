@@ -22,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.Chronometer;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
@@ -29,6 +30,7 @@ import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.utils.Calculos;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -106,6 +108,7 @@ public class MeasureFragment extends Fragment {
         thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
+
                 int counter =0;
 
                 int intervaloMedicion = intervaloMedicion(idMash);
@@ -117,12 +120,12 @@ public class MeasureFragment extends Fragment {
 
                 while (counter < NumberOfCalls) {
                     counter++;
-
                     try {
                         Thread.sleep(sleep);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
+
                     SensedValues sensedValues = getLastSensedValues(idExp);
                     if (sensedValues != null) {
                         Bundle bundle = new Bundle();
@@ -192,9 +195,10 @@ public class MeasureFragment extends Fragment {
 
                         mHandlerThread.sendMessage(message);
                     }
-                }
+                } // end while
             }
         });
+
         thread1.start();
         // Inflate the layout for this fragment
         return view;
@@ -379,10 +383,14 @@ public class MeasureFragment extends Fragment {
     }
 
     private SensedValues getLastSensedValues(int idExp){
-
-        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SensedValues sv = dbHelper.getLastSensedValue(idExp);
-        dbHelper.close();
+        SensedValues sv = null;
+        try{
+            DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+            sv = dbHelper.getLastSensedValue(idExp);
+            dbHelper.close();
+        } catch (Exception e){
+            Log.d("Error DB", e.toString());
+        }
 
         return sv;
     }
@@ -621,6 +629,8 @@ public class MeasureFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        //mHandlerThread.removeCallbacksAndMessages(null);
+        //thread1.interrupt();
         saveSharedPreferences();
     }
 }
