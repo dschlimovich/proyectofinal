@@ -423,21 +423,31 @@ public class PlanningActivity extends AppCompatActivity {
                         phDeviation.getText().toString().isEmpty()){
                     Toast.makeText(PlanningActivity.this, "No se insertó intervalo. Algun campo vacío", Toast.LENGTH_SHORT).show();
                 } else{
+                    MeasureInterval interval = null;
                     if(tipo.equals("Decocción")){
-                        MeasureInterval interval = new MeasureInterval(
-                                Float.valueOf(temperature.getText().toString().trim()),
-                                Float.valueOf(temperatureDeviation.getText().toString().trim()),
-                                Float.valueOf(tempDecoccion.getText().toString().trim()),
-                                Float.valueOf(tempDecoccionDeviation.getText().toString().trim()),
-                                Float.valueOf(ph.getText().toString().trim()),
-                                Float.valueOf(phDeviation.getText().toString().trim()),
-                                Integer.valueOf(duration.getText().toString().trim())
-                        );
-
-                        //Ahora tengo que agregarlo a la lista de intervalos
-                        addInterval(interval);
+                        if(tempDecoccion.getText().toString().isEmpty() || tempDecoccionDeviation.getText().toString().isEmpty() ){
+                            interval = new MeasureInterval(
+                                    Float.valueOf(temperature.getText().toString().trim()),
+                                    Float.valueOf(temperatureDeviation.getText().toString().trim()),
+                                    -1000,
+                                    -1000,
+                                    Float.valueOf(ph.getText().toString().trim()),
+                                    Float.valueOf(phDeviation.getText().toString().trim()),
+                                    Integer.valueOf(duration.getText().toString().trim())
+                            ); // esto es el caso que esta en decoccion pero la etapa no tiene decocción.
+                        } else {
+                            interval = new MeasureInterval(
+                                    Float.valueOf(temperature.getText().toString().trim()),
+                                    Float.valueOf(temperatureDeviation.getText().toString().trim()),
+                                    Float.valueOf(tempDecoccion.getText().toString().trim()),
+                                    Float.valueOf(tempDecoccionDeviation.getText().toString().trim()),
+                                    Float.valueOf(ph.getText().toString().trim()),
+                                    Float.valueOf(phDeviation.getText().toString().trim()),
+                                    Integer.valueOf(duration.getText().toString().trim())
+                            );
+                        }
                     } else {
-                        MeasureInterval interval = new MeasureInterval(
+                        interval = new MeasureInterval(
                                 Float.valueOf(temperature.getText().toString().trim()),
                                 Float.valueOf(temperatureDeviation.getText().toString().trim()),
                                 Float.valueOf(ph.getText().toString().trim()),
@@ -446,9 +456,9 @@ public class PlanningActivity extends AppCompatActivity {
                         );
 
                         //Ahora tengo que agregarlo a la lista de intervalos
-                        addInterval(interval);
-                    }
 
+                    } // end if else
+                    addInterval(interval);
 
                 }
             }
