@@ -159,8 +159,8 @@ public class MeasureFragment extends Fragment {
                             Log.d("List Mediciones",String.valueOf(medicion));
                         }
 
-                        int Etapa = getCurrentOrderInterval(cantSensedValues,ListmedicionesxInter);
-                        MeasureInterval measureInterval = getIntervalByOrder(Etapa,idMash);
+                        int etapa = (int) getCurrentOrderInterval(cantSensedValues,ListmedicionesxInter)[0];
+                        MeasureInterval measureInterval = getIntervalByOrder(etapa,idMash);
                         float tempMin = measureInterval.getMainTemperature() - measureInterval.getMainTemperatureDeviation();//temp objetivo menos desviacion
                         float tempMax = measureInterval.getMainTemperature() + measureInterval.getMainTemperatureDeviation();//temp objetivo mas desviacion
                         float ph = sensedValues.getpH();
@@ -361,15 +361,16 @@ public class MeasureFragment extends Fragment {
 
                     int cantSensedValues = amountSensedValue(idExp);
                     Log.d("Cant SensedValues",String.valueOf(cantSensedValues));
-                    int Etapa = getCurrentOrderInterval(cantSensedValues, ListmedicionesxInter);
-                    MeasureInterval measureInterval = getIntervalByOrder(Etapa, idMash);
+                    //int Etapa = getCurrentOrderInterval(cantSensedValues, ListmedicionesxInter);
+                    float[] etapa = getCurrentOrderInterval(cantSensedValues, ListmedicionesxInter);
+                    MeasureInterval measureInterval = getIntervalByOrder((int) etapa[0], idMash);
                     float desvioTemp = tPromedio - measureInterval.getMainTemperature();
                     float desvioPh = ph - measureInterval.getpH();
                     float desvioTempSecon = tempSecondary - measureInterval.getSecondTemperature();
                     loadTemperatureCardView(tPromedio, desvioTemp, measureInterval.getMainTemperature(), measureInterval.getMainTemperatureDeviation(), t1, t2, t3, t4);
                     if (ph > 0)
                         loadPhCardView(ph, desvioPh, measureInterval.getpH(), measureInterval.getPhDeviation(), tempPh); //Solo actualizo ph si el valor es valido
-                    loadStageCardView(Etapa);
+                    loadStageCardView(etapa);
                     loadSecondMaceratorCardView(tempSecondary,desvioTempSecon,measureInterval.getSecondTemperature(),measureInterval.getSecondTemperatureDeviation());
                     loadEnviromentCardView(bundle.getFloat("tempEnviroment"),bundle.getFloat("humidity"));
                     loadEnzymeCardView(SensedValues.alphaAmylase(tPromedio,ph),
@@ -395,8 +396,12 @@ public class MeasureFragment extends Fragment {
         return sv;
     }
 
-    private void loadStageCardView(int stage){
-        tvMeasureStage.setText(" Etapa Actual: ");
+    private void loadStageCardView(float[]  stage){
+        // 0 etapa
+        // 1 porcentaje de avance
+        tvMeasureStage.setText(" Completado: ");
+        tvMeasureStage.append(String.valueOf(stage[1] * 100));
+        tvMeasureStage.append("% \t Etapa Actual: ");
         tvMeasureStage.append(String.valueOf(stage));
     }
 
@@ -590,7 +595,7 @@ public class MeasureFragment extends Fragment {
         return amount;
     }
 
-    public int getCurrentOrderInterval(int amount, List<Integer> medicionesPorIntervalo){
+    public float[] getCurrentOrderInterval(int amount, List<Integer> medicionesPorIntervalo){
         //Me devuelve la Etapa/Stage en la q estoy
         // hago los valores acumulados.
         // {10, 30, 20}
@@ -615,7 +620,8 @@ public class MeasureFragment extends Fragment {
                 orden = orden + 1;
             }
         }
-        return orden;
+        float porcentaje = (amount*1.0f) / (medicionesPorIntervalo.get(medicionesPorIntervalo.size()-1) * 1.0f);
+        return new float[]{orden, porcentaje};
 
     }
 
