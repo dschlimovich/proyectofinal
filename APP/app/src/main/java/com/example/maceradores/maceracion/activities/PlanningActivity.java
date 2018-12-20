@@ -326,7 +326,7 @@ public class PlanningActivity extends AppCompatActivity {
     }
 
     private void fillUIGrain(){
-
+        // TODO ver porque tengo que crear de nuevo el adapter
         this.rendimientoPractico = getRendimientoPractico(this.mash.getId());
         grainListAdapter = new GrainListAdapter(this, this.mash, this.planned,R.layout.item_list_grain, this.rendimientoPractico );
         listGrains.setAdapter(grainListAdapter);
@@ -335,6 +335,7 @@ public class PlanningActivity extends AppCompatActivity {
     }
 
     private void fillUIInterval( ){
+        // TODO ver porque tengo que crear de nuevo el adapter
         intervalListAdapter = new IntervalListAdapter(mash, planned, R.layout.item_list_interval, null);
         listsIntervals.setAdapter(intervalListAdapter);
         //intervalListAdapter.notifyDataSetChanged();

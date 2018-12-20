@@ -3,6 +3,7 @@ package com.example.maceradores.maceracion.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,6 +13,7 @@ import com.example.maceradores.maceracion.models.Experiment;
 import com.example.maceradores.maceracion.models.Grain;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
+import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.utils.Calculos;
 
 import java.util.ArrayList;
@@ -265,6 +267,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return name;
     }
 
+    public int getIntervaloMedicionTemp(int idMash){
+        int intervaloMedicion = 0;
+        // saber el periodo de medicion.
+        //DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] columns = {"intervaloMedTemp"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            intervaloMedicion = cursor.getInt(0); //como tengo una sola columna, devuelvo la primera nomas.
+        }
+        cursor.close();
+        db.close();
+        if(intervaloMedicion<60)intervaloMedicion=60; // Minimo Intervalo de Medicion es de 30 seg
+
+        return intervaloMedicion;
+    }
+
     public List<Float> getDensities(int idMash){
         List<Float> densities = new ArrayList<>();
 
@@ -349,6 +372,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return resultado;
 
     }
+
+    public int getDurationTotal(int idMash){
+        //DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        int duracionTotal = 0;
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor c = db.rawQuery("SELECT SUM(duracion) FROM Intervalo WHERE maceracion = ?", new String[]{String.valueOf(idMash)});
+
+            if(c.moveToFirst()){
+                duracionTotal = c.getInt(0);
+            }
+            c.close();
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+
+        return duracionTotal;
+    }
+
+    public List<Integer> getDurationEachInterval(int idMash){
+        List<Integer> mediciones = new ArrayList<Integer>();
+
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            String[] columns = {"duracion"};
+            String selection = "maceracion = ?";
+            String[] selectionArgs = { String.valueOf(idMash)};
+
+            Cursor cursor = db.query("Intervalo", columns, selection, selectionArgs, null, null, "orden DESC");
+            while(cursor.moveToNext()){
+                mediciones.add( cursor.getInt(0) );
+            }
+            cursor.close();
+            db.close();
+
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return mediciones;
+    }
     //------------------MASH-----------------------
 
     //------------------GRAIN-----------------------
@@ -417,6 +483,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return intervals;
     }
 
+    public MeasureInterval getMeasureIntervalByOrder(int idMash, int order){
+        MeasureInterval measureInterval = null;
+        try{
+            //DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+            SQLiteDatabase db = getReadableDatabase();
+            String selection = "maceracion = ? AND orden = ?";
+            String[] selectionArgs = { String.valueOf(idMash), String.valueOf(order)};
+
+            Cursor cursor = db.query("Intervalo", null, selection, selectionArgs, null, null, null);
+            if(cursor.moveToFirst()){
+                float mainTemperature = cursor.getFloat( cursor.getColumnIndexOrThrow("temperatura"));
+                float mainTemperatureDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTemperatura"));
+                float secondTemperature = cursor.getFloat(cursor.getColumnIndexOrThrow("tempDecoccion"));
+                float secondTemperatureDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTempDecoccion"));
+                float pH = cursor.getFloat(cursor.getColumnIndexOrThrow("ph"));
+                float phDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioPh"));
+                int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duracion"));
+
+                measureInterval = new MeasureInterval(order,mainTemperature, mainTemperatureDeviation, secondTemperature, secondTemperatureDeviation, pH,  phDeviation,  duration);
+            }
+            cursor.close();
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return measureInterval;
+    }
+
     //------------------INTERVAL/STAGE-----------------------
 
     //------------------EXPERIMENT-----------------------
@@ -461,7 +556,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //------------------EXPERIMENT-----------------------
 
     //------------------SENSED VALUES-----------------------
-    private void updateSensedValue( int idSV, float[] v ){
+    public void updateSensedValue( int idSV, float[] v ){
         //DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = getWritableDatabase();
         ContentValues sensedValues = new ContentValues();
@@ -478,7 +573,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //dbHelper.close();
     }
 
+    public SensedValues getLastSensedValue(int idExp){
+        SensedValues sv = null;
+        try{
+            //DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+            SQLiteDatabase db = getReadableDatabase();
+
+            Cursor cursor = db.rawQuery("SELECT * FROM SensedValues WHERE id_exp = ? AND id = (SELECT MAX(id) FROM SensedValues)", new String[] {String.valueOf(idExp)});
+
+            if(cursor.moveToFirst()){
+                int id = cursor.getInt( cursor.getColumnIndexOrThrow("id"));
+                int idRaspi = cursor.getInt( cursor.getColumnIndexOrThrow("idRaspi"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("fechayhora"));
+                float temp1 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp1"));
+                float temp2 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp2"));
+                float temp3 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp3"));
+                float temp4 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp4"));
+                float temp5 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp5"));
+                float tempPh = cursor.getFloat(cursor.getColumnIndexOrThrow("tempPh"));
+                float tempAmb = cursor.getFloat(cursor.getColumnIndexOrThrow("tempAmb"));
+                float humidity = cursor.getFloat(cursor.getColumnIndexOrThrow("humity"));
+                float pH= cursor.getFloat(cursor.getColumnIndexOrThrow("pH"));
+
+                sv = new SensedValues(id,idRaspi, date, temp1, temp2, temp3, temp4, temp5, tempPh, humidity, tempAmb, pH);
+            }
+            cursor.close();
+            db.close();
+        } catch( SQLException e){
+           Log.d("Error DB", e.toString());
+        }
+
+        return sv;
+    }
+
+    public int amountSensedValues(int idExp){
+        SQLiteDatabase db = getReadableDatabase();
+        int amount = (int) DatabaseUtils.queryNumEntries(db, "SensedValues", "id_exp=?", new String[] {String.valueOf(idExp)});
+        db.close();
+        return amount;
+    }
+
     //------------------SENSED VALUES-----------------------
 
+/*
+    try{
+    } catch(SQLException e){
+        Log.d("Error DB", e.toString());
+    }
 
+
+*/
 }
+
