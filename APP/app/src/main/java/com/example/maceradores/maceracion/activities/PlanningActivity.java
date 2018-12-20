@@ -87,20 +87,19 @@ public class PlanningActivity extends AppCompatActivity {
         if(intent.hasExtra("idMash")){
             this.planned = true;
             int idMash = intent.getIntExtra("idMash", -1);
-            mash.setId(idMash);
+            //mash.setId(idMash);
 
+            DatabaseHelper db = new DatabaseHelper(this);
+            this.mash = db.getMash(idMash);
+            mash.setGrains( db.getGrains(idMash));
+            mash.setPlan(db.getMeasureIntervals(idMash));
+            db.close();
+            this.rendimientoPractico = getRendimientoPractico(idMash);
         }
 
         chargeUI();
 
         if(planned){
-            DatabaseHelper db = new DatabaseHelper(this);
-            this.mash = db.getMash(mash.getId());
-            mash.setGrains( db.getGrains(mash.getId()));
-            mash.setPlan(db.getMeasureIntervals(mash.getId()));
-            db.close();
-
-
             fillUI();
             // tengo que deshabilitar el boton del action bar.
             blockUI();
@@ -205,7 +204,7 @@ public class PlanningActivity extends AppCompatActivity {
         // List of Grains
         //grains = new ArrayList<Grain>();
         //mash.setGrains(grains);
-        mash.setGrains(new ArrayList<Grain>());
+        //mash.setGrains(new ArrayList<Grain>());
         listGrains = (ListView) findViewById(R.id.listViewPlanningGrains);
         //grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
         grainListAdapter = new GrainListAdapter(this, mash, planned, R.layout.item_list_grain, this.rendimientoPractico);
@@ -213,7 +212,7 @@ public class PlanningActivity extends AppCompatActivity {
         registerForContextMenu(this.listGrains);
 
         // List of intervals
-        mash.setPlan(new ArrayList<MeasureInterval>());
+        //mash.setPlan(new ArrayList<MeasureInterval>());
         layoutManager = new LinearLayoutManager(this);
         if(planned){
             intervalListAdapter = new IntervalListAdapter(mash, planned, R.layout.item_list_interval, null);
@@ -223,8 +222,6 @@ public class PlanningActivity extends AppCompatActivity {
                 public void onItemClick(MeasureInterval interval, int position) {
                     Toast.makeText(PlanningActivity.this, "Intervalo Borrado", Toast.LENGTH_SHORT).show();
                     mash.removeMeasureInterval(position);
-                    //intervals.remove(position);
-                    //intervalListAdapter.notifyItemRemoved(position);
                     intervalListAdapter.notifyDataSetChanged();
                 }
             });
@@ -306,39 +303,16 @@ public class PlanningActivity extends AppCompatActivity {
     }
 
     private void fillUI() {
+        setTitle("Planificación " + mash.getName());
+        int spinnerPosition = adapterSpinner.getPosition(mash.getTipo());
+        spinner.setSelection(spinnerPosition);
 
-        fillUIMash();
-        fillUIGrain();
-        fillUIInterval();
+        EditText volumePlanning = findViewById(R.id.editTextPlanningVolumen);
+        volumePlanning.setText(String.valueOf(mash.getVolumen()));
 
-    }
+        EditText densityPlanning = findViewById(R.id.editTextPlanningDensidad);
+        densityPlanning.setText(String.valueOf(mash.getDensidadObjetivo()));
 
-    private void fillUIMash( ){
-            setTitle("Planificación " + mash.getName());
-            int spinnerPosition = adapterSpinner.getPosition(mash.getTipo());
-            spinner.setSelection(spinnerPosition);
-
-            EditText volumePlanning = findViewById(R.id.editTextPlanningVolumen);
-            volumePlanning.setText(String.valueOf(mash.getVolumen()));
-
-            EditText densityPlanning = findViewById(R.id.editTextPlanningDensidad);
-            densityPlanning.setText(String.valueOf(mash.getDensidadObjetivo()));
-    }
-
-    private void fillUIGrain(){
-        // TODO ver porque tengo que crear de nuevo el adapter
-        this.rendimientoPractico = getRendimientoPractico(this.mash.getId());
-        grainListAdapter = new GrainListAdapter(this, this.mash, this.planned,R.layout.item_list_grain, this.rendimientoPractico );
-        listGrains.setAdapter(grainListAdapter);
-
-
-    }
-
-    private void fillUIInterval( ){
-        // TODO ver porque tengo que crear de nuevo el adapter
-        intervalListAdapter = new IntervalListAdapter(mash, planned, R.layout.item_list_interval, null);
-        listsIntervals.setAdapter(intervalListAdapter);
-        //intervalListAdapter.notifyDataSetChanged();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)//Esto es para que me deje usar el Toolbar q empieza e la APU 24
