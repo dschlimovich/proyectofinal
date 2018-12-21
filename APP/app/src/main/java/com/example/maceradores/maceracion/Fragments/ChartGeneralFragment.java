@@ -67,48 +67,49 @@ public class ChartGeneralFragment extends Fragment {
         this.idMash=idMash;
 
 
-        //loadCharts(idMash,view);//Carga las Graficas
+        loadCharts(idMash,view);//Carga las Graficas
         loadBoxPlot(idMash,view,0);//Grafica BoxPlot Temperatura
         loadBoxPlot(idMash,view,1);//Grafica BoxPlot pH
-        //setTypeofChart(0,view);
+        setTypeofChart(1,view);
 
         return view;
     }
 
-    /*    private void setTypeofChart(int chart,View view) {
-            //0 para promedio, 1 para Boxplot
-            TextView tv_lChartTemp = (TextView) view.findViewById(R.id.tv_linechartTemp);
-            LineChart lChartTemp = (LineChart) view.findViewById(R.id.chartTemp);
-            TextView tv_lChartPh = (TextView) view.findViewById(R.id.tv_linechartPh);
-            LineChart lChartPh = (LineChart) view.findViewById(R.id.chartpH);
-            TextView tv_boxplotTemp = (TextView) view.findViewById(R.id.tv_boxplotchartTemp);
-            CombinedChart combinedChartTemp = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
-            TextView tv_boxplotPh = (TextView) view.findViewById(R.id.tv_boxplotchartPh);
-            CombinedChart combinedChartPh = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
-            switch (chart) {
-                case 0:
-                    if (tv_lChartTemp.getVisibility() == View.INVISIBLE) {
-                        tv_lChartTemp.setVisibility(View.VISIBLE);
-                        lChartTemp.setVisibility(View.VISIBLE);
-                        tv_lChartPh.setVisibility(View.VISIBLE);
-                        lChartPh.setVisibility(View.VISIBLE);
-                        tv_boxplotTemp.setVisibility(View.INVISIBLE);
-                        combinedChartTemp.setVisibility(View.INVISIBLE);
-                        tv_boxplotPh.setVisibility(View.INVISIBLE);
-                        combinedChartPh.setVisibility(View.INVISIBLE);
-                        case 1:
-                            tv_lChartTemp.setVisibility(View.INVISIBLE);
-                            lChartTemp.setVisibility(View.INVISIBLE);
-                            tv_lChartPh.setVisibility(View.INVISIBLE);
-                            lChartPh.setVisibility(View.INVISIBLE);
-                            tv_boxplotTemp.setVisibility(View.VISIBLE);
-                            combinedChartTemp.setVisibility(View.VISIBLE);
-                            tv_boxplotPh.setVisibility(View.VISIBLE);
-                            combinedChartPh.setVisibility(View.VISIBLE);
+    private void setTypeofChart(int chart,View view) {
+        //0 para promedio, 1 para Boxplot
+        TextView tv_lChartTemp = (TextView) view.findViewById(R.id.tv_linechartTemp);
+        LineChart lChartTemp = (LineChart) view.findViewById(R.id.chartTemp);
+        TextView tv_lChartPh = (TextView) view.findViewById(R.id.tv_linechartPh);
+        LineChart lChartPh = (LineChart) view.findViewById(R.id.chartpH);
+        TextView tv_boxplotTemp = (TextView) view.findViewById(R.id.tv_boxplotchartTemp);
+        CombinedChart combinedChartTemp = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
+        TextView tv_boxplotPh = (TextView) view.findViewById(R.id.tv_boxplotchartPh);
+        CombinedChart combinedChartPh = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
+//            switch (chart) {
+//                case 0:
+        if(chart ==0) {
+            tv_lChartTemp.setVisibility(View.VISIBLE);
+            lChartTemp.setVisibility(View.VISIBLE);
+            tv_lChartPh.setVisibility(View.VISIBLE);
+            lChartPh.setVisibility(View.VISIBLE);
+            tv_boxplotTemp.setVisibility(View.INVISIBLE);
+            combinedChartTemp.setVisibility(View.INVISIBLE);
+            tv_boxplotPh.setVisibility(View.INVISIBLE);
+            combinedChartPh.setVisibility(View.INVISIBLE);
+        }else if (chart == 1){
+            //              case 1:
+            tv_lChartTemp.setVisibility(View.INVISIBLE);
+            lChartTemp.setVisibility(View.INVISIBLE);
+            tv_lChartPh.setVisibility(View.INVISIBLE);
+            lChartPh.setVisibility(View.INVISIBLE);
+            tv_boxplotTemp.setVisibility(View.VISIBLE);
+            combinedChartTemp.setVisibility(View.VISIBLE);
+            tv_boxplotPh.setVisibility(View.VISIBLE);
+            combinedChartPh.setVisibility(View.VISIBLE);
 
-                    }
-            }
-        }*/
+        }
+    }
+
     private void loadCharts(int idMash,View view){
         tempChart = (LineChart) view.findViewById(R.id.chartTemp);
         phChart = (LineChart) view.findViewById(R.id.chartpH);
@@ -218,7 +219,7 @@ public class ChartGeneralFragment extends Fragment {
     private void loadBoxPlot(int idMash,View view,int temp0ph1){
 
 
-            CombinedChart combinedChart = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
+        CombinedChart combinedChart = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
 
         if(temp0ph1 == 1){//Seteo grafica de pH
             combinedChart = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
@@ -227,13 +228,16 @@ public class ChartGeneralFragment extends Fragment {
         List<List<Float>> medianAndQuartils = getDataforBoxPlot(idMash,temp0ph1);
         List<CandleEntry> candleEntries = new ArrayList<CandleEntry>();
         List<Entry> entries =  new ArrayList<>();
+
+        List<Integer> intervalos = intervaloMedicionTempPh(idMash);
+
         for(int x=0; x<medianAndQuartils.size();x++){
-            candleEntries.add(new CandleEntry(x,medianAndQuartils.get(x).get(1),
+            candleEntries.add(new CandleEntry(x*(intervalos.get(0)/60),medianAndQuartils.get(x).get(1),
                     medianAndQuartils.get(x).get(2),
                     medianAndQuartils.get(x).get(3),
                     medianAndQuartils.get(x).get(4)));
 
-            entries.add(new Entry(x,medianAndQuartils.get(x).get(0)));
+            entries.add(new Entry(x*(intervalos.get(0)/60),medianAndQuartils.get(x).get(0)));
         }
 
         LineDataSet lineDataSet = new LineDataSet(entries,"Median");
@@ -248,9 +252,9 @@ public class ChartGeneralFragment extends Fragment {
         candleDataSet.setIncreasingPaintStyle(Paint.Style.STROKE);
         candleDataSet.setNeutralColor(Color.BLUE);
         candleDataSet.setValueTextColor(Color.RED);
+        lineDataSet.setFillColor(Color.WHITE);
+        lineDataSet.setFillAlpha(0);
 
-
-        //TODO SHOW MEDIAN
         LineData lineData = new LineData(lineDataSet);
         CandleData candleData = new CandleData(candleDataSet);
 

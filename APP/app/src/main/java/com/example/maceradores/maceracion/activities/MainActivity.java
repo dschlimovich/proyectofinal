@@ -194,38 +194,38 @@ public class MainActivity extends AppCompatActivity {
 
     private void showAlertCurrentValues(){
         //---Hardcodeo para pruebas
-        float[] anArray = new float[5];
-
-        anArray[0] = 70;//temp1
-        anArray[1] = 69;//temp2
-        anArray[2] = 71;//temp3
-        anArray[3] = 82;//temp4
-        anArray[4] = 6;//pH
-        List<Integer> lista = getListIdInsertedSensedValue(1);
-        for(int j =0;j<lista.size();j++) {
-            updateSensedValue(lista.get(j),anArray);
-
-        }
-
-        anArray[0] = 50;
-        anArray[1] = 40;
-        anArray[2] = 61;
-        anArray[3] = 45;
-        anArray[4] = 5;
-        List<Integer> lista2 = getListIdInsertedSensedValue(3);
-        for(int j =0;j<lista2.size();j++) {
-            updateSensedValue(lista2.get(j),anArray);
-        }
-
-        anArray[0] = 35;
-        anArray[1] = 36;
-        anArray[2] = 37;
-        anArray[3] = 39;
-        anArray[4] = 4;
-        List<Integer> lista3 = getListIdInsertedSensedValue(4);
-        for(int j =0;j<lista3.size();j++) {
-            updateSensedValue(lista3.get(j),anArray);
-        }
+//        float[] anArray = new float[5];
+//
+//        anArray[0] = 70;//temp1
+//        anArray[1] = 69;//temp2
+//        anArray[2] = 71;//temp3
+//        anArray[3] = 82;//temp4
+//        anArray[4] = 6;//pH
+//        List<Integer> lista = getListIdInsertedSensedValue(1);
+//        for(int j =0;j<lista.size();j++) {
+//            updateSensedValue(lista.get(j),anArray);
+//
+//        }
+//
+//        anArray[0] = 50;
+//        anArray[1] = 40;
+//        anArray[2] = 61;
+//        anArray[3] = 45;
+//        anArray[4] = 5;
+//        List<Integer> lista2 = getListIdInsertedSensedValue(3);
+//        for(int j =0;j<lista2.size();j++) {
+//            updateSensedValue(lista2.get(j),anArray);
+//        }
+//
+//        anArray[0] = 35;
+//        anArray[1] = 36;
+//        anArray[2] = 37;
+//        anArray[3] = 39;
+//        anArray[4] = 4;
+//        List<Integer> lista3 = getListIdInsertedSensedValue(4);
+//        for(int j =0;j<lista3.size();j++) {
+//            updateSensedValue(lista3.get(j),anArray);
+//        }
 
         //----------------------------
 

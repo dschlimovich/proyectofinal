@@ -79,7 +79,7 @@
                 android:id="@+id/tv_boxplotchartPh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Evolución del pH Promedio"
+                android:text="Mediana y cuartiles de mediciones de pH"
                 android:textSize="25sp"
                 android:textStyle="bold"
                 android:layout_marginTop="20dp"
