@@ -149,8 +149,8 @@ public class SensedValues {
         //devuelo porcentaje. osea si 70% entonces devuleve 70
         // devuleve 100 en el centro del intervalo
         if( t >= minT && t <= maxT && ph >= minPh && ph <= maxPh ){
-            float dividendo = 100 * (t - minT) * (t - maxT) * (ph - minPh) * (ph - maxPh);
-            float divisor = (maxT + minT) * (maxT - 3*minT) * (maxPh + minPh) * (maxPh - 3*minPh) / 8;
+            float dividendo = 1600 * (t - minT) * (t - maxT) * (ph - minPh) * (ph - maxPh);
+            float divisor = (maxT - minT) * (maxT - minT) * (maxPh - minPh) * (maxPh - minPh) ;
 
             if( divisor != 0) return dividendo / divisor;
             else return 0;
