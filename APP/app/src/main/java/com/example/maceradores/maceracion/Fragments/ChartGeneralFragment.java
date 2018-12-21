@@ -68,46 +68,47 @@ public class ChartGeneralFragment extends Fragment {
 
 
         //loadCharts(idMash,view);//Carga las Graficas
-        loadBoxPlot(idMash,view);
+        loadBoxPlot(idMash,view,0);//Grafica BoxPlot Temperatura
+        loadBoxPlot(idMash,view,1);//Grafica BoxPlot pH
         //setTypeofChart(0,view);
 
         return view;
     }
 
-/*    private void setTypeofChart(int chart,View view) {
-        //0 para promedio, 1 para Boxplot
-        TextView tv_lChartTemp = (TextView) view.findViewById(R.id.tv_linechartTemp);
-        LineChart lChartTemp = (LineChart) view.findViewById(R.id.chartTemp);
-        TextView tv_lChartPh = (TextView) view.findViewById(R.id.tv_linechartPh);
-        LineChart lChartPh = (LineChart) view.findViewById(R.id.chartpH);
-        TextView tv_boxplotTemp = (TextView) view.findViewById(R.id.tv_boxplotchartTemp);
-        CombinedChart combinedChartTemp = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
-        TextView tv_boxplotPh = (TextView) view.findViewById(R.id.tv_boxplotchartPh);
-        CombinedChart combinedChartPh = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
-        switch (chart) {
-            case 0:
-                if (tv_lChartTemp.getVisibility() == View.INVISIBLE) {
-                    tv_lChartTemp.setVisibility(View.VISIBLE);
-                    lChartTemp.setVisibility(View.VISIBLE);
-                    tv_lChartPh.setVisibility(View.VISIBLE);
-                    lChartPh.setVisibility(View.VISIBLE);
-                    tv_boxplotTemp.setVisibility(View.INVISIBLE);
-                    combinedChartTemp.setVisibility(View.INVISIBLE);
-                    tv_boxplotPh.setVisibility(View.INVISIBLE);
-                    combinedChartPh.setVisibility(View.INVISIBLE);
-                    case 1:
-                        tv_lChartTemp.setVisibility(View.INVISIBLE);
-                        lChartTemp.setVisibility(View.INVISIBLE);
-                        tv_lChartPh.setVisibility(View.INVISIBLE);
-                        lChartPh.setVisibility(View.INVISIBLE);
-                        tv_boxplotTemp.setVisibility(View.VISIBLE);
-                        combinedChartTemp.setVisibility(View.VISIBLE);
-                        tv_boxplotPh.setVisibility(View.VISIBLE);
-                        combinedChartPh.setVisibility(View.VISIBLE);
+    /*    private void setTypeofChart(int chart,View view) {
+            //0 para promedio, 1 para Boxplot
+            TextView tv_lChartTemp = (TextView) view.findViewById(R.id.tv_linechartTemp);
+            LineChart lChartTemp = (LineChart) view.findViewById(R.id.chartTemp);
+            TextView tv_lChartPh = (TextView) view.findViewById(R.id.tv_linechartPh);
+            LineChart lChartPh = (LineChart) view.findViewById(R.id.chartpH);
+            TextView tv_boxplotTemp = (TextView) view.findViewById(R.id.tv_boxplotchartTemp);
+            CombinedChart combinedChartTemp = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
+            TextView tv_boxplotPh = (TextView) view.findViewById(R.id.tv_boxplotchartPh);
+            CombinedChart combinedChartPh = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
+            switch (chart) {
+                case 0:
+                    if (tv_lChartTemp.getVisibility() == View.INVISIBLE) {
+                        tv_lChartTemp.setVisibility(View.VISIBLE);
+                        lChartTemp.setVisibility(View.VISIBLE);
+                        tv_lChartPh.setVisibility(View.VISIBLE);
+                        lChartPh.setVisibility(View.VISIBLE);
+                        tv_boxplotTemp.setVisibility(View.INVISIBLE);
+                        combinedChartTemp.setVisibility(View.INVISIBLE);
+                        tv_boxplotPh.setVisibility(View.INVISIBLE);
+                        combinedChartPh.setVisibility(View.INVISIBLE);
+                        case 1:
+                            tv_lChartTemp.setVisibility(View.INVISIBLE);
+                            lChartTemp.setVisibility(View.INVISIBLE);
+                            tv_lChartPh.setVisibility(View.INVISIBLE);
+                            lChartPh.setVisibility(View.INVISIBLE);
+                            tv_boxplotTemp.setVisibility(View.VISIBLE);
+                            combinedChartTemp.setVisibility(View.VISIBLE);
+                            tv_boxplotPh.setVisibility(View.VISIBLE);
+                            combinedChartPh.setVisibility(View.VISIBLE);
 
-                }
-        }
-    }*/
+                    }
+            }
+        }*/
     private void loadCharts(int idMash,View view){
         tempChart = (LineChart) view.findViewById(R.id.chartTemp);
         phChart = (LineChart) view.findViewById(R.id.chartpH);
@@ -204,44 +205,26 @@ public class ChartGeneralFragment extends Fragment {
         EnzymesChart.getDescription().setTextSize(12.0f);
 
 
-        //yAxis labels
-        final ArrayList<String> yLabel = new ArrayList<>();
-        yLabel.add("00");
-        yLabel.add("10");
-        yLabel.add("20");
-        yLabel.add("30");
-        yLabel.add("40");
-        yLabel.add("50");
-        yLabel.add("60");
-        yLabel.add("70");
-        yLabel.add("80");
-        yLabel.add("90");
-        yLabel.add("100");
-
 
         YAxis left = EnzymesChart.getAxisLeft();
         left.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         left.setEnabled(true);
         left.setAxisMinimum(0f);
         left.setDrawGridLines(false);
-        left.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return yLabel.get((int)value);
-            }
-        });
-
-
 
         EnzymesChart.invalidate(); //refresh
     }
 
-    private void loadBoxPlot(int idMash,View view){
+    private void loadBoxPlot(int idMash,View view,int temp0ph1){
 
 
-        CombinedChart combinedChartTemp = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
+            CombinedChart combinedChart = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
 
-        List<List<Float>> medianAndQuartils = getDataforBoxPlot(idMash);
+        if(temp0ph1 == 1){//Seteo grafica de pH
+            combinedChart = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
+        }
+
+        List<List<Float>> medianAndQuartils = getDataforBoxPlot(idMash,temp0ph1);
         List<CandleEntry> candleEntries = new ArrayList<CandleEntry>();
         List<Entry> entries =  new ArrayList<>();
         for(int x=0; x<medianAndQuartils.size();x++){
@@ -271,9 +254,6 @@ public class ChartGeneralFragment extends Fragment {
         LineData lineData = new LineData(lineDataSet);
         CandleData candleData = new CandleData(candleDataSet);
 
-        combinedChartTemp.setDrawOrder(new CombinedChart.DrawOrder[]{
-                CombinedChart.DrawOrder.LINE,CombinedChart.DrawOrder.CANDLE
-        });
 
         CombinedData combinedData = new CombinedData();
 
@@ -283,67 +263,57 @@ public class ChartGeneralFragment extends Fragment {
 
         //-----
 
-        YAxis yAxis = combinedChartTemp.getAxisLeft();
-        YAxis rightAxis = combinedChartTemp.getAxisRight();
+        YAxis yAxis = combinedChart.getAxisLeft();
+        YAxis rightAxis = combinedChart.getAxisRight();
         rightAxis.setEnabled(false);
         yAxis.setEnabled(true);
-        yAxis.setAxisMinimum(20f);
-        yAxis.setAxisMaximum(80f);
-        yAxis.setSpaceTop(50);
+        if(temp0ph1==0) {//Solo toca el eje y si es para grafico de temperatura y no de pH
+            yAxis.setAxisMinimum(20f);
+            yAxis.setAxisMaximum(80f);
+            yAxis.setSpaceTop(50);
+        }
+        else if (temp0ph1 ==1){
+            yAxis.setAxisMinimum(4f);
+            yAxis.setAxisMaximum(6f);
+            yAxis.setSpaceTop(50);
+        }
 
-        XAxis xAxis =  combinedChartTemp.getXAxis();
+        XAxis xAxis =  combinedChart.getXAxis();
         xAxis.setEnabled(true);
         xAxis.setAxisMinimum(-0.5f);
 
 
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        combinedChartTemp.setTouchEnabled(true);
-        combinedChartTemp.setHighlightPerDragEnabled(true);
-        combinedChartTemp.setHighlightPerTapEnabled(true);
+        combinedChart.setTouchEnabled(true);
+        combinedChart.setHighlightPerDragEnabled(true);
+        combinedChart.setHighlightPerTapEnabled(true);
 
-        combinedChartTemp.setData(combinedData);
-        combinedChartTemp.invalidate();//refresh
+        combinedChart.setData(combinedData);
+        combinedChart.invalidate();//refresh
 
     }
 
-    private List<List<Float>> getDataforBoxPlot(int idMash){
-        //0=Mediana, 1=min,2=Q1,3=Q3 y 4=max.
+    private List<List<Float>> getDataforBoxPlot(int idMash,int temp0ph1){
+        //0=Mediana, 1=max,2=min,3=Q3 y 4=Q1.
 
         List<Float[][]> matrixTempPh_SV = buildSensedValueMatrix(idMash);
 
 
-        //matrix.length gives you the number of rows.
         //matrix[0].length gives you the number of columns (assuming all rows have the same length).
-        int rows = matrixTempPh_SV.get(0).length;
         int cols = matrixTempPh_SV.get(0)[0].length;
 
         List<List<Float>> columnas = new ArrayList<>();
-        List<List<Float>> columnasAcumuladas = new ArrayList<>();
+
         List<List<Float>> retorno =  new ArrayList<>();//las filas de la submatriz son la mediana y los cuartiles
 
-
         for (int j = 0; j<cols;j++){
-            List<Float> column = getColumn(matrixTempPh_SV.get(0),j);//Obtengo la columa del array como una lista
+            List<Float> column = getColumn(matrixTempPh_SV.get(temp0ph1),j);//Obtengo la columa del array como una lista
             Collections.sort(column); //Me ordena de menor a Mayor
             columnas.add(column); //Columnas para la matrix de Temp por eso get(0)
 
             //Hasta aca tengo las columnas ordenadas
 
-            List<Float> vector = new ArrayList<>(); //Vector con acumuladados de esta columna
-            for( int i = columnas.get(j).size() - 1; i > 0; i--){
-                float acumulado = 0;
-                // sumo todos los valores antes que i.
-                for( int k = 0; k <= i; k++){
-                    acumulado = acumulado + columnas.get(j).get(k);
-                    Log.d("Acumulado",String.valueOf(acumulado));
-                    if(k==i){//Si termino de Acumular q me inserte en el vector
-                        vector.add(0,acumulado);//Inserta al principio corriendo la lista, y como se llena del final hacia atras va de 10
-                    }
-                }
-            }
-            //Hasta aca tengo un vector "vector" con las acumuladas de cada columna
-            columnasAcumuladas.add(vector);
             float max = Collections.max(column);
             float min = Collections.min(column);
             float median=0;
@@ -352,29 +322,14 @@ public class ChartGeneralFragment extends Fragment {
             boolean flagm=true;
             boolean flagq1=true;
             boolean flagq3=true;
-//            for (int i = 0;i<vector.size();i++){
-//                if(vector.get(i)>max/4 && flagq1==true){
-//                    Q1=vector.get(i);
-//                    flagq1=false;
-//                }
-//                if(vector.get(i)>(2*max)/4 && flagm==true){
-//                    median=vector.get(i);
-//                    flagm=false;
-//                }
-//                if(vector.get(i)>(3*max)/4 && flagq3==true){
-//                    Q3=vector.get(i);
-//                    flagq3=false;
-//                }
-//            }
-            boolean pair = false;
-            if(vector.size()%2==0){
-                pair=true;
-            }
-
             int indexM=0;
             int indexQ1=0;
             int indexQ3=0;
 
+            boolean pair = false;
+            if(column.size()%2==0){
+                pair=true;
+            }
             if(!pair){
                 indexM = (int) Math.ceil((double) column.size() / 2);
                 indexQ1 = (int) Math.ceil((double) column.size() / 4);
@@ -386,17 +341,9 @@ public class ChartGeneralFragment extends Fragment {
                 indexQ3 = column.size()*3/4;
             }
             median = column.get(indexM);
-            Q1 = column.get(indexQ1);
-            Q3 = column.get(indexQ3);
+            Q1 = column.get(indexQ1-1);//-1 xq trabajo con size y los indices arrancan en cero
+            Q3 = column.get(indexQ3-1);
 
-            //-------------HARDCODEO-----------------
-//                max= 70;
-//                min =20;
-//                Q3=50;
-//                Q1=30;
-
-
-            //----------------------------------------
             Log.d("mediana",String.valueOf(median));
             Log.d("min",String.valueOf(min));
             Log.d("Q1",String.valueOf(Q1));
@@ -410,8 +357,6 @@ public class ChartGeneralFragment extends Fragment {
             cuantiles.add(Q1);
             retorno.add(cuantiles);
         }
-
-
         return retorno;
     }
 
