@@ -28,6 +28,8 @@ def funcion_uno(mido_ph):
     ruta_sensor.append('28-00000901cc93')
     ruta_sensor.append('28-000008e44df6')
     ruta_sensor.append('28-000008e270f2') #posicion 6 es para pH
+	
+	phHolder = -1; #el primero va a quedar con -1 si o si, porque no tiene valores anteriores de medicion.
     
     for i in range(0,6):
         if os.path.isdir(ruta_sensores + ruta_sensor[i]):
@@ -38,8 +40,9 @@ def funcion_uno(mido_ph):
     if( mido_ph ):
         #ph = -1
         ph =  mediciones.medir_ph()
+		phHolder = ph
     else:
-        ph = -1
+        ph = phHolder
 
     datos.append(ph) # ver que esto funcione
 
