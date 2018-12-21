@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="47" />
+                                                <entry key="scalingPercent" value="63" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -35,9 +35,8 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ffc107" />
-                                      <entry key="backgroundLayerName" value="ic_chart_background" />
                                       <entry key="foregroundImage" value="C:\Users\damia\Downloads\analysis.svg" />
-                                      <entry key="foregroundLayerName" value="ic_chart" />
+                                      <entry key="outputName" value="ic_chart" />
                                     </map>
                                   </option>
                                 </PersistentState>
