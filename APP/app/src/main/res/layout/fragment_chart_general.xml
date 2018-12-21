@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.ChartGeneralFragment"
-    tools:ignore="MissingDefaultResource">
-
-    <LinearLayout
+    android:orientation="vertical">
+    <Button
+        android:id="@+id/buttonChangeShowGraphics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <FrameLayout
+        android:text="CAMBIAR VISUALIZACIÓN DE LOS GRÁFICOS"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/tv_linechartTemp"
                 android:layout_width="match_parent"
@@ -24,22 +34,22 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"
                 />
-            <TextView
-                android:id="@+id/tv_boxplotchartTemp"
+                <TextView
+                    android:id="@+id/tv_boxplotchartTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mediana y cuantiles de las mediciones de temperatura"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+
+                    />
+            </FrameLayout>
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Mediana y cuartiles de mediciones de temperatura"
-                android:visibility="invisible"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                />
-        </FrameLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                android:layout_height="wrap_content">
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chartTemp"
                 android:layout_width="match_parent"
@@ -48,22 +58,18 @@
                 android:paddingTop="5dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"/>
-            <com.github.mikephil.charting.charts.CombinedChart
-                android:id="@+id/candle_stick_chartTemp"
+                <com.github.mikephil.charting.charts.CombinedChart
+                    android:id="@+id/candle_stick_chartTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"/>
+            </FrameLayout>
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginEnd="4dp"
-                android:paddingBottom="10dp"
-                android:paddingTop="5dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-
-                />
-        </FrameLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/tv_linechartPh"
                 android:layout_width="match_parent"
@@ -75,22 +81,21 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"
                 />
-            <TextView
-                android:id="@+id/tv_boxplotchartPh"
+                <TextView
+                    android:id="@+id/tv_boxplotchartPh"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Evolución del pH Promedio"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    />
+            </FrameLayout>
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Mediana y cuartiles de mediciones de pH"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-
-                />
-        </FrameLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                android:layout_height="wrap_content">
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chartpH"
                 android:layout_width="match_parent"
@@ -99,36 +104,34 @@
                 android:paddingTop="5dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"/>
-            <com.github.mikephil.charting.charts.CombinedChart
-                android:id="@+id/candle_stick_chartPh"
+                <com.github.mikephil.charting.charts.CombinedChart
+                    android:id="@+id/candle_stick_chartPh"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"/>
+            </FrameLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Activación de Enzimas"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="5dp"
+                />
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartEnzymes"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginEnd="4dp"
                 android:paddingBottom="10dp"
                 android:paddingTop="5dp"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
+                android:paddingRight="5dp"/>
+        </LinearLayout>
+    </ScrollView>
 
-                />
-        </FrameLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Activación de Enzimas"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="5dp"
-            />
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chartEnzymes"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:paddingBottom="10dp"
-            android:paddingTop="5dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"/>
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>
