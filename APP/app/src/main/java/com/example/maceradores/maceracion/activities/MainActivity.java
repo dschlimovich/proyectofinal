@@ -15,6 +15,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +30,7 @@ import com.example.maceradores.maceracion.RetrofitGsonContainer.TempPh;
 import com.example.maceradores.maceracion.adapters.MashListAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Mash;
+import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
 
 import java.util.ArrayList;
@@ -73,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setToolbar();
+
+
 
     } //end OnCreate
 
@@ -364,6 +368,23 @@ public class MainActivity extends AppCompatActivity {
         String[] whereClausuleArgs = new String[] {String.valueOf(idSV)};
         int cant = db.update("SensedValues", sensedValues,whereClausule, whereClausuleArgs);
         dbHelper.close();
+    }
+
+    void testEnzymeFunctions(){
+        List<Pair<Float,Float>> tph = new ArrayList<>();
+        tph.add( new Pair<Float, Float>(72f,5.4f));
+        tph.add( new Pair<Float, Float>(63f,5.4f));
+        tph.add( new Pair<Float, Float>(40f,5f));
+        tph.add( new Pair<Float, Float>(50f,4.9f));
+
+        float x;
+        for( int i=0; i < tph.size(); i++){
+
+            x = SensedValues.alphaAmylase( tph.get(i).first, tph.get(i).second );
+            x = SensedValues.betaAmylase( tph.get(i).first, tph.get(i).second );
+            x = SensedValues.betaGlucanase( tph.get(i).first, tph.get(i).second );
+            x = SensedValues.protease( tph.get(i).first, tph.get(i).second );
+        }
     }
 
 } //end MainActivity
