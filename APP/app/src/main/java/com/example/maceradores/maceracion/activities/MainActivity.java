@@ -190,44 +190,46 @@ public class MainActivity extends AppCompatActivity {
 
     private void showAlertCurrentValues(){
         //---Hardcodeo para pruebas
-      /*  float[] anArray = new float[5];
+        float[] anArray = new float[5];
 
-        anArray[0] = 50;
-        anArray[1] = 49;
-        anArray[2] = 51;
-        anArray[3] = 48;
+        anArray[0] = 70;
+        anArray[1] = 69;
+        anArray[2] = 71;
+        anArray[3] = 82;
         anArray[4] = 5;
         List<Integer> lista = getListIdInsertedSensedValue(1);
         for(int j =0;j<lista.size();j++) {
             updateSensedValue(lista.get(j),anArray);
+
         }
-        anArray[0] = 50;
+        /*anArray[0] = 50;
         anArray[1] = 49;
         anArray[2] = 51;
         anArray[3] = 48;
         anArray[4] = 5;
         List<Integer> lista1 = getListIdInsertedSensedValue(2);
-        for(int j =0;j<lista.size();j++) {
-            updateSensedValue(lista.get(j),anArray);
-        }
+        for(int j =0;j<lista1.size();j++) {
+            updateSensedValue(lista1.get(j),anArray);
+        }*/
         anArray[0] = 50;
-        anArray[1] = 49;
-        anArray[2] = 51;
-        anArray[3] = 48;
+        anArray[1] = 40;
+        anArray[2] = 61;
+        anArray[3] = 45;
         anArray[4] = 5;
         List<Integer> lista2 = getListIdInsertedSensedValue(3);
-        for(int j =0;j<lista.size();j++) {
-            updateSensedValue(lista.get(j),anArray);
+        for(int j =0;j<lista2.size();j++) {
+            updateSensedValue(lista2.get(j),anArray);
         }
-        anArray[0] = 50;
-        anArray[1] = 49;
-        anArray[2] = 51;
-        anArray[3] = 48;
+
+        anArray[0] = 35;
+        anArray[1] = 36;
+        anArray[2] = 37;
+        anArray[3] = 39;
         anArray[4] = 5;
         List<Integer> lista3 = getListIdInsertedSensedValue(4);
-        for(int j =0;j<lista.size();j++) {
-            updateSensedValue(lista.get(j),anArray);
-        }*/
+        for(int j =0;j<lista3.size();j++) {
+            updateSensedValue(lista3.get(j),anArray);
+        }
 
         //----------------------------
 
@@ -341,6 +343,7 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = db.query("SensedValues", columns, selection, selectionArgs, null, null, null);
         if(cursor.moveToFirst()){
             //buffer.append( cursor.getString(0)); // checkear si la columna es 0 o 1
+            buffer.add(cursor.getInt(0));
             while(cursor.moveToNext()){
 //                buffer.append(",");
 //                buffer.append(cursor.getString(0));
