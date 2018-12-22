@@ -9,7 +9,7 @@
 
     <item android:title="Estadística General"
         android:id="@+id/staticsAllExperiments"
-        android:icon="@mipmap/ic_chart"
+        android:icon="@android:drawable/ic_input_get"
         app:showAsAction="ifRoom"/>
 
     <item android:title="Eliminar Maceración"
