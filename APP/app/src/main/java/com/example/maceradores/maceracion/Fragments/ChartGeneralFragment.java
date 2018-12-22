@@ -89,7 +89,9 @@ public class ChartGeneralFragment extends Fragment {
         rendimientoPromedio = rendimientoPromedio / ListidExp.size();
         return rendimientoPromedio;
     }
-    
+    private void getInsumosTeoricos(){
+        
+    }
     private void setTypeofChart(int chart,View view) {
         //0 para promedio, 1 para Boxplot
         TextView tv_lChartTemp = (TextView) view.findViewById(R.id.tv_linechartTemp);
