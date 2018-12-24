@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.models.Experiment;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.utils.Calculos;
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -89,6 +90,7 @@ public class ChartGeneralFragment extends Fragment {
         this.tv_cantExp = (TextView) view.findViewById(R.id.tv_cantExp);
 
         List<Integer> ListidExp = getAllExperiments(idMash); //Ahora la lista viene validada.
+
         tv_cantExp.setText("Se han realizado: "+String.valueOf(ListidExp.size())+" Experimentos Válidos");
 
 
@@ -548,29 +550,16 @@ public class ChartGeneralFragment extends Fragment {
     }
 
     private List<Integer> getAllExperiments(int idMash) {
-        List<Integer> resultados = new ArrayList<>();
-
+        List<Experiment> resultados = new ArrayList<Experiment>();
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] columns = {"id"};
-        String selection = "maceracion = ? AND densidad IS NOT NULL";
-        String[] selectionArgs = { String.valueOf(idMash)};
-
-        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
-        List<Float> yieldList = new ArrayList<>();
-
-        //List itemNames = new ArrayList<>();
-        while(cursor.moveToNext()) {
-            int id = cursor.getInt(
-                    cursor.getColumnIndexOrThrow("id")
-            );
-
-            resultados.add(id);
-        } // end while
-        cursor.close();
+        resultados = dbHelper.getAllExperiments(idMash);
         dbHelper.close();
-        return resultados;
+        List<Integer> retorno= new ArrayList<>();
+        for (int i=0;i<resultados.size();i++){
+            retorno.add(resultados.get(i).getId());
+        }
+
+        return retorno;
     } //end getAllExperiments
 
     private List<SensedValues> getSensedValues(int idExp){
