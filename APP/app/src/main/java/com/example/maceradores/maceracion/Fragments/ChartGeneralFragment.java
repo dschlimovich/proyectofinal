@@ -129,10 +129,6 @@ public class ChartGeneralFragment extends Fragment {
             }
         });
         return view;
-
-
-
-
     }
 
     @Override
@@ -142,6 +138,9 @@ public class ChartGeneralFragment extends Fragment {
         this.mash = dbHelper.getMash(this.idMash);
 
         //Rendimiento
+        //granos
+        this.mash.setGrains( dbHelper.getGrains(this.idMash) );
+        //rendimiento
         float volMosto = this.mash.getVolumen();
         double kgMalta = this.mash.kgMalta();
         List<Float> densities = dbHelper.getDensities(this.idMash);

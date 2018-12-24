@@ -51,6 +51,12 @@ public class Grain {
         return (float) kgTeorico;
     }
 
+    public float getMaltPractical(float densEspecif, float volLitros, float rendEquipo){
+        double kgPractico = Calculos.calcCantInsumoPrac( volLitros, densEspecif, rendEquipo);
+        kgPractico = kgPractico - kgPractico%0.01;
+        return (float) kgPractico;
+    }
+
     public String getStringPlanned(float densEspecif, float volLitros, float rendEquipo){
         double kgTeorico = getMaltTheoritical( densEspecif,  volLitros, 0.7f);
         double kgPractico = getMaltTheoritical( densEspecif,  volLitros, rendEquipo);

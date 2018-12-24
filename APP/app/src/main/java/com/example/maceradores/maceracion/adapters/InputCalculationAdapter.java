@@ -11,18 +11,25 @@ import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.models.Grain;
 import com.example.maceradores.maceracion.models.Mash;
 
-public class InputCalculation extends BaseAdapter {
+public class InputCalculationAdapter extends BaseAdapter {
     private Context context;
     private int layout;
     private float rendimientoEquipo;
     private Mash mash;
+    private int typeCalc;
+
+    // static attributes
+    public static final int TEORICO = 1;
+    public static final int AJUSTADO = 2;
+    public static final int PRACTICO = 3;
 
 
-    public InputCalculation(Context context, Mash mash, int layout, float rendimientoEquipo,int TypeCalc) {
+    public InputCalculationAdapter(Context context, Mash mash, int layout, float rendimientoEquipo, int typeCalc) {
         this.context = context;
         this.mash = mash;
         this.layout = layout;
         this.rendimientoEquipo = rendimientoEquipo;
+        this.typeCalc = typeCalc;
     }
 
     @Override
@@ -49,13 +56,30 @@ public class InputCalculation extends BaseAdapter {
         TextView calcInputs = (TextView) convertView.findViewById(R.id.textViewGrainDetail);
 
         String detail = new String();
+        float volumen = mash.getVolumen();
+        float densidad = mash.getDensidadObjetivo();
+
+        switch( this.typeCalc){
+            case TEORICO:
+                detail = mash.getGrains().get(position).getName() +
+                        " Cantidad: " + mash.getGrains().get(position).getMaltTheoritical( densidad, volumen, 0.7f);
+                break;
+            case AJUSTADO:
+                detail = mash.getGrains().get(position).getName() +
+                        " Cantidad: " + mash.getGrains().get(position).getMaltTheoritical( densidad, volumen, rendimientoEquipo);
+                break;
+            case PRACTICO:
+                detail = mash.getGrains().get(position).getName() +
+                        " Cantidad: " + mash.getGrains().get(position).getMaltPractical( densidad, volumen, rendimientoEquipo);
+                break;
+            default:
+                break;
+        }
 
 
         calcInputs.setText(detail);
 
         return convertView;
     }
-}
-
 
 }
