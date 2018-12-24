@@ -274,7 +274,7 @@ public class PlanningActivity extends AppCompatActivity {
         dbHelper.close();
 
         if(yieldList.size() < 3){
-            return -1;
+            return 0.7f;
         } else {
             //devuelvo el promedio.
             float acumulado = 0;

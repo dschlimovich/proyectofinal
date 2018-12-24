@@ -77,17 +77,43 @@ public class ChartGeneralFragment extends Fragment {
     }
 
 
-    private float getRendimiento(int idMash){
-        List<Integer> ListidExp = getAllExperiments(idMash); //Ahora la lista viene validada.
+    private float getRendimientoPractico(int idMash) {
+        //hago la consulta de la base de datos.
+        // me traigo la lista de id de experiencias.
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        float rendimientoPromedio = 0;
-        for (int i=0;i<ListidExp.size();i++){
-            //TODO TRAERME volumen, densidadEspecif y KgdeMalta. Primero y Ultimo vienen del MASH.
-            //TODO EL SEGUNDO VIENE DEL EXPERIMENTO(DENSIDAD ESPECIFICA)
-            rendimientoPromedio = Calculos.calcRendimiento(volMosto,densEspecif,kgMalta);
+        String[] columns = {"densidad"};
+        String selection = "maceracion = ? AND densidad IS NOT NULL";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
+        List<Float> yieldList = new ArrayList<>();
+
+        //TODO CALL OBJETO mash
+                
+        float volMosto = mash.getVolumen();
+        double kgMalta = mash.kgMalta();
+
+        while( cursor.moveToNext()){
+            double yield = Calculos.calcRendimiento(volMosto, cursor.getFloat(0), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
+            yieldList.add( (float) yield);
         }
-        rendimientoPromedio = rendimientoPromedio / ListidExp.size();
-        return rendimientoPromedio;
+        cursor.close();
+        dbHelper.close();
+
+        if(yieldList.size() < 3){
+            return 0.7f;
+        } else {
+            //devuelvo el promedio.
+            float acumulado = 0;
+            for( int i = 0; i < yieldList.size(); i++){
+                acumulado = acumulado + yieldList.get(i);
+            }
+            return acumulado / yieldList.size();
+        }
+
+
     }
     private void getInsumosTeoricos(){
         
