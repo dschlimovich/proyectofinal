@@ -56,12 +56,10 @@ public class GrainListAdapter extends BaseAdapter {
             detail = "";
             // Tengo que saber si tengo la cantidad de experiencias alcanza para saber
             // el rendimiento practico-
-            if(rendimientoPractico == 0.7)
+
             detail = mash.getGrains().get(position)
-                    .getStringPlanned(mash.getDensidadObjetivo(), mash.getVolumen(), 0.7f);
-            else
-                detail = mash.getGrains().get(position)
-                        .getStringPlanned(mash.getDensidadObjetivo(), mash.getVolumen(), 0.7f, rendimientoPractico);
+                    .getStringPlanned(mash.getDensidadObjetivo(), mash.getVolumen(), rendimientoPractico);
+
         } else{
             detail = mash.getGrains().get(position)
                     .getStringPlanning();

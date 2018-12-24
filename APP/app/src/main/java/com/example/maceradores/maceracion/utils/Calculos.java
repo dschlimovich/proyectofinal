@@ -49,19 +49,6 @@ public class Calculos {
         return kgGrano;
     }
 
-    public static double cantInsumoPorGrano( double kgGranoTotal, double porcentajeGrano, double extractoPotencial ){
-        // supongando porcentaje con formato 0.9 para 90% y extracto potencia en formato 0.81
-        // si no estan expersados en porcentaje, lo divido por cien :)
-        if(porcentajeGrano > 1){
-            porcentajeGrano = porcentajeGrano / 100;
-        }
-        if(extractoPotencial > 1){
-            extractoPotencial = extractoPotencial / 100;
-        }
-
-        return (kgGranoTotal * porcentajeGrano) / extractoPotencial;
-    }
-
     public static double calcCantInsumoTeoRayDaniels(float densEspecif, float volLitros, Grain grano, float rendEquipo){
         double factorDenso = (densEspecif -1)*1000; //densEspecif Objetivo!
         double ptosDensidad = factorDenso * volLitros; //Ptos de densidad de objetivo

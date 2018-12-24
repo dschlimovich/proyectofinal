@@ -43,21 +43,27 @@ public class Grain {
                 "\t Extracto: " + String.valueOf(getExtractPotential());
     }
 
-    public String getStringPlanned(float densEspecif, float volLitros, float rendEquipoTeorico){
-        double kg = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipoTeorico);
-        kg = kg - kg % 0.01; // despues dos comas decimales lo corto.
-        return getName() +
-                "\t Cantidad: " + String.valueOf((float) kg) + "kg ";
+    public float getMaltTheoritical(float densEspecif, float volLitros, float rendEquipo){
+        // densidad aca es la que planificaste
+        double kgTeorico = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipo);
+        kgTeorico = kgTeorico - kgTeorico % 0.01; // despues dos comas decimales lo corto.
+
+        return (float) kgTeorico;
     }
 
-    public String getStringPlanned(float densEspecif, float volLitros, float rendEquipoTeorico, float rendEquipoPractico){
-        double kg = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipoTeorico);
-        double kgPractico = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipoPractico);
-        kg = kg - kg % 0.01;
-        kgPractico = kgPractico - kgPractico % 0.01;
-        return getName() +
-                "\t Cant. Teór.: " + String.valueOf((float)kg) + "kg " +
-                " Práct.: " + String.valueOf((float)kgPractico) + "kg";
+    public String getStringPlanned(float densEspecif, float volLitros, float rendEquipo){
+        double kgTeorico = getMaltTheoritical( densEspecif,  volLitros, 0.7f);
+        double kgPractico = getMaltTheoritical( densEspecif,  volLitros, rendEquipo);
+
+        if(rendEquipo == 0.7){
+            return getName() +
+                    "\t Cant. Teór.: " + String.valueOf((float)kgTeorico) + "kg ";
+        } else{
+            return getName() +
+                    "\t Cant. Teór.: " + String.valueOf((float)kgTeorico) + "kg " +
+                    " Práct.: " + String.valueOf((float)kgPractico) + "kg";
+        }
+
     }
 
 }

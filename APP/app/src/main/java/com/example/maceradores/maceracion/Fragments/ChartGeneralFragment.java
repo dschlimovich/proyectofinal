@@ -142,45 +142,6 @@ public class ChartGeneralFragment extends Fragment {
         dbHelper.close();
     }
 
-    private float getRendimientoPractico(int idMash) {
-        //hago la consulta de la base de datos.
-        // me traigo la lista de id de experiencias.
-
-        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] columns = {"densidad"};
-        String selection = "maceracion = ? AND densidad IS NOT NULL";
-        String[] selectionArgs = { String.valueOf(idMash)};
-
-        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
-        List<Float> yieldList = new ArrayList<>();
-
-        //TODO CALL OBJETO mash
-
-        //float volMosto = mash.getVolumen();
-        //double kgMalta = mash.kgMalta();
-
-        while( cursor.moveToNext()){
-            //double yield = Calculos.calcRendimiento(volMosto, cursor.getFloat(0), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
-            //yieldList.add( (float) yield);
-        }
-        cursor.close();
-        dbHelper.close();
-
-        if(yieldList.size() < 3){
-            return 0.7f;
-        } else {
-            //devuelvo el promedio.
-            float acumulado = 0;
-            for( int i = 0; i < yieldList.size(); i++){
-                acumulado = acumulado + yieldList.get(i);
-            }
-            return acumulado / yieldList.size();
-        }
-
-
-    }
     private void getInsumosTeoricos(){
 
     }
