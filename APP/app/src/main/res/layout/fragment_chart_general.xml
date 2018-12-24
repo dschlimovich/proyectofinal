@@ -23,17 +23,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_linechartTemp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Evolución de la Temperatura Promedio"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                />
+                <TextView
+                    android:id="@+id/tv_linechartTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Evolución de la temperatura promedio"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    />
                 <TextView
                     android:id="@+id/tv_boxplotchartTemp"
                     android:layout_width="match_parent"
@@ -50,14 +50,14 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chartTemp"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"/>
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/chartTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"/>
                 <com.github.mikephil.charting.charts.CombinedChart
                     android:id="@+id/candle_stick_chartTemp"
                     android:layout_width="match_parent"
@@ -70,22 +70,22 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/tv_linechartPh"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Evolución del pH Promedio"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                />
+                <TextView
+                    android:id="@+id/tv_linechartPh"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Evolución del pH promedio"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    />
                 <TextView
                     android:id="@+id/tv_boxplotchartPh"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Evolución del pH Promedio"
+                    android:text="Mediana y cuantiles de las mediciones de pH"
                     android:textSize="25sp"
                     android:textStyle="bold"
                     android:layout_marginTop="20dp"
@@ -96,14 +96,14 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chartpH"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:paddingBottom="10dp"
-                android:paddingTop="5dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"/>
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/chartpH"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"/>
                 <com.github.mikephil.charting.charts.CombinedChart
                     android:id="@+id/candle_stick_chartPh"
                     android:layout_width="match_parent"
@@ -116,7 +116,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Activación de Enzimas"
+                android:text="Activación de enzimas"
                 android:textSize="25sp"
                 android:textStyle="bold"
                 android:layout_marginTop="20dp"
@@ -135,7 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_cantExp"
-                android:text="Número de experimentos Válidos: "
+                android:text="Número de experimentos válidos: "
                 android:textSize="17sp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
@@ -153,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_InsumoTeor"
-                android:text="Cantidad de Insumos (Cálculo Teórico): "
+                android:text="Cantidad de insumos (Cálculo Teórico): "
                 android:textSize="17sp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
@@ -167,7 +167,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_InsumoTeorAjustado"
-                android:text="Cantidad de Insumos (Cálculo Teórico Ajustado): "
+                android:text="Cantidad de insumos (Cálculo Teórico Ajustado): "
                 android:textSize="17sp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
@@ -181,7 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_InsumoPractico"
-                android:text="Cantidad de Insumos (Cálculo Práctico)"
+                android:text="Cantidad de insumos (Cálculo Práctico)"
                 android:textSize="17sp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
