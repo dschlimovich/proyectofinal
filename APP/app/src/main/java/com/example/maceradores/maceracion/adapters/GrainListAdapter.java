@@ -15,9 +15,10 @@ import java.util.List;
 
 public class GrainListAdapter extends BaseAdapter {
     private Context context;
+    private int layout;
+
     private float rendimientoPractico;
     private Mash mash;
-    private int layout;
     private boolean planned;
 
     public GrainListAdapter(Context context, Mash mash, boolean planned, int layout, float rendimientoPractico) {
