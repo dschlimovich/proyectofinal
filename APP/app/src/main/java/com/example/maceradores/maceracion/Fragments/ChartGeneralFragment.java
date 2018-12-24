@@ -66,6 +66,7 @@ public class ChartGeneralFragment extends Fragment {
     private ListView lv_TeoCalc;
     private ListView lv_TeoAdjCalc;
     private ListView lv_PracCalc;
+    private TextView tv_Rendimiento;
     private InputCalculationAdapter inputCalcAdapter;
 
     public ChartGeneralFragment() {
@@ -92,7 +93,7 @@ public class ChartGeneralFragment extends Fragment {
         this.tv_boxplotPh = (TextView) view.findViewById(R.id.tv_boxplotchartPh);
         this.combinedChartPh = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
         this.tv_cantExp = (TextView) view.findViewById(R.id.tv_cantExp);
-
+        this.tv_Rendimiento = (TextView) view.findViewById(R.id.tv_RendEquipo);
         List<Integer> ListidExp = getAllExperiments(idMash); //Ahora la lista viene validada.
         tv_cantExp.append(String.valueOf(ListidExp.size()));
 
@@ -140,6 +141,7 @@ public class ChartGeneralFragment extends Fragment {
         } else {
             rendimientoPractico = (float) Calculos.rendimientoGeneral(densities, volMosto, kgMalta);
         }
+        tv_Rendimiento.setText(String.valueOf(rendimientoPractico*100 + "%"));
         dbHelper.close();
 
         // List of Teoric Inputs
