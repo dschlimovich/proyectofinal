@@ -78,7 +78,6 @@ public class ChartGeneralFragment extends Fragment {
         final int idMash = getArguments().getInt("idMash");
         this.idMash=idMash;
 
-
         this.tv_lChartTemp = (TextView) view.findViewById(R.id.tv_linechartTemp);
         this.lChartTemp = (LineChart) view.findViewById(R.id.chartTemp);
         this.tv_lChartPh = (TextView) view.findViewById(R.id.tv_linechartPh);
@@ -95,8 +94,8 @@ public class ChartGeneralFragment extends Fragment {
 
         setTypeofChart(0,view);//Para q arranque en el chart de Temp
         loadCharts(idMash,view,ListidExp);//Carga las Graficas
-        loadBoxPlot(idMash,view,0,ListidExp);//Grafica BoxPlot Temperatura
-        loadBoxPlot(idMash,view,1,ListidExp);//Grafica BoxPlot pH
+        loadBoxPlot(idMash,view,0,ListidExp);//Carga la Grafica BoxPlot Temperatura
+        loadBoxPlot(idMash,view,1,ListidExp);//Carga la Grafica BoxPlot pH
 
         button = (Button) view.findViewById(R.id.buttonChangeShowGraphics);
 
