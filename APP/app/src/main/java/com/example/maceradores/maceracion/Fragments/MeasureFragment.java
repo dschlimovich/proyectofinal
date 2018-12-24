@@ -6,9 +6,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +29,7 @@ import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.utils.Calculos;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +85,6 @@ public class MeasureFragment extends Fragment {
         chronometer.start();
 
         // configuracion de temperatura.
-        // TODO traerlo de un SharedPreferences.
         // veamos que sale de esto.
         Arrays.fill(this.sensoresHabilitados, true);
         this.metodoCalculo = PROMEDIO;
@@ -95,13 +92,10 @@ public class MeasureFragment extends Fragment {
         loadSharedPreferences();
 
 
-
-
         cardViewTemp = view.findViewById(R.id.cardViewMeasureTemperature);
         cardViewTemp.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                //Toast.makeText(getContext(), "Anduvo pereeeque", Toast.LENGTH_SHORT).show();
                 //aca tengo que mostrar un alert dialog para que me guarde la configuración.
                 showAlertDialogConfigTemp(sensoresHabilitados, metodoCalculo);
                 return false;
@@ -113,6 +107,7 @@ public class MeasureFragment extends Fragment {
         thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
+
                 int counter =0;
 
                 int intervaloMedicion = intervaloMedicion(idMash);
@@ -124,12 +119,12 @@ public class MeasureFragment extends Fragment {
 
                 while (counter < NumberOfCalls) {
                     counter++;
-
                     try {
                         Thread.sleep(sleep);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
+
                     SensedValues sensedValues = getLastSensedValues(idExp);
                     if (sensedValues != null) {
                         Bundle bundle = new Bundle();
@@ -163,8 +158,8 @@ public class MeasureFragment extends Fragment {
                             Log.d("List Mediciones",String.valueOf(medicion));
                         }
 
-                        int Etapa = getOrderInterval(cantSensedValues,ListmedicionesxInter);
-                        MeasureInterval measureInterval = getIntervalByOrder(Etapa,idMash);
+                        int etapa = (int) getCurrentOrderInterval(cantSensedValues,ListmedicionesxInter)[0];
+                        MeasureInterval measureInterval = getIntervalByOrder(etapa,idMash);
                         float tempMin = measureInterval.getMainTemperature() - measureInterval.getMainTemperatureDeviation();//temp objetivo menos desviacion
                         float tempMax = measureInterval.getMainTemperature() + measureInterval.getMainTemperatureDeviation();//temp objetivo mas desviacion
                         float ph = sensedValues.getpH();
@@ -199,9 +194,10 @@ public class MeasureFragment extends Fragment {
 
                         mHandlerThread.sendMessage(message);
                     }
-                }
+                } // end while
             }
         });
+
         thread1.start();
         // Inflate the layout for this fragment
         return view;
@@ -364,15 +360,16 @@ public class MeasureFragment extends Fragment {
 
                     int cantSensedValues = amountSensedValue(idExp);
                     Log.d("Cant SensedValues",String.valueOf(cantSensedValues));
-                    int Etapa = getOrderInterval(cantSensedValues, ListmedicionesxInter);
-                    MeasureInterval measureInterval = getIntervalByOrder(Etapa, idMash);
+                    //int Etapa = getCurrentOrderInterval(cantSensedValues, ListmedicionesxInter);
+                    float[] etapa = getCurrentOrderInterval(cantSensedValues, ListmedicionesxInter);
+                    MeasureInterval measureInterval = getIntervalByOrder((int) etapa[0], idMash);
                     float desvioTemp = tPromedio - measureInterval.getMainTemperature();
                     float desvioPh = ph - measureInterval.getpH();
                     float desvioTempSecon = tempSecondary - measureInterval.getSecondTemperature();
                     loadTemperatureCardView(tPromedio, desvioTemp, measureInterval.getMainTemperature(), measureInterval.getMainTemperatureDeviation(), t1, t2, t3, t4);
                     if (ph > 0)
                         loadPhCardView(ph, desvioPh, measureInterval.getpH(), measureInterval.getPhDeviation(), tempPh); //Solo actualizo ph si el valor es valido
-                    loadStageCardView(Etapa);
+                    loadStageCardView(etapa);
                     loadSecondMaceratorCardView(tempSecondary,desvioTempSecon,measureInterval.getSecondTemperature(),measureInterval.getSecondTemperatureDeviation());
                     loadEnviromentCardView(bundle.getFloat("tempEnviroment"),bundle.getFloat("humidity"));
                     loadEnzymeCardView(SensedValues.alphaAmylase(tPromedio,ph),
@@ -387,35 +384,23 @@ public class MeasureFragment extends Fragment {
 
     private SensedValues getLastSensedValues(int idExp){
         SensedValues sv = null;
-
-        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery("SELECT * FROM SensedValues WHERE id_exp = ? AND id = (SELECT MAX(id) FROM SensedValues)", new String[] {String.valueOf(idExp)});
-
-        if(cursor.moveToFirst()){
-            int id = cursor.getInt( cursor.getColumnIndexOrThrow("id"));
-            int idRaspi = cursor.getInt( cursor.getColumnIndexOrThrow("idRaspi"));
-            String date = cursor.getString(cursor.getColumnIndexOrThrow("fechayhora"));
-            float temp1 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp1"));
-            float temp2 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp2"));
-            float temp3 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp3"));
-            float temp4 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp4"));
-            float temp5 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp5"));
-            float tempPh = cursor.getFloat(cursor.getColumnIndexOrThrow("tempPh"));
-            float tempAmb = cursor.getFloat(cursor.getColumnIndexOrThrow("tempAmb"));
-            float humidity = cursor.getFloat(cursor.getColumnIndexOrThrow("humity"));
-            float pH= cursor.getFloat(cursor.getColumnIndexOrThrow("pH"));
-
-            sv = new SensedValues(id,idRaspi, date, temp1, temp2, temp3, temp4, temp5, tempPh, humidity, tempAmb, pH);
+        try{
+            DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+            sv = dbHelper.getLastSensedValue(idExp);
+            dbHelper.close();
+        } catch (Exception e){
+            Log.d("Error DB", e.toString());
         }
-        cursor.close();
-        db.close();
+
         return sv;
     }
 
-    private void loadStageCardView(int stage){
-        tvMeasureStage.setText(" Etapa Actual: ");
+    private void loadStageCardView(float[]  stage){
+        // 0 etapa
+        // 1 porcentaje de avance
+        tvMeasureStage.setText(" Completado: ");
+        tvMeasureStage.append(String.valueOf(stage[1] * 100));
+        tvMeasureStage.append("% \t Etapa Actual: ");
         tvMeasureStage.append(String.valueOf(stage));
     }
 
@@ -509,37 +494,18 @@ public class MeasureFragment extends Fragment {
 
     private int cantMediciones( int idMash, int intervaloMedicion){
         //TODO hacer con medicionesPorIntervalo
-
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(duracion) FROM Intervalo WHERE maceracion = ?", new String[]{String.valueOf(idMash)});
-        int duracionTotal = 0;
-        if(c.moveToFirst()){
-            duracionTotal = c.getInt(0);
-        }
-        c.close();
-        db.close();
+        int duracionTotal = dbHelper.getDurationTotal(idMash);
+        dbHelper.close();
         return (duracionTotal * 60) / (intervaloMedicion/2);
     }
 
     private int intervaloMedicion (int idMash){
-        int intervaloMedicion = 0;
+
         // saber el periodo de medicion.
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] columns = {"intervaloMedTemp"};
-        String selection = "id = ?";
-        String[] selectionArgs = { String.valueOf(idMash)};
-
-        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
-        if(cursor.moveToFirst()){
-            intervaloMedicion = cursor.getInt(0); //como tengo una sola columna, devuelvo la primera nomas.
-        }
-        cursor.close();
-        db.close();
-        if(intervaloMedicion<30)intervaloMedicion=30; // Minimo Intervalo de Medicion es de 30 seg
-
+        int intervaloMedicion = dbHelper.getIntervaloMedicionTemp(idMash);
+        dbHelper.close();
         return intervaloMedicion;
     }
 
@@ -608,33 +574,27 @@ public class MeasureFragment extends Fragment {
     }
 
     public List<Integer> medicionesPorIntervalo( int idMash, int intervaloMedicion){
-        List<Integer> mediciones = new ArrayList<Integer>();
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<Integer> duraciones = dbHelper.getDurationEachInterval(idMash);
+        dbHelper.close();
 
-        String[] columns = {"duracion"};
-        String selection = "maceracion = ?";
-        String[] selectionArgs = { String.valueOf(idMash)};
-
-        Cursor cursor = db.query("Intervalo", columns, selection, selectionArgs, null, null, "orden DESC");
-        while(cursor.moveToNext()){
-            mediciones.add( cursor.getInt(0) * 60 / (intervaloMedicion/2));
+        List<Integer> medicionesPorIntervalo = new ArrayList<>();
+        for(int i = 0; i < duraciones.size(); i++){
+            medicionesPorIntervalo.add( duraciones.get(i) * 60 / (intervaloMedicion/2));
         }
-        cursor.close();
-        db.close();
-        return mediciones;
+
+        return medicionesPorIntervalo;
     }
 
     public int amountSensedValue(int idExp){
         //int amount = 0;
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        int amount = (int) DatabaseUtils.queryNumEntries(db, "SensedValues", "id_exp=?", new String[] {String.valueOf(idExp)});
-        db.close();
+        int amount = dbHelper.amountSensedValues(idExp);
+        dbHelper.close();
         return amount;
     }
 
-    public int getOrderInterval( int amount, List<Integer> medicionesPorIntervalo){
+    public float[] getCurrentOrderInterval(int amount, List<Integer> medicionesPorIntervalo){
         //Me devuelve la Etapa/Stage en la q estoy
         // hago los valores acumulados.
         // {10, 30, 20}
@@ -643,7 +603,7 @@ public class MeasureFragment extends Fragment {
             // sumo todos los valores antes que i.
             for( int j = 0; j <= i; j++){
                 acumulado = acumulado + medicionesPorIntervalo.get(j);
-                Log.d("Acumulado",String.valueOf(acumulado));
+                //Log.d("Acumulado",String.valueOf(acumulado));
             }
             medicionesPorIntervalo.set(i, acumulado);
         }
@@ -652,8 +612,6 @@ public class MeasureFragment extends Fragment {
         int orden = 1;
         boolean flag = true;
         while(flag){
-            Log.d("getOrderIntervals","");
-            Log.d("Cant of SensedValues: ",String.valueOf(amount));
 
             if( amount <= medicionesPorIntervalo.get(orden-1)){
                 flag = false;
@@ -661,39 +619,23 @@ public class MeasureFragment extends Fragment {
                 orden = orden + 1;
             }
         }
-        return orden;
+        float porcentaje = (amount*1.0f) / (medicionesPorIntervalo.get(medicionesPorIntervalo.size()-1) * 1.0f);
+        return new float[]{orden, porcentaje};
 
     }
 
     public MeasureInterval getIntervalByOrder(int order, int idMash){
-        MeasureInterval measureInterval = null;
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        //String[] columns = {"intervaloMedTemp"};
-        String selection = "maceracion = ? AND orden = ?";
-        String[] selectionArgs = { String.valueOf(idMash), String.valueOf(order)};
-
-        Cursor cursor = db.query("intervalo", null, selection, selectionArgs, null, null, null);
-        if(cursor.moveToFirst()){
-            float mainTemperature = cursor.getFloat( cursor.getColumnIndexOrThrow("temperatura"));
-            float mainTemperatureDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTemperatura"));
-            float secondTemperature = cursor.getFloat(cursor.getColumnIndexOrThrow("tempDecoccion"));
-            float secondTemperatureDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioTempDecoccion"));
-            float pH = cursor.getFloat(cursor.getColumnIndexOrThrow("ph"));
-            float phDeviation = cursor.getFloat(cursor.getColumnIndexOrThrow("desvioPh"));
-            int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duracion"));
-
-            measureInterval = new MeasureInterval(order,mainTemperature, mainTemperatureDeviation, secondTemperature, secondTemperatureDeviation, pH,  phDeviation,  duration);
-        }
-        cursor.close();
-        db.close();
+        MeasureInterval measureInterval = dbHelper.getMeasureIntervalByOrder(idMash, order);
+        dbHelper.close();
         return measureInterval;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        //mHandlerThread.removeCallbacksAndMessages(null);
+        //thread1.interrupt();
         saveSharedPreferences();
     }
 }

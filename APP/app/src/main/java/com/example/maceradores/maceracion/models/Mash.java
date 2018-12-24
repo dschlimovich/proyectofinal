@@ -24,7 +24,10 @@ public class Mash {
     // Constructors
 
     //Empty Constructor.
-    public Mash(){}
+    public Mash(){
+        this.grains = new ArrayList<>();
+        this.plan = new ArrayList<>();
+    }
 
     public Mash(int id, String name, String type) {
         this.id = id;

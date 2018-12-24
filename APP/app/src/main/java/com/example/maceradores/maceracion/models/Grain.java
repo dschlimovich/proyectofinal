@@ -39,7 +39,7 @@ public class Grain {
 
     public String getStringPlanning(){
         return  getName() +
-                "\t Porcentaje: " + String.valueOf(getQuantity()) +
+                "\t Porcentaje: " + String.valueOf(getQuantity()*100) +"%" +
                 "\t Extracto: " + String.valueOf(getExtractPotential());
     }
 
