@@ -255,8 +255,6 @@ public class PlanningActivity extends AppCompatActivity {
     }
 
     private float getRendimientoPractico(int idMash) {
-        //hago la consulta de la base de datos.
-        // me traigo la lista de id de experiencias.
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         List<Float> densities = dbHelper.getDensities(idMash);
         dbHelper.close();

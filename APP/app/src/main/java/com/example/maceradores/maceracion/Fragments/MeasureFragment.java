@@ -401,7 +401,7 @@ public class MeasureFragment extends Fragment {
         tvMeasureStage.setText(" Completado: ");
         tvMeasureStage.append(String.valueOf(stage[1] * 100));
         tvMeasureStage.append("% \t Etapa Actual: ");
-        tvMeasureStage.append(String.valueOf(stage));
+        tvMeasureStage.append(String.valueOf((int)stage[0]));
     }
 
     private void loadSecondMaceratorCardView(float temp, float desvioObtenido, float tempPlanificada, float alerta){
