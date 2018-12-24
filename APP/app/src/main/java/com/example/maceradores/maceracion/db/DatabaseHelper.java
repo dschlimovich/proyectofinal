@@ -535,7 +535,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String[] selectionArgs = { String.valueOf(idMash)};
             Cursor cursor = db.rawQuery("SELECT E.id AS 'id', strftime('%d/%m/%Y %H:%M', E.fecha) AS 'fecha'" +
                     " FROM Experimento AS E "+
-                    "WHERE E.maceracion = ? ORDER BY E.fecha DESC", selectionArgs);
+                    "WHERE E.maceracion = ? AND densidad IS NOT NULL ORDER BY E.fecha DESC", selectionArgs);
 
             while(cursor.moveToNext()) {
                 int id = cursor.getInt(
