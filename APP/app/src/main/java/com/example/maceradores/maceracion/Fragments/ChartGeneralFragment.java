@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.SensedValues;
+import com.example.maceradores.maceracion.utils.Calculos;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -75,6 +76,48 @@ public class ChartGeneralFragment extends Fragment {
         return view;
     }
 
+
+    private float getRendimientoPractico(int idMash) {
+        //hago la consulta de la base de datos.
+        // me traigo la lista de id de experiencias.
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"densidad"};
+        String selection = "maceracion = ? AND densidad IS NOT NULL";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
+        List<Float> yieldList = new ArrayList<>();
+
+        //TODO CALL OBJETO mash
+                
+        //float volMosto = mash.getVolumen();
+        //double kgMalta = mash.kgMalta();
+
+        while( cursor.moveToNext()){
+            //double yield = Calculos.calcRendimiento(volMosto, cursor.getFloat(0), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
+            //yieldList.add( (float) yield);
+        }
+        cursor.close();
+        dbHelper.close();
+
+        if(yieldList.size() < 3){
+            return 0.7f;
+        } else {
+            //devuelvo el promedio.
+            float acumulado = 0;
+            for( int i = 0; i < yieldList.size(); i++){
+                acumulado = acumulado + yieldList.get(i);
+            }
+            return acumulado / yieldList.size();
+        }
+
+
+    }
+    private void getInsumosTeoricos(){
+        
+    }
     private void setTypeofChart(int chart,View view) {
         //0 para promedio, 1 para Boxplot
         TextView tv_lChartTemp = (TextView) view.findViewById(R.id.tv_linechartTemp);
@@ -85,8 +128,7 @@ public class ChartGeneralFragment extends Fragment {
         CombinedChart combinedChartTemp = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
         TextView tv_boxplotPh = (TextView) view.findViewById(R.id.tv_boxplotchartPh);
         CombinedChart combinedChartPh = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
-//            switch (chart) {
-//                case 0:
+
         if(chart ==0) {
             tv_lChartTemp.setVisibility(View.VISIBLE);
             lChartTemp.setVisibility(View.VISIBLE);
@@ -97,7 +139,6 @@ public class ChartGeneralFragment extends Fragment {
             tv_boxplotPh.setVisibility(View.INVISIBLE);
             combinedChartPh.setVisibility(View.INVISIBLE);
         }else if (chart == 1){
-            //              case 1:
             tv_lChartTemp.setVisibility(View.INVISIBLE);
             lChartTemp.setVisibility(View.INVISIBLE);
             tv_lChartPh.setVisibility(View.INVISIBLE);
