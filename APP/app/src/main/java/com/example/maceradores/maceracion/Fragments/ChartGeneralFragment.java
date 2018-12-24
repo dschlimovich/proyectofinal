@@ -6,27 +6,25 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.adapters.InputCalculationAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
-import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.Experiment;
+import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.utils.Calculos;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
@@ -36,15 +34,10 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,6 +63,10 @@ public class ChartGeneralFragment extends Fragment {
     private TextView tv_boxplotPh;
     private CombinedChart combinedChartPh;
     private TextView tv_cantExp;
+    private ListView lv_TeoCalc;
+    private ListView lv_TeoAdjCalc;
+    private ListView lv_PracCalc;
+    private InputCalculationAdapter inputCalcAdapter;
 
     public ChartGeneralFragment() {
         // Required empty public constructor
@@ -129,6 +126,8 @@ public class ChartGeneralFragment extends Fragment {
         super.onResume();
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         this.mash = dbHelper.getMash(this.idMash);
+
+        //Rendimiento
         //granos
         this.mash.setGrains( dbHelper.getGrains(this.idMash) );
         //rendimiento
@@ -142,11 +141,28 @@ public class ChartGeneralFragment extends Fragment {
             rendimientoPractico = (float) Calculos.rendimientoGeneral(densities, volMosto, kgMalta);
         }
         dbHelper.close();
+
+        // List of Teoric Inputs
+        //*******************************
+        lv_TeoCalc = (ListView) getView().findViewById(R.id.lv_calcTeo);
+        inputCalcAdapter = new InputCalculationAdapter(getContext(), mash, R.layout.item_list_grain, this.rendimientoPractico,1);
+        lv_TeoCalc.setAdapter(inputCalcAdapter);
+
+        // List of Teoric Adjusted Inputs
+        //*******************************
+        lv_TeoAdjCalc = (ListView) getView().findViewById(R.id.lv_calcTeoAjust);
+        inputCalcAdapter = new InputCalculationAdapter(getContext(), mash, R.layout.item_list_grain, this.rendimientoPractico,2);
+        lv_TeoAdjCalc.setAdapter(inputCalcAdapter);
+
+        // List of Practical Inputs
+        //*******************************
+        lv_PracCalc = (ListView) getView().findViewById(R.id.lv_calcPract);
+        inputCalcAdapter = new InputCalculationAdapter(getContext(), mash, R.layout.item_list_grain, this.rendimientoPractico,3);
+        lv_PracCalc.setAdapter(inputCalcAdapter);
+
+
     }
 
-    private void getInsumosTeoricos(){
-
-    }
     private void setTypeofChart(int chart,View view) {
         if(chart ==0) {
             tv_lChartTemp.setVisibility(View.VISIBLE);
