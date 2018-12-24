@@ -619,7 +619,8 @@ public class MeasureFragment extends Fragment {
                 orden = orden + 1;
             }
         }
-        float porcentaje = (amount*1.0f) / (medicionesPorIntervalo.get(medicionesPorIntervalo.size()-1) * 1.0f);
+        float porcentaje = (amount*2.0f) / (medicionesPorIntervalo.get(medicionesPorIntervalo.size()-1) * 1.0f); //amount *2 es porque tiene hace mas mediciones que los valores que tiene que traer
+        porcentaje = porcentaje - porcentaje%0.01f;
         return new float[]{orden, porcentaje};
 
     }
