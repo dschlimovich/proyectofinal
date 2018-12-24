@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Mash;
+import com.example.maceradores.maceracion.models.Experiment;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.utils.Calculos;
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -100,9 +101,9 @@ public class ChartGeneralFragment extends Fragment {
 
 
         setTypeofChart(0,view);//Para q arranque en el chart de Temp
-        loadCharts(idMash,view);//Carga las Graficas
-        loadBoxPlot(idMash,view,0);//Grafica BoxPlot Temperatura
-        loadBoxPlot(idMash,view,1);//Grafica BoxPlot pH
+        loadCharts(idMash,view,ListidExp);//Carga las Graficas
+        loadBoxPlot(idMash,view,0,ListidExp);//Carga la Grafica BoxPlot Temperatura
+        loadBoxPlot(idMash,view,1,ListidExp);//Carga la Grafica BoxPlot pH
 
         button = (Button) view.findViewById(R.id.buttonChangeShowGraphics);
 
@@ -215,12 +216,12 @@ public class ChartGeneralFragment extends Fragment {
         combinedChartPh.invalidate();
     }
 
-    private void loadCharts(int idMash,View view){
+    private void loadCharts(int idMash,View view,List<Integer> ListidExp){
         tempChart = lChartTemp;
         phChart = lChartPh;
         EnzymesChart = (LineChart) view.findViewById(R.id.chartEnzymes);
 
-        List<List<Double>> MeanTempAndPhAndEnzymes =  meanSetsTempPhandEnzymesAct(idMash);
+        List<List<Double>> MeanTempAndPhAndEnzymes =  meanSetsTempPhandEnzymesAct(idMash,ListidExp);
 
         List<Entry> entriesTemp = new ArrayList<Entry>();
         List<Entry> entriespH = new ArrayList<Entry>();
@@ -321,7 +322,7 @@ public class ChartGeneralFragment extends Fragment {
         EnzymesChart.invalidate(); //refresh
     }
 
-    private void loadBoxPlot(int idMash,View view,int temp0ph1){
+    private void loadBoxPlot(int idMash,View view,int temp0ph1,List<Integer> ListidExp){
 
 
         CombinedChart combinedChart = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
@@ -330,7 +331,7 @@ public class ChartGeneralFragment extends Fragment {
             combinedChart = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
         }
 
-        List<List<Float>> medianAndQuartils = getDataforBoxPlot(idMash,temp0ph1);
+        List<List<Float>> medianAndQuartils = getDataforBoxPlot(idMash,temp0ph1,ListidExp);
         List<CandleEntry> candleEntries = new ArrayList<CandleEntry>();
         List<Entry> entries =  new ArrayList<>();
 
@@ -403,10 +404,10 @@ public class ChartGeneralFragment extends Fragment {
 
     }
 
-    private List<List<Float>> getDataforBoxPlot(int idMash,int temp0ph1){
+    private List<List<Float>> getDataforBoxPlot(int idMash,int temp0ph1,List<Integer> ListidExp){
         //0=Mediana, 1=max,2=min,3=Q3 y 4=Q1.
 
-        List<Float[][]> matrixTempPh_SV = buildSensedValueMatrix(idMash);
+        List<Float[][]> matrixTempPh_SV = buildSensedValueMatrix(idMash,ListidExp);
 
 
         //matrix[0].length gives you the number of columns (assuming all rows have the same length).
@@ -478,12 +479,12 @@ public class ChartGeneralFragment extends Fragment {
 
     }
 
-    private List<List<Double>> meanSetsTempPhandEnzymesAct(int idMash) {
+    private List<List<Double>> meanSetsTempPhandEnzymesAct(int idMash,List<Integer> ListidExp) {
 
-        List<Integer> ListidExp = getAllExperiments(idMash); //Ahora la lista viene validada.
+
         int NumMeasures = getMandatoryNumSensedValues(idMash);
 
-        List<Float[][]> matrixTempPh = buildSensedValueMatrix(idMash);
+        List<Float[][]> matrixTempPh = buildSensedValueMatrix(idMash,ListidExp);
         Float[][] matrizTemp = matrixTempPh.get(0);
         Float[][] matrizpH = matrixTempPh.get(1);
 
@@ -540,10 +541,8 @@ public class ChartGeneralFragment extends Fragment {
         return retorno;
     }
 
-    private List<Float[][]> buildSensedValueMatrix(int idMash){
-        //Primero hacer un select con todos los idExp relacionados a este idMash
-        List<Integer> ListidExp = getAllExperiments(idMash); //Ahora la lista viene validada.
-
+    private List<Float[][]> buildSensedValueMatrix(int idMash,List<Integer> ListidExp){
+        //Primero tomo la lista de todos los idExp relacionados a este idMash
 
         //Armar un Array q tenga tantas filas como idExp.
         int NumMeasures = getMandatoryNumSensedValues(idMash);
@@ -571,29 +570,16 @@ public class ChartGeneralFragment extends Fragment {
     }
 
     private List<Integer> getAllExperiments(int idMash) {
-        List<Integer> resultados = new ArrayList<>();
-
+        List<Experiment> resultados = new ArrayList<Experiment>();
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] columns = {"id"};
-        String selection = "maceracion = ? AND densidad IS NOT NULL";
-        String[] selectionArgs = { String.valueOf(idMash)};
-
-        Cursor cursor = db.query("Experimento", columns, selection, selectionArgs, null, null, null);
-        List<Float> yieldList = new ArrayList<>();
-
-        //List itemNames = new ArrayList<>();
-        while(cursor.moveToNext()) {
-            int id = cursor.getInt(
-                    cursor.getColumnIndexOrThrow("id")
-            );
-
-            resultados.add(id);
-        } // end while
-        cursor.close();
+        resultados = dbHelper.getAllExperiments(idMash);
         dbHelper.close();
-        return resultados;
+        List<Integer> retorno= new ArrayList<>();
+        for (int i=0;i<resultados.size();i++){
+            retorno.add(resultados.get(i).getId());
+        }
+
+        return retorno;
     } //end getAllExperiments
 
     private List<SensedValues> getSensedValues(int idExp){
