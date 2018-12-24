@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.utils.Calculos;
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -49,7 +50,12 @@ import java.util.stream.IntStream;
  */
 public class ChartGeneralFragment extends Fragment {
 
+    // Data
     private int idMash;
+    private Mash mash;
+    private float rendimientoPractico;
+
+    //Widgets
     private LineChart tempChart;
     private LineChart phChart;
     private LineChart EnzymesChart;
@@ -117,10 +123,28 @@ public class ChartGeneralFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        this.mash = dbHelper.getMash(this.idMash);
+        //rendimiento
+        float volMosto = this.mash.getVolumen();
+        double kgMalta = this.mash.kgMalta();
+        List<Float> densities = dbHelper.getDensities(this.idMash);
+
+        if(densities.size() < 3){
+            rendimientoPractico = 0.7f;
+        } else {
+            rendimientoPractico = (float) Calculos.rendimientoGeneral(densities, volMosto, kgMalta);
+        }
+        dbHelper.close();
+    }
 
     private float getRendimientoPractico(int idMash) {
         //hago la consulta de la base de datos.
         // me traigo la lista de id de experiencias.
+
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 

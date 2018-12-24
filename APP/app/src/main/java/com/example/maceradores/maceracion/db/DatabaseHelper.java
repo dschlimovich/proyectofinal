@@ -221,6 +221,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 // volumen
                 mash.setVolumen(cursor.getFloat(cursor.getColumnIndexOrThrow("volumen")));
 
+                //densidad objetivo
                 mash.setDensidadObjetivo(cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo")));
 
                 //medicion temperatura

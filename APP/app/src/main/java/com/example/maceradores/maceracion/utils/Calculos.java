@@ -25,7 +25,7 @@ public class Calculos {
     }
 
     public static double rendimientoGeneral( List<Float> densities, double volMosto, double kgMalta){
-        double rendimiento = -1;
+        double rendimiento = 0.7;
         double acumulado = 0;
         for( int i = 0; i < densities.size(); i++){
             double yield = Calculos.calcRendimiento(volMosto, densities.get(i), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
