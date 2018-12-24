@@ -92,12 +92,12 @@ public class ChartGeneralFragment extends Fragment {
 
         //TODO CALL OBJETO mash
                 
-        float volMosto = mash.getVolumen();
-        double kgMalta = mash.kgMalta();
+        //float volMosto = mash.getVolumen();
+        //double kgMalta = mash.kgMalta();
 
         while( cursor.moveToNext()){
-            double yield = Calculos.calcRendimiento(volMosto, cursor.getFloat(0), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
-            yieldList.add( (float) yield);
+            //double yield = Calculos.calcRendimiento(volMosto, cursor.getFloat(0), kgMalta)[2]; //este dos es porque el tercer valor es el rendimiento
+            //yieldList.add( (float) yield);
         }
         cursor.close();
         dbHelper.close();
