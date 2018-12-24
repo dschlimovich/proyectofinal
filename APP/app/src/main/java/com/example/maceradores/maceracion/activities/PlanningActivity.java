@@ -70,7 +70,7 @@ public class PlanningActivity extends AppCompatActivity {
 
     //Data - Fields to create the new mash.
     private Mash mash;
-    private float rendimientoPractico = -1;
+    private float rendimientoPractico;
 
     // LifeCycle functions.
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -265,7 +265,7 @@ public class PlanningActivity extends AppCompatActivity {
 
 
         if(densities.size() < 3){
-            return -1;
+            return 0.7f;
         } else {
             return (float) Calculos.rendimientoGeneral(densities, volMosto, kgMalta);
         }
