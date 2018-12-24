@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
@@ -51,6 +52,7 @@ public class ChartGeneralFragment extends Fragment {
     private LineChart phChart;
     private LineChart EnzymesChart;
     private int idMash;
+    private Button button;
 
     public ChartGeneralFragment() {
         // Required empty public constructor
@@ -62,18 +64,39 @@ public class ChartGeneralFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chart_general, container, false);
+        final View view = inflater.inflate(R.layout.fragment_chart_general, container, false);
         final int idMash = getArguments().getInt("idMash");
         this.idMash=idMash;
-
 
         loadCharts(idMash,view);//Carga las Graficas
         loadBoxPlot(idMash,view,0);//Grafica BoxPlot Temperatura
         loadBoxPlot(idMash,view,1);//Grafica BoxPlot pH
-        setTypeofChart(1,view);
+
+        button = (Button) view.findViewById(R.id.buttonChangeShowGraphics);
+        final int flag = 0;//Arranca en el grafico de temperatura;
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(flag ==0){
+                    setTypeofChart(1,view);//Show Boxplot Chart
+                }else if(flag == 1){
+                    setTypeofChart(0,view);//Show Temperature Chart
+                }
+
+            }
+        });
+
+
+
+//        loadCharts(idMash,view);//Carga las Graficas
+//        loadBoxPlot(idMash,view,0);//Grafica BoxPlot Temperatura
+//        loadBoxPlot(idMash,view,1);//Grafica BoxPlot pH
+//        setTypeofChart(1,view);
 
         return view;
+
     }
+
 
     private void setTypeofChart(int chart,View view) {
         //0 para promedio, 1 para Boxplot
