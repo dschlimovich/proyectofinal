@@ -137,8 +137,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
                 finish();
                 return true;
             case R.id.acceptCurrentExperience:
-                if( acceptExperiment(this.idExperiment, this.idMash))
-                    finish();
+                acceptExperiment(this.idExperiment, this.idMash);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -147,23 +146,20 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     }
 
-    private boolean acceptExperiment(int idExperiment, int idMash) {
+    private void acceptExperiment(int idExperiment, int idMash) {
         // primero debería saber si ya se ejecutaron todas las mediciones planificadas.
         int medicionesRealizadas = amountSensedValue(idExperiment);
         int cadaCuantoMido = intervaloMedicion(idMash);
         int medicionesARealizar = cantMediciones( idMash, cadaCuantoMido);
         //Log.d("Mediciones a realizar: ",String.valueOf(medicionesARealizar));
         //Log.d("Mediciones realizadas: ",String.valueOf(medicionesRealizadas));
-
-
+        
         if( medicionesRealizadas == medicionesARealizar / 2){
             // Mostrar el alertDialog para finalizar la experiencia.
             // Tiene que insertar la densidad obtenida en el experimento.
             showAlertFinishExperience();
-            return true;
         } else {
             Toast.makeText(this, "Aún no se realizaron todas las mediciones correspondientes", Toast.LENGTH_SHORT).show();
-            return false;
         }
 
     }
@@ -378,6 +374,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
                 //necesito insertarle la densidad al experimento.
                 float density = Float.valueOf(editTextDensity.getText().toString());
                 insertDensity(idExperiment, density);
+                finish();
             }
         });
 
