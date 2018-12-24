@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
@@ -48,10 +49,20 @@ import java.util.stream.IntStream;
  */
 public class ChartGeneralFragment extends Fragment {
 
+    private int idMash;
     private LineChart tempChart;
     private LineChart phChart;
     private LineChart EnzymesChart;
-    private int idMash;
+    private Button button;
+    private TextView tv_lChartTemp;
+    private LineChart lChartTemp;
+    private TextView tv_lChartPh;
+    private LineChart lChartPh;
+    private TextView tv_boxplotTemp;
+    private CombinedChart combinedChartTemp;
+    private TextView tv_boxplotPh;
+    private CombinedChart combinedChartPh;
+    private TextView tv_cantExp;
 
     public ChartGeneralFragment() {
         // Required empty public constructor
@@ -63,16 +74,46 @@ public class ChartGeneralFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chart_general, container, false);
+        final View view = inflater.inflate(R.layout.fragment_chart_general, container, false);
         final int idMash = getArguments().getInt("idMash");
         this.idMash=idMash;
 
 
+        this.tv_lChartTemp = (TextView) view.findViewById(R.id.tv_linechartTemp);
+        this.lChartTemp = (LineChart) view.findViewById(R.id.chartTemp);
+        this.tv_lChartPh = (TextView) view.findViewById(R.id.tv_linechartPh);
+        this.lChartPh = (LineChart) view.findViewById(R.id.chartpH);
+        this.tv_boxplotTemp = (TextView) view.findViewById(R.id.tv_boxplotchartTemp);
+        this.combinedChartTemp = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
+        this.tv_boxplotPh = (TextView) view.findViewById(R.id.tv_boxplotchartPh);
+        this.combinedChartPh = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
+        this.tv_cantExp = (TextView) view.findViewById(R.id.tv_cantExp);
+
+        List<Integer> ListidExp = getAllExperiments(idMash); //Ahora la lista viene validada.
+        tv_cantExp.setText("Se han realizado: "+String.valueOf(ListidExp.size())+" Experimentos Válidos");
+
+
+        setTypeofChart(0,view);//Para q arranque en el chart de Temp
         loadCharts(idMash,view);//Carga las Graficas
         loadBoxPlot(idMash,view,0);//Grafica BoxPlot Temperatura
         loadBoxPlot(idMash,view,1);//Grafica BoxPlot pH
-        setTypeofChart(1,view);
 
+        button = (Button) view.findViewById(R.id.buttonChangeShowGraphics);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            int flag = 0;//Arranca en el grafico de temperatura;
+            @Override
+            public void onClick(View v) {
+                if(flag ==0){
+                    setTypeofChart(1,view);//Show Boxplot Chart
+                    flag = 1;
+                }else if(flag == 1){
+                    setTypeofChart(0,view);//Show Temperature Chart
+                    flag = 0;
+                }
+
+            }
+        });
         return view;
     }
 
@@ -91,7 +132,7 @@ public class ChartGeneralFragment extends Fragment {
         List<Float> yieldList = new ArrayList<>();
 
         //TODO CALL OBJETO mash
-                
+
         //float volMosto = mash.getVolumen();
         //double kgMalta = mash.kgMalta();
 
@@ -116,19 +157,9 @@ public class ChartGeneralFragment extends Fragment {
 
     }
     private void getInsumosTeoricos(){
-        
+
     }
     private void setTypeofChart(int chart,View view) {
-        //0 para promedio, 1 para Boxplot
-        TextView tv_lChartTemp = (TextView) view.findViewById(R.id.tv_linechartTemp);
-        LineChart lChartTemp = (LineChart) view.findViewById(R.id.chartTemp);
-        TextView tv_lChartPh = (TextView) view.findViewById(R.id.tv_linechartPh);
-        LineChart lChartPh = (LineChart) view.findViewById(R.id.chartpH);
-        TextView tv_boxplotTemp = (TextView) view.findViewById(R.id.tv_boxplotchartTemp);
-        CombinedChart combinedChartTemp = (CombinedChart) view.findViewById(R.id.candle_stick_chartTemp);
-        TextView tv_boxplotPh = (TextView) view.findViewById(R.id.tv_boxplotchartPh);
-        CombinedChart combinedChartPh = (CombinedChart) view.findViewById(R.id.candle_stick_chartPh);
-
         if(chart ==0) {
             tv_lChartTemp.setVisibility(View.VISIBLE);
             lChartTemp.setVisibility(View.VISIBLE);
@@ -138,6 +169,7 @@ public class ChartGeneralFragment extends Fragment {
             combinedChartTemp.setVisibility(View.INVISIBLE);
             tv_boxplotPh.setVisibility(View.INVISIBLE);
             combinedChartPh.setVisibility(View.INVISIBLE);
+
         }else if (chart == 1){
             tv_lChartTemp.setVisibility(View.INVISIBLE);
             lChartTemp.setVisibility(View.INVISIBLE);
@@ -149,11 +181,19 @@ public class ChartGeneralFragment extends Fragment {
             combinedChartPh.setVisibility(View.VISIBLE);
 
         }
+        tv_lChartTemp.invalidate();
+        lChartTemp.invalidate();
+        tv_lChartPh.invalidate();
+        lChartPh.invalidate();
+        tv_boxplotTemp.invalidate();
+        combinedChartTemp.invalidate();
+        tv_boxplotPh.invalidate();
+        combinedChartPh.invalidate();
     }
 
     private void loadCharts(int idMash,View view){
-        tempChart = (LineChart) view.findViewById(R.id.chartTemp);
-        phChart = (LineChart) view.findViewById(R.id.chartpH);
+        tempChart = lChartTemp;
+        phChart = lChartPh;
         EnzymesChart = (LineChart) view.findViewById(R.id.chartEnzymes);
 
         List<List<Double>> MeanTempAndPhAndEnzymes =  meanSetsTempPhandEnzymesAct(idMash);
