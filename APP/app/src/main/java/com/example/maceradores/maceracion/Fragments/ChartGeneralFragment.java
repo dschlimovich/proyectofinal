@@ -129,6 +129,8 @@ public class ChartGeneralFragment extends Fragment {
         super.onResume();
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         this.mash = dbHelper.getMash(this.idMash);
+        //granos
+        this.mash.setGrains( dbHelper.getGrains(this.idMash) );
         //rendimiento
         float volMosto = this.mash.getVolumen();
         double kgMalta = this.mash.kgMalta();
