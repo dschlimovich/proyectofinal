@@ -15,9 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.adapters.GrainListAdapter;
+import com.example.maceradores.maceracion.adapters.InputCalculation;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.Experiment;
@@ -70,6 +73,10 @@ public class ChartGeneralFragment extends Fragment {
     private TextView tv_boxplotPh;
     private CombinedChart combinedChartPh;
     private TextView tv_cantExp;
+    private ListView lv_TeoCalc;
+    private ListView lv_TeoAdjCalc;
+    private ListView lv_PracCalc;
+    private InputCalculation inputCalcAdapter;
 
     public ChartGeneralFragment() {
         // Required empty public constructor
@@ -122,6 +129,10 @@ public class ChartGeneralFragment extends Fragment {
             }
         });
         return view;
+
+
+
+
     }
 
     @Override
@@ -129,7 +140,8 @@ public class ChartGeneralFragment extends Fragment {
         super.onResume();
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         this.mash = dbHelper.getMash(this.idMash);
-        //rendimiento
+
+        //Rendimiento
         float volMosto = this.mash.getVolumen();
         double kgMalta = this.mash.kgMalta();
         List<Float> densities = dbHelper.getDensities(this.idMash);
@@ -140,11 +152,28 @@ public class ChartGeneralFragment extends Fragment {
             rendimientoPractico = (float) Calculos.rendimientoGeneral(densities, volMosto, kgMalta);
         }
         dbHelper.close();
+
+        // List of Teoric Inputs
+        //*******************************
+        lv_TeoCalc = (ListView) getView().findViewById(R.id.lv_calcTeo);
+        inputCalcAdapter = new InputCalculation(getContext(), mash, R.layout.item_list_grain, this.rendimientoPractico,1);
+        lv_TeoCalc.setAdapter(inputCalcAdapter);
+
+        // List of Teoric Adjusted Inputs
+        //*******************************
+        lv_TeoAdjCalc = (ListView) getView().findViewById(R.id.lv_calcTeoAjust);
+        inputCalcAdapter = new InputCalculation(getContext(), mash, R.layout.item_list_grain, this.rendimientoPractico,2);
+        lv_TeoAdjCalc.setAdapter(inputCalcAdapter);
+
+        // List of Practical Inputs
+        //*******************************
+        lv_PracCalc = (ListView) getView().findViewById(R.id.lv_calcPract);
+        inputCalcAdapter = new InputCalculation(getContext(), mash, R.layout.item_list_grain, this.rendimientoPractico,3);
+        lv_PracCalc.setAdapter(inputCalcAdapter);
+
+
     }
 
-    private void getInsumosTeoricos(){
-
-    }
     private void setTypeofChart(int chart,View view) {
         if(chart ==0) {
             tv_lChartTemp.setVisibility(View.VISIBLE);
