@@ -55,7 +55,7 @@ public class Grain {
         double kgTeorico = getMaltTheoritical( densEspecif,  volLitros, 0.7f);
         double kgPractico = getMaltTheoritical( densEspecif,  volLitros, rendEquipo);
 
-        if(rendEquipo == 0.7){
+        if(rendEquipo == 0.7f){
             return getName() +
                     "\t Cant. Teór.: " + String.valueOf((float)kgTeorico) + "kg ";
         } else{
