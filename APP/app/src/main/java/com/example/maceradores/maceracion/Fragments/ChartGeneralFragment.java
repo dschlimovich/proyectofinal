@@ -97,7 +97,7 @@ public class ChartGeneralFragment extends Fragment {
         this.tv_cantExp = (TextView) view.findViewById(R.id.tv_cantExp);
 
         List<Integer> ListidExp = getAllExperiments(idMash); //Ahora la lista viene validada.
-        tv_cantExp.setText("Se han realizado: "+String.valueOf(ListidExp.size())+" Experimentos Válidos");
+        tv_cantExp.append(String.valueOf(ListidExp.size()));
 
 
         setTypeofChart(0,view);//Para q arranque en el chart de Temp
