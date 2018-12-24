@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre del grano"/>
+    <EditText
+        android:id="@+id/editTextGrainName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Insertar el nombre aquí"/>
+    <TextView
+        android:text="Cantidad (%) a utilizar en la receta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/editTextGrainQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="0.9 = 90%"
+        android:inputType="numberDecimal"/>
+
+    <TextView
+        android:text="Extracto Potencial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/editTextGrainExtractPotential"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="0.8 = 80% PPG azúcar(46)"
+        android:inputType="numberDecimal"/>
+
+</LinearLayout>
