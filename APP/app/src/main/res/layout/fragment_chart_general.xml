@@ -158,6 +158,11 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"/>
+            <ListView
+                android:id="@+id/lv_calcTeo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </ListView>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -167,6 +172,11 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"/>
+            <ListView
+                android:id="@+id/lv_calcTeoAjust"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </ListView>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -176,6 +186,11 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"/>
+            <ListView
+                android:id="@+id/lv_calcPract"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </ListView>
         </LinearLayout>
     </ScrollView>
 
