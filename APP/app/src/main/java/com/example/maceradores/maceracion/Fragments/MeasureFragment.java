@@ -399,7 +399,8 @@ public class MeasureFragment extends Fragment {
         // 0 etapa
         // 1 porcentaje de avance
         tvMeasureStage.setText(" Completado: ");
-        tvMeasureStage.append(String.valueOf(stage[1] * 100));
+        //tvMeasureStage.append(String.valueOf(stage[1] * 100));
+        tvMeasureStage.append( String.format("%.2f", stage[1]*100));
         tvMeasureStage.append("% \t Etapa Actual: ");
         tvMeasureStage.append(String.valueOf((int)stage[0]));
     }
@@ -407,10 +408,10 @@ public class MeasureFragment extends Fragment {
     private void loadSecondMaceratorCardView(float temp, float desvioObtenido, float tempPlanificada, float alerta){
         //android:text="-- "
         tvMeasureSecondMacerator.setText(" Actual: ");
-        tvMeasureSecondMacerator.append(String.valueOf(temp));
+        tvMeasureSecondMacerator.append(String.format("%.2f", temp));
 
         tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
-        tvMeasureSecondMacerator.append(String.valueOf(desvioObtenido));
+        tvMeasureSecondMacerator.append(String.format("%.2f", desvioObtenido));
 
         tvMeasureSecondMacerator.append(" °C \n Planificado: ");
         tvMeasureSecondMacerator.append(String.valueOf(tempPlanificada));
@@ -432,16 +433,16 @@ public class MeasureFragment extends Fragment {
 
     private void loadEnzymeCardView(float alfa, float beta, float glucanasa, float proteasa){
         tvMeasureEnzyme.setText(" Alfa Amilasa: ");
-        tvMeasureEnzyme.append(String.valueOf(alfa));
+        tvMeasureEnzyme.append(String.format("%.2f", alfa));
 
         tvMeasureEnzyme.append("% \t\t Proteasa: ");
-        tvMeasureEnzyme.append(String.valueOf(proteasa));
+        tvMeasureEnzyme.append(String.format("%.2f", proteasa));
 
         tvMeasureEnzyme.append("% \n Beta Amilasa: ");
-        tvMeasureEnzyme.append(String.valueOf(beta));
+        tvMeasureEnzyme.append(String.format("%.2f", beta));
 
         tvMeasureEnzyme.append("% \t\t Beta Glucanasa: ");
-        tvMeasureEnzyme.append(String.valueOf(glucanasa));
+        tvMeasureEnzyme.append(String.format("%.2f", glucanasa));
         tvMeasureEnzyme.append("%");
     }
 
@@ -467,10 +468,10 @@ public class MeasureFragment extends Fragment {
 
     private void loadTemperatureCardView(float tPromedio, float desvioObtenido, float tPlanificada, float desvioPlanificado, float t1, float t2, float t3, float t4) {
         tvMeasureTemp.setText(" Calculado: ");
-        tvMeasureTemp.append(String.valueOf(tPromedio)); //este debería ser el valor promedio calculado.
+        tvMeasureTemp.append(String.format("%.2f", tPromedio)); //este debería ser el valor promedio calculado.
 
         tvMeasureTemp.append(" °C \t\t Desvío: "); //esto es por una cuestión estetica.
-        tvMeasureTemp.append(String.valueOf(desvioObtenido)); //valor desviado respecto a lo planificado.
+        tvMeasureTemp.append(String.format("%.2f", desvioObtenido)); //valor desviado respecto a lo planificado.
 
         tvMeasureTemp.append(" °C \n Planificado: ");
         tvMeasureTemp.append(String.valueOf(tPlanificada)); //Aca iría el valor planificado.
@@ -479,16 +480,16 @@ public class MeasureFragment extends Fragment {
         tvMeasureTemp.append(String.valueOf(desvioPlanificado)); //aca sería valor de desvio
 
         tvMeasureTemp.append(" °C \n Sensor 1: ");
-        tvMeasureTemp.append(String.valueOf(t1)); //valor del primer sensor.
+        tvMeasureTemp.append(String.format("%.2f", t1)); //valor del primer sensor.
 
         tvMeasureTemp.append(" °C \t\t\t Sensor 3: ");
-        tvMeasureTemp.append(String.valueOf(t3));
+        tvMeasureTemp.append(String.format("%.2f", t3));
 
         tvMeasureTemp.append(" °C \n Sensor 2: ");
-        tvMeasureTemp.append(String.valueOf(t2));
+        tvMeasureTemp.append(String.format("%.2f", t2));
 
         tvMeasureTemp.append(" °C \t\t\t Sensor 4: ");
-        tvMeasureTemp.append(String.valueOf(t4));
+        tvMeasureTemp.append(String.format("%.2f", t4));
         tvMeasureTemp.append(" °C");
     }
 

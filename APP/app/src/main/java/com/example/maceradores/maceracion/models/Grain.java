@@ -46,14 +46,14 @@ public class Grain {
     public float getMaltTheoritical(float densEspecif, float volLitros, float rendEquipo){
         // densidad aca es la que planificaste
         double kgTeorico = Calculos.calcCantInsumoTeoRayDaniels(densEspecif, volLitros, this, rendEquipo);
-        kgTeorico = kgTeorico - kgTeorico % 0.01; // despues dos comas decimales lo corto.
+        //kgTeorico = kgTeorico - kgTeorico % 0.01; // despues dos comas decimales lo corto.
 
         return (float) kgTeorico;
     }
 
     public float getMaltPractical(float densEspecif, float volLitros, float rendEquipo){
         double kgPractico = Calculos.calcCantInsumoPrac( volLitros, densEspecif, rendEquipo);
-        kgPractico = kgPractico - kgPractico%0.01;
+        //kgPractico = kgPractico - kgPractico%0.01;
         return (float) kgPractico;
     }
 
@@ -63,11 +63,12 @@ public class Grain {
 
         if(rendEquipo == 0.7f){
             return getName() +
-                    "\t Cant. Teór.: " + String.valueOf((float)kgTeorico) + "kg ";
+                    //"\t Cant. Teór.: " + String.valueOf((float)kgTeorico) + "kg ";
+                    "\t Cant. Teór.: " + String.format("%.2f", (float)kgTeorico) + "kg ";
         } else{
             return getName() +
-                    "\t Cant. Teór.: " + String.valueOf((float)kgTeorico) + "kg " +
-                    " Práct.: " + String.valueOf((float)kgPractico) + "kg";
+                    "\t Cant. Teór.: " + String.format("%.2f", (float)kgTeorico) + "kg " +
+                    " Práct.: " + String.format("%.2f", (float)kgPractico) + "kg";
         }
 
     }
