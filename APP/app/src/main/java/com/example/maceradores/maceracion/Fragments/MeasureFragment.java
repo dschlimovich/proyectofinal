@@ -450,10 +450,10 @@ public class MeasureFragment extends Fragment {
         //android:text=" \n Temperatura de Medición: 25°C"
 
         tvMeasurePh.setText(" Actual: ");
-        tvMeasurePh.append(String.valueOf(ph));
+        tvMeasurePh.append(String.format("%.2f", ph));
 
         tvMeasurePh.append(" \t\t\t\t\t\t Desvío: ");
-        tvMeasurePh.append(String.valueOf(desvioObtenido));
+        tvMeasurePh.append(String.format("%.2f", desvioObtenido));
 
         tvMeasurePh.append(" \n Planificado: ");
         tvMeasurePh.append(String.valueOf(phPlanificado));
@@ -462,7 +462,7 @@ public class MeasureFragment extends Fragment {
         tvMeasurePh.append(String.valueOf(desvioPlanificado));
 
         tvMeasurePh.append(" \n Temperatura de Medición: ");
-        tvMeasurePh.append(String.valueOf(tempPh));
+        tvMeasurePh.append(String.format("%.2f", tempPh));
         tvMeasurePh.append(" °C");
     }
 
