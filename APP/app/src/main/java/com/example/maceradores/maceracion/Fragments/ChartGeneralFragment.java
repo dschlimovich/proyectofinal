@@ -431,7 +431,7 @@ public class ChartGeneralFragment extends Fragment {
                 indexQ1 = column.size()/4;
                 indexQ3 = column.size()*3/4;
             }
-            median = column.get(indexM);
+            median = column.get(indexM-1);
             Q1 = column.get(indexQ1-1);//-1 xq trabajo con size y los indices arrancan en cero
             Q3 = column.get(indexQ3-1);
 

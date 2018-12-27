@@ -19,6 +19,7 @@ contador = int (intervalo_ph / intervalo_temp)
 # el contador va decreciendo hasta que es 0, ahi realiza las mediciones de ph.
 
 for i in range(num_medidas):
+	timeInit = time.time()
 	contador = contador - 1
 	if (contador == 0):
 		datos = primer_funcion.funcion_uno(1)
@@ -28,7 +29,9 @@ for i in range(num_medidas):
 	
 	segunda_funcion.escribe(idExp,datos) #Funcion q escribe en la BD
 	#print('Termino la iteracion: '+str(i))
-	time.sleep(intervalo_temp-40)#Las funciones funcion_uno y Escribir tardan ya 40 seg, desde la APP interv siempre va a ser mayor a 40, entonces, reducimos el tiempo de sleep y podemos calcular mejor la cantidad de mediciones.
+	while( (time.time() - timeInit) < intervalo_temp):
+		time.sleep(1)
+	#time.sleep(intervalo_temp-40)
 print('Devuelvo algo')
 
 
