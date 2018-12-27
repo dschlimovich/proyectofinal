@@ -169,19 +169,19 @@ public class MeasureFragment extends Fragment {
                         Log.d("tempMin", String.valueOf(tempMin));
                         //TODO acomodar para que al tirar temp=-1000 no pase el temp<tempMin NO ESTA ANDANDO IGUAL...JAJAJ SOLO PARA PH
                         if(temp<tempMin && ph<phMin) {
-                            sendNotification("Alerta de desvío de Temperatura y pH ","Temperatura: "+String.valueOf(temp) + " menor al minimo: " + String.valueOf(tempMin)
-                                    + "y pH: "+String.valueOf(ph) + " menor al minimo: " + String.valueOf(phMin));
+                            sendNotification("Alerta de desvío de Temperatura y pH ","Temperatura: "+String.valueOf(temp) + " menor al mínimo: " + String.valueOf(tempMin)
+                                    + "y pH: "+String.valueOf(ph) + " menor al mínimo: " + String.valueOf(phMin));
                         }
                         else if(temp<tempMin){ //Si es menor a la minima o mayor a la maxima
-                            sendNotification("Alerta de desvío de Temperatura ","Temperatura: "+String.valueOf(temp) + " menor al minimo: " + String.valueOf(tempMin));
+                            sendNotification("Alerta de desvío de Temperatura ","Temperatura: "+String.valueOf(temp) + " menor al mínimo: " + String.valueOf(tempMin));
                         }else if(ph<phMin){ //Si es menor a la minima o mayor a la maxima
-                            sendNotification("Alerta de desvío de pH ","pH: "+String.valueOf(ph) + " menor al minimo: " + String.valueOf(phMin));
+                            sendNotification("Alerta de desvío de pH ","pH: "+String.valueOf(ph) + " menor al mínimo: " + String.valueOf(phMin));
                         }
                         if(temp>tempMax){ //Si es menor a la minima o mayor a la maxima
-                            sendNotification("Alerta de desvío de Temperatura ","Temperatura: "+String.valueOf(temp) + "  mayor al maximo: " + String.valueOf(tempMax));
+                            sendNotification("Alerta de desvío de Temperatura ","Temperatura: "+String.valueOf(temp) + "  mayor al máximo: " + String.valueOf(tempMax));
                         }
                         if(ph>phMax){ //Si es menor a la minima o mayor a la maxima
-                            sendNotification("Alerta de desvío de ph ","pH: "+String.valueOf(ph) + " mayor al maximo: " + String.valueOf(phMax));
+                            sendNotification("Alerta de desvío de ph ","pH: "+String.valueOf(ph) + " mayor al máximo: " + String.valueOf(phMax));
                         }
 
                     }
@@ -414,20 +414,20 @@ public class MeasureFragment extends Fragment {
         tvMeasureSecondMacerator.append(String.format("%.2f", desvioObtenido));
 
         tvMeasureSecondMacerator.append(" °C \n Planificado: ");
-        tvMeasureSecondMacerator.append(String.valueOf(tempPlanificada));
+        tvMeasureSecondMacerator.append(String.format("%.2f", tempPlanificada));
 
         tvMeasureSecondMacerator.append(" °C \t\t Alerta: ±");
-        tvMeasureSecondMacerator.append(String.valueOf(alerta));
+        tvMeasureSecondMacerator.append(String.format("%.2f", alerta));
         tvMeasureSecondMacerator.append(" °C");
     }
 
     private void loadEnviromentCardView(float temp, float humidity){
         //android:text="22°C \t Humedad: 67%"
         tvMeasureEnviroment.setText(" Temperatura: ");
-        tvMeasureEnviroment.append(String.valueOf(temp));
+        tvMeasureEnviroment.append(String.format("%.2f", temp));
 
         tvMeasureEnviroment.append(" °C \t Humedad: ");
-        tvMeasureEnviroment.append(String.valueOf(humidity));
+        tvMeasureEnviroment.append(String.format("%.2f", humidity));
         tvMeasureEnviroment.append("%");
     }
 
@@ -456,10 +456,10 @@ public class MeasureFragment extends Fragment {
         tvMeasurePh.append(String.format("%.2f", desvioObtenido));
 
         tvMeasurePh.append(" \n Planificado: ");
-        tvMeasurePh.append(String.valueOf(phPlanificado));
+        tvMeasurePh.append(String.format("%.2f", phPlanificado));
 
         tvMeasurePh.append(" \t\t\t\t Alerta: ± ");
-        tvMeasurePh.append(String.valueOf(desvioPlanificado));
+        tvMeasurePh.append(String.format("%.2f", desvioPlanificado));
 
         tvMeasurePh.append(" \n Temperatura de Medición: ");
         tvMeasurePh.append(String.format("%.2f", tempPh));
@@ -474,10 +474,10 @@ public class MeasureFragment extends Fragment {
         tvMeasureTemp.append(String.format("%.2f", desvioObtenido)); //valor desviado respecto a lo planificado.
 
         tvMeasureTemp.append(" °C \n Planificado: ");
-        tvMeasureTemp.append(String.valueOf(tPlanificada)); //Aca iría el valor planificado.
+        tvMeasureTemp.append(String.format("%.2f", tPlanificada)); //Aca iría el valor planificado.
 
         tvMeasureTemp.append(" °C \t\t\t Alerta: ± ");
-        tvMeasureTemp.append(String.valueOf(desvioPlanificado)); //aca sería valor de desvio
+        tvMeasureTemp.append(String.format("%.2f", desvioPlanificado)); //aca sería valor de desvio
 
         tvMeasureTemp.append(" °C \n Sensor 1: ");
         tvMeasureTemp.append(String.format("%.2f", t1)); //valor del primer sensor.
