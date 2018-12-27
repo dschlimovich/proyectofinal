@@ -65,17 +65,17 @@ public class InputCalculationAdapter extends BaseAdapter {
                 kg = mash.getGrains().get(position).getMaltTheoritical( densidad, volumen, 0.7f);
 
                 detail = "*" + mash.getGrains().get(position).getName() +
-                        " - cantidad: " + kg + " Kg.";
+                        " - cantidad: " + String.format("%.2f", kg) + " Kg.";
                 break;
             case AJUSTADO:
                 kg = mash.getGrains().get(position).getMaltTheoritical( densidad, volumen, rendimientoEquipo);
                 detail = "*" + mash.getGrains().get(position).getName() +
-                        " - cantidad: " + kg + " Kg.";
+                        " - cantidad: " + String.format("%.2f", kg) + " Kg.";
                 break;
             case PRACTICO:
                 kg = mash.getGrains().get(position).getMaltPractical( densidad, volumen, rendimientoEquipo);
                 detail = "*" + mash.getGrains().get(position).getName() +
-                        " - cantidad: " + kg + " Kg.";
+                        " - cantidad: " + String.format("%.2f", kg) + " Kg.";
                 break;
             default:
                 break;
