@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.Chronometer;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -55,6 +56,8 @@ public class MeasureFragment extends Fragment {
     public static int MEDIANA = R.id.radiobuttonMedianaConfigTemp;
     public static int PROMEDIO_EXTREMOS = R.id.radiobuttonExtremosConfigTemp;
 
+    private String tipo;
+
     //---Handler---
     Handler mHandlerThread;
     Thread thread1;
@@ -76,8 +79,16 @@ public class MeasureFragment extends Fragment {
         final int idExp = getArguments().getInt("idExp");
         this.idMash=idMash;
 
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        this.tipo = dbHelper.getType(idMash);
+        dbHelper.close();
+
         this.idExp=idExp;
 
+        //Si no es decocción no me tiene que mostrar la olla secundaria
+        if(! this.tipo.equals("Decocción") ){
+            eliminarCardViewDecoccion(view);
+        }
 
         //chronometer = getView().findViewById(R.id.chronometer);
         chronometer = view.findViewById(R.id.chronometer);
@@ -203,6 +214,13 @@ public class MeasureFragment extends Fragment {
         return view;
     }
 
+    private void eliminarCardViewDecoccion(View view) {
+        // Primero me traigo linearLayout.
+        LinearLayout linearLayout = view.findViewById(R.id.fragmentMeasure);
+        // ahora tengo que eliminar el cardview correspondiente a decoccion-
+        linearLayout.removeView( view.findViewById(R.id.cardViewOllaSecundaria));
+    }
+
     private void loadSharedPreferences() {
         SharedPreferences settings = getActivity().getSharedPreferences("Config Temp", 0);
         if(settings.contains("Sensor 1")){
@@ -326,8 +344,9 @@ public class MeasureFragment extends Fragment {
             this.tvMeasurePh = (TextView) getView().findViewById(R.id.textViewMeasurePh);
             this.tvMeasureEnzyme = (TextView) getView().findViewById(R.id.textViewMeasureEnzyme);
             this.tvMeasureEnviroment = (TextView) getView().findViewById(R.id.textViewMeasureEnviroment);
-            this.tvMeasureSecondMacerator = (TextView) getView().findViewById(R.id.textViewMeasureSecondMaserator);
             this.tvMeasureStage= (TextView) getView().findViewById(R.id.textViewMeasureStage);
+            if(this.tipo.equals("Decocción"))
+                this.tvMeasureSecondMacerator = (TextView) getView().findViewById(R.id.textViewMeasureSecondMaserator);
         } else
             Log.d("Measure Fragment", "No se cargo el layout correctamente");
 
@@ -407,18 +426,21 @@ public class MeasureFragment extends Fragment {
 
     private void loadSecondMaceratorCardView(float temp, float desvioObtenido, float tempPlanificada, float alerta){
         //android:text="-- "
-        tvMeasureSecondMacerator.setText(" Actual: ");
-        tvMeasureSecondMacerator.append(String.format("%.2f", temp));
+        if( this.tipo.equals("Decocción")){
+            tvMeasureSecondMacerator.setText(" Actual: ");
+            tvMeasureSecondMacerator.append(String.format("%.2f", temp));
 
-        tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
-        tvMeasureSecondMacerator.append(String.format("%.2f", desvioObtenido));
+            tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
+            tvMeasureSecondMacerator.append(String.format("%.2f", desvioObtenido));
 
-        tvMeasureSecondMacerator.append(" °C \n Planificado: ");
-        tvMeasureSecondMacerator.append(String.format("%.2f", tempPlanificada));
+            tvMeasureSecondMacerator.append(" °C \n Planificado: ");
+            tvMeasureSecondMacerator.append(String.format("%.2f", tempPlanificada));
 
-        tvMeasureSecondMacerator.append(" °C \t\t Alerta: ±");
-        tvMeasureSecondMacerator.append(String.format("%.2f", alerta));
-        tvMeasureSecondMacerator.append(" °C");
+            tvMeasureSecondMacerator.append(" °C \t\t Alerta: ±");
+            tvMeasureSecondMacerator.append(String.format("%.2f", alerta));
+            tvMeasureSecondMacerator.append(" °C");
+        }
+
     }
 
     private void loadEnviromentCardView(float temp, float humidity){

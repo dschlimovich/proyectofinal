@@ -166,6 +166,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return resultados;
     } //end getAllMash
 
+    public String getType(int idMash){
+        String type = "";
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] columns = {"tipo"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+
+        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            type = cursor.getString(0); //como tengo una sola columna, devuelvo la primera nomas.
+        }
+        cursor.close();
+        db.close();
+
+        return type;
+    }
+
     public int deleteMash(int idMash){
         int cant = 0;
 
