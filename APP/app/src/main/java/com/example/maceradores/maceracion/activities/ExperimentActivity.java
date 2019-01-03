@@ -116,16 +116,21 @@ public class ExperimentActivity extends AppCompatActivity {
                     deleteMash();
                 return true;
             case R.id.seePlanification:
-                // we should to show the planning activity with the values chargued.
+                // we should to show the planning activity with the values charged.
                 // but if the are one or more experiments done, i shouldn't change the plannification.
                 Intent intent = new Intent(ExperimentActivity.this, PlanningActivity.class);
                 intent.putExtra("idMash", idMash);
                 startActivity(intent);
                 return true;
             case R.id.staticsAllExperiments:
-                Intent intent2 = new Intent(ExperimentActivity.this, MashExpHistoryActivity.class);
-                intent2.putExtra("idMash", idMash);
-                startActivity(intent2);
+                if(experimentList.isEmpty()){
+                    Toast.makeText(this, "No existen Experimentos de Maceración para mostrar", Toast.LENGTH_LONG).show();
+                    return  true;
+                }else{
+                    Intent intent2 = new Intent(ExperimentActivity.this, MashExpHistoryActivity.class);
+                    intent2.putExtra("idMash", idMash);
+                    startActivity(intent2);
+                }
 
             default:
                 return super.onOptionsItemSelected(item);

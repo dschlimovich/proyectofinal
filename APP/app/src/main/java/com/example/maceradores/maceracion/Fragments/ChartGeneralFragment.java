@@ -429,10 +429,15 @@ public class ChartGeneralFragment extends Fragment {
             else{
                 indexM = column.size()/2;
                 indexQ1 = column.size()/4;
-                indexQ3 = column.size()*3/4;
+                indexQ3 = (column.size()*3)/4;
             }
             median = column.get(indexM-1);
-            Q1 = column.get(indexQ1-1);//-1 xq trabajo con size y los indices arrancan en cero
+            if(indexQ1==0){
+                Q1 = column.get(indexQ1);//Cuando hay dos valores, el indexQ1 trae 0, si le resto 1 queda en -1
+            }else{
+                Q1 = column.get(indexQ1-1);//-1 xq trabajo con size y los indices arrancan en cero
+            }
+
             Q3 = column.get(indexQ3-1);
 
             Log.d("mediana",String.valueOf(median));
