@@ -429,21 +429,23 @@ public class MeasureFragment extends Fragment {
         //android:text="-- "
         if( this.tipo.equals("Decocción")){
             tvMeasureSecondMacerator.setText(" Actual: ");
-            tvMeasureSecondMacerator.append(String.format("%.2f", temp));
+            tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
+            tvMeasureSecondMacerator.append(" °C \n Planificado: ");
+            tvMeasureSecondMacerator.append(" °C \t\t Alerta: ±");
+
             if(temp == -1000){
                 tvMeasureSecondMacerator.append("ERROR");
+                tvMeasureSecondMacerator.append("ERROR");
+                tvMeasureSecondMacerator.append(String.format("%.2f", tempPlanificada));
+                tvMeasureSecondMacerator.append("ERROR");
                 Toast.makeText(getContext(), "Sensor de temp. de Decocción desconectado", Toast.LENGTH_SHORT).show();
+            } else{
+                tvMeasureSecondMacerator.append(String.format("%.2f", temp));
+                tvMeasureSecondMacerator.append(String.format("%.2f", desvioObtenido));
+                tvMeasureSecondMacerator.append(String.format("%.2f", tempPlanificada));
+                tvMeasureSecondMacerator.append(String.format("%.2f", alerta));
             }
 
-
-            tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
-            tvMeasureSecondMacerator.append(String.format("%.2f", desvioObtenido));
-
-            tvMeasureSecondMacerator.append(" °C \n Planificado: ");
-            tvMeasureSecondMacerator.append(String.format("%.2f", tempPlanificada));
-
-            tvMeasureSecondMacerator.append(" °C \t\t Alerta: ±");
-            tvMeasureSecondMacerator.append(String.format("%.2f", alerta));
             tvMeasureSecondMacerator.append(" °C");
         }
 
@@ -453,6 +455,7 @@ public class MeasureFragment extends Fragment {
         //android:text="22°C \t Humedad: 67%"
         tvMeasureEnviroment.setText(" Temperatura: ");
         tvMeasureEnviroment.append(String.format("%.2f", temp));
+
 
         tvMeasureEnviroment.append(" °C \t Humedad: ");
         tvMeasureEnviroment.append(String.format("%.2f", humidity));
