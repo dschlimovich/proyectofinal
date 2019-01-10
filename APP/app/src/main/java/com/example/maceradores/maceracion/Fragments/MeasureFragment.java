@@ -478,10 +478,10 @@ public class MeasureFragment extends Fragment {
     private void loadEnzymeCardView(float alfa, float beta, float glucanasa, float proteasa){
         String alfa_s, beta_s, glucanasa_s, proteasa_s;
         if(alfa == -1 ){
-            alfa_s = "ERROR";
-            beta_s = "ERROR";
-            glucanasa_s = "ERROR";
-            proteasa_s = "ERROR";
+            alfa_s = "----";
+            beta_s = "----";
+            glucanasa_s = "----";
+            proteasa_s = "----";
             Toast.makeText(getContext(), "Error en cálculo de enzimas", Toast.LENGTH_SHORT).show();
         } else {
             alfa_s = String.format("%.2f", alfa);
