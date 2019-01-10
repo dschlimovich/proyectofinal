@@ -175,18 +175,30 @@ public class SensedValues {
 
     public static float alphaAmylase (float t, float ph){
         //return enzymeParabolicActivation(t, 70, 75, ph, 5.3f, 5.7f);
+        if(t == -1000 || ph < 0){
+            return -1;
+        }
         return enzymeNormalActivation(t, 70, 75, ph, 5.3f, 5.7f);
     }
 
     public static float betaAmylase( float t, float ph){
+        if(t == -1000 || ph < 0){
+            return -1;
+        }
         return enzymeNormalActivation(t, 62, 65, ph, 5f, 5.5f);
     }
 
     public static float betaGlucanase(float t, float ph){
+        if(t == -1000 || ph < 0){
+            return -1;
+        }
         return enzymeNormalActivation(t, 35, 45, ph, 4.5f, 5.5f);
     }
 
     public static float protease (float t, float ph){
+        if(t == -1000 || ph < 0){
+            return -1;
+        }
         return enzymeNormalActivation(t, 45, 55, ph, 4.6f, 5.3f);
     }
 }
