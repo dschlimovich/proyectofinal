@@ -506,21 +506,40 @@ public class MeasureFragment extends Fragment {
 
     private void loadPhCardView(float ph, float desvioObtenido, float phPlanificado, float desvioPlanificado, float tempPh) {
         //android:text=" \n Temperatura de Medición: 25°C"
+        String ph_s, desvioObtenido_s, phPlanificado_s, desvioPlanificado_s, tempPh_s;
+        if(ph < 0){
+            ph_s = "ERROR";
+            desvioObtenido_s = "ERROR";
+            Toast.makeText(getContext(), "Error medición pH", Toast.LENGTH_SHORT).show();
+        } else{
+            ph_s = String.format("%.2f", ph);
+            desvioObtenido_s = String.format("%.2f", desvioObtenido);
+        }
+
+        phPlanificado_s = String.format("%.2f", phPlanificado);
+        desvioPlanificado_s = String.format("%.2f", desvioPlanificado);
+
+        if(tempPh == -1000){
+            tempPh_s = "ERROR";
+            Toast.makeText(getContext(), "Error medición temperatura sensor pH", Toast.LENGTH_SHORT).show();
+        } else {
+            tempPh_s = String.format("%.2f", tempPh);
+        }
 
         tvMeasurePh.setText(" Actual: ");
-        tvMeasurePh.append(String.format("%.2f", ph));
+        tvMeasurePh.append(ph_s);
 
         tvMeasurePh.append(" \t\t\t\t\t\t Desvío: ");
-        tvMeasurePh.append(String.format("%.2f", desvioObtenido));
+        tvMeasurePh.append(desvioObtenido_s);
 
         tvMeasurePh.append(" \n Planificado: ");
-        tvMeasurePh.append(String.format("%.2f", phPlanificado));
+        tvMeasurePh.append(phPlanificado_s );
 
         tvMeasurePh.append(" \t\t\t\t Alerta: ± ");
-        tvMeasurePh.append(String.format("%.2f", desvioPlanificado));
+        tvMeasurePh.append(desvioPlanificado_s );
 
         tvMeasurePh.append(" \n Temperatura de Medición: ");
-        tvMeasurePh.append(String.format("%.2f", tempPh));
+        tvMeasurePh.append(tempPh_s );
         tvMeasurePh.append(" °C");
     }
 
