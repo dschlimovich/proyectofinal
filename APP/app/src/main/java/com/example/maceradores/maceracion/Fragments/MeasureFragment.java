@@ -23,6 +23,7 @@ import android.widget.Chronometer;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
@@ -429,6 +430,11 @@ public class MeasureFragment extends Fragment {
         if( this.tipo.equals("Decocción")){
             tvMeasureSecondMacerator.setText(" Actual: ");
             tvMeasureSecondMacerator.append(String.format("%.2f", temp));
+            if(temp == -1000){
+                tvMeasureSecondMacerator.append("ERROR");
+                Toast.makeText(getContext(), "Sensor de temp. de Decocción desconectado", Toast.LENGTH_SHORT).show();
+            }
+
 
             tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
             tvMeasureSecondMacerator.append(String.format("%.2f", desvioObtenido));
