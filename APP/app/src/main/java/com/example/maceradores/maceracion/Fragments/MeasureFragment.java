@@ -435,6 +435,7 @@ public class MeasureFragment extends Fragment {
             if(temp == -1000){
                 temp_s = "ERROR";
                 desvioObtenido_s = "ERROR";
+                Toast.makeText(getContext(), "Error en el sensor de temp. de decocción", Toast.LENGTH_SHORT).show();
             }
 
             tvMeasureSecondMacerator.setText(" Actual: ");
@@ -455,12 +456,22 @@ public class MeasureFragment extends Fragment {
 
     private void loadEnviromentCardView(float temp, float humidity){
         //android:text="22°C \t Humedad: 67%"
+        String temp_s, humidity_s;
+        if(temp == -10000){
+            temp_s = "ERROR";
+            humidity_s = "ERROR";
+            Toast.makeText(getContext(), "Error sensor ambiental", Toast.LENGTH_SHORT).show();
+        } else{
+            temp_s = String.format("%.2f", temp);
+            humidity_s = String.format("%.2f", humidity);
+        }
+
         tvMeasureEnviroment.setText(" Temperatura: ");
-        tvMeasureEnviroment.append(String.format("%.2f", temp));
+        tvMeasureEnviroment.append(temp_s);
 
 
         tvMeasureEnviroment.append(" °C \t Humedad: ");
-        tvMeasureEnviroment.append(String.format("%.2f", humidity));
+        tvMeasureEnviroment.append(humidity_s);
         tvMeasureEnviroment.append("%");
     }
 
