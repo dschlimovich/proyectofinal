@@ -5,6 +5,7 @@ import com.example.maceradores.maceracion.models.Grain;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -156,24 +157,23 @@ public class Calculos {
 
     public static float mediana(List<Float> values){
         // tengo que ordenar la lista de menor a mayor
-            Float[] v = (Float[]) values.toArray();
-            Arrays.sort(v);
+        Collections.sort(values);
 
-            int middle = values.size()/2;
+
+            int middle = values.size()/2-1;
 
             if (values.size() % 2 == 1) {
-                return v[middle];
+                return values.get(middle);
             } else {
-                return (v[middle-1] + v[middle]) / 2.0f;
+                return (values.get(middle-1) + values.get(middle)) / 2.0f;
             }
 
     }
 
     public static float promedio_extremos(List<Float> values){
-        Float[] v = (Float[]) values.toArray();
-        Arrays.sort(v);
+        Collections.sort(values);
 
-        return (v[values.size()-1] + v[0]) / 2.0f;
+        return (values.get(values.size()-1) + values.get(0)) / 2.0f;
     }
     // ---------------------  MATEMATICAS --------------------------------------------
 
