@@ -476,17 +476,31 @@ public class MeasureFragment extends Fragment {
     }
 
     private void loadEnzymeCardView(float alfa, float beta, float glucanasa, float proteasa){
+        String alfa_s, beta_s, glucanasa_s, proteasa_s;
+        if(alfa == -1 ){
+            alfa_s = "ERROR";
+            beta_s = "ERROR";
+            glucanasa_s = "ERROR";
+            proteasa_s = "ERROR";
+            Toast.makeText(getContext(), "Error en cálculo de enzimas", Toast.LENGTH_SHORT).show();
+        } else {
+            alfa_s = String.format("%.2f", alfa);
+            beta_s = String.format("%.2f", beta);
+            glucanasa_s = String.format("%.2f", glucanasa);
+            proteasa_s = String.format("%.2f", proteasa);
+        }
+
         tvMeasureEnzyme.setText(" Alfa Amilasa: ");
-        tvMeasureEnzyme.append(String.format("%.2f", alfa));
+        tvMeasureEnzyme.append(alfa_s);
 
         tvMeasureEnzyme.append("% \t\t Proteasa: ");
-        tvMeasureEnzyme.append(String.format("%.2f", proteasa));
+        tvMeasureEnzyme.append(proteasa_s);
 
         tvMeasureEnzyme.append("% \n Beta Amilasa: ");
-        tvMeasureEnzyme.append(String.format("%.2f", beta));
+        tvMeasureEnzyme.append(beta_s);
 
         tvMeasureEnzyme.append("% \t\t Beta Glucanasa: ");
-        tvMeasureEnzyme.append(String.format("%.2f", glucanasa));
+        tvMeasureEnzyme.append(glucanasa_s);
         tvMeasureEnzyme.append("%");
     }
 
