@@ -544,29 +544,72 @@ public class MeasureFragment extends Fragment {
     }
 
     private void loadTemperatureCardView(float tPromedio, float desvioObtenido, float tPlanificada, float desvioPlanificado, float t1, float t2, float t3, float t4) {
+        String tPromedio_s, desvioObtenido_s, tPlanificada_s, desvioPlanificado_s, t1_s, t2_s, t3_s, t4_s;
+
+        if(tPromedio == -1000){
+            tPromedio_s = "ERROR";
+            desvioObtenido_s = "ERROR";
+            Toast.makeText(getContext(), "Error general en medición de temperatura", Toast.LENGTH_SHORT).show();
+        } else {
+            tPromedio_s = String.format("%.2f", tPromedio);
+            desvioObtenido_s = String.format("%.2f", desvioObtenido);
+        }
+
+        tPlanificada_s = String.format("%.2f", tPlanificada);
+        desvioPlanificado_s = String.format("%.2f", desvioPlanificado);
+
+        if(t1 == -1000){
+            t1_s = "ERROR";
+            Toast.makeText(getContext(), "Error en el sensor n°1 de temperatura", Toast.LENGTH_SHORT).show();
+        } else {
+            t1_s = String.format("%.2f", t1);
+        }
+
+        if(t2 == -1000){
+            t2_s = "ERROR";
+            Toast.makeText(getContext(), "Error en el sensor n°2 de temperatura", Toast.LENGTH_SHORT).show();
+        } else {
+            t2_s = String.format("%.2f", t2);
+        }
+
+        if(t3 == -1000){
+            t3_s = "ERROR";
+            Toast.makeText(getContext(), "Error en el sensor n°3 de temperatura", Toast.LENGTH_SHORT).show();
+        } else {
+            t3_s = String.format("%.2f", t3);
+        }
+
+        if(t4 == -1000){
+            t4_s = "ERROR";
+            Toast.makeText(getContext(), "Error en el sensor n°4 de temperatura", Toast.LENGTH_SHORT).show();
+        } else {
+            t4_s = String.format("%.2f", t4);
+        }
+
+
         tvMeasureTemp.setText(" Calculado: ");
-        tvMeasureTemp.append(String.format("%.2f", tPromedio)); //este debería ser el valor promedio calculado.
+        tvMeasureTemp.append(tPromedio_s); //este debería ser el valor promedio calculado.
 
         tvMeasureTemp.append(" °C \t\t Desvío: "); //esto es por una cuestión estetica.
-        tvMeasureTemp.append(String.format("%.2f", desvioObtenido)); //valor desviado respecto a lo planificado.
+        tvMeasureTemp.append(desvioObtenido_s ); //valor desviado respecto a lo planificado.
 
         tvMeasureTemp.append(" °C \n Planificado: ");
-        tvMeasureTemp.append(String.format("%.2f", tPlanificada)); //Aca iría el valor planificado.
+        tvMeasureTemp.append(tPlanificada_s ); //Aca iría el valor planificado.
 
         tvMeasureTemp.append(" °C \t\t\t Alerta: ± ");
-        tvMeasureTemp.append(String.format("%.2f", desvioPlanificado)); //aca sería valor de desvio
+        tvMeasureTemp.append(desvioPlanificado_s); //aca sería valor de desvio
 
         tvMeasureTemp.append(" °C \n Sensor 1: ");
-        tvMeasureTemp.append(String.format("%.2f", t1)); //valor del primer sensor.
+        tvMeasureTemp.append(t1_s); //valor del primer sensor.
 
         tvMeasureTemp.append(" °C \t\t\t Sensor 3: ");
-        tvMeasureTemp.append(String.format("%.2f", t3));
+        tvMeasureTemp.append(t3_s);
 
         tvMeasureTemp.append(" °C \n Sensor 2: ");
-        tvMeasureTemp.append(String.format("%.2f", t2));
+        tvMeasureTemp.append(t2_s);
 
         tvMeasureTemp.append(" °C \t\t\t Sensor 4: ");
-        tvMeasureTemp.append(String.format("%.2f", t4));
+        tvMeasureTemp.append(t4_s);
         tvMeasureTemp.append(" °C");
     }
 
