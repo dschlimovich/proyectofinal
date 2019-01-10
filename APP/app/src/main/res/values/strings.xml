@@ -5,6 +5,13 @@
         <item>Escalonada</item>
         <item>Decocción</item>
     </string-array>
+    <string-array name="chartTypes">
+        <item>Medición PROMEDIO</item>
+        <item>Medición sensor UNO</item>
+        <item>Medición sensor DOS</item>
+        <item>Medición sensor TRES</item>
+        <item>Medición sensor CUATRO</item>
+    </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
