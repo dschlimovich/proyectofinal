@@ -428,24 +428,26 @@ public class MeasureFragment extends Fragment {
     private void loadSecondMaceratorCardView(float temp, float desvioObtenido, float tempPlanificada, float alerta){
         //android:text="-- "
         if( this.tipo.equals("Decocción")){
-            tvMeasureSecondMacerator.setText(" Actual: ");
-            tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
-            tvMeasureSecondMacerator.append(" °C \n Planificado: ");
-            tvMeasureSecondMacerator.append(" °C \t\t Alerta: ±");
-
+            String temp_s = String.format("%.2f", temp);
+            String desvioObtenido_s = String.format("%.2f", desvioObtenido);
+            String tempPlanificada_s = String.format("%.2f", tempPlanificada);
+            String alerta_s = String.format("%.2f", alerta);
             if(temp == -1000){
-                tvMeasureSecondMacerator.append("ERROR");
-                tvMeasureSecondMacerator.append("ERROR");
-                tvMeasureSecondMacerator.append(String.format("%.2f", tempPlanificada));
-                tvMeasureSecondMacerator.append("ERROR");
-                Toast.makeText(getContext(), "Sensor de temp. de Decocción desconectado", Toast.LENGTH_SHORT).show();
-            } else{
-                tvMeasureSecondMacerator.append(String.format("%.2f", temp));
-                tvMeasureSecondMacerator.append(String.format("%.2f", desvioObtenido));
-                tvMeasureSecondMacerator.append(String.format("%.2f", tempPlanificada));
-                tvMeasureSecondMacerator.append(String.format("%.2f", alerta));
+                temp_s = "ERROR";
+                desvioObtenido_s = "ERROR";
             }
 
+            tvMeasureSecondMacerator.setText(" Actual: ");
+            tvMeasureSecondMacerator.append(temp_s);
+
+            tvMeasureSecondMacerator.append(" °C \t\t\t\t\t Desvío: ");
+            tvMeasureSecondMacerator.append(desvioObtenido_s);
+
+            tvMeasureSecondMacerator.append(" °C \n Planificado: ");
+            tvMeasureSecondMacerator.append(tempPlanificada_s);
+
+            tvMeasureSecondMacerator.append(" °C \t\t Alerta: ±");
+            tvMeasureSecondMacerator.append(alerta_s);
             tvMeasureSecondMacerator.append(" °C");
         }
 
