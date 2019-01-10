@@ -12,6 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.FragmentChartAdapter;
@@ -36,6 +40,13 @@ public class ChartExperimentsFragment extends Fragment {
     private int idMash;
     private float intervaloMedicion;
     private List<String> listDates;
+    private List <Integer> listExp;
+    private Spinner spinner;
+    ArrayAdapter<CharSequence> adapterSpinner;
+    private int typeChart=0;
+    private TextView textViewTypeChart;
+    private boolean flagFirstSpinner = true;
+
 
     public ChartExperimentsFragment() {
         // Required empty public constructor
@@ -49,26 +60,59 @@ public class ChartExperimentsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chart_experiments, container, false);
         final int idMash = getArguments().getInt("idMash");
         this.idMash=idMash;
+        //--------SPINNER--------------------
+        spinner = (Spinner) view.findViewById(R.id.spinnerChartChanger);
 
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        adapterSpinner = ArrayAdapter.createFromResource(getContext(),
+                R.array.chartTypes, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapterSpinner);
 
-        List <Integer> listExp = getAllExperiments(this.idMash);
-        Log.d("listExp size",String.valueOf(listExp.size()));
+        textViewTypeChart = (TextView) view.findViewById(R.id.tv_typeChart);
 
-        //Cargo la Lista de listas de SensedValues ya promediados
-        for(int i =0; i<listExp.size();i++){
-            this.listSensedValues.add(getSensedValues(listExp.get(i)));
-            Log.d("listSensedValues size",String.valueOf(listSensedValues.size()));
-        }
+        //**LISTENER
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(flagFirstSpinner){
+                    flagFirstSpinner = false;
+                    textViewTypeChart.setText("Comparación temperaturas promedio");
+                }
+                else{
+                    switch (position) {
+                        case 0: textViewTypeChart.setText("Comparación temperaturas promedio");
+                        break;
+                        case 1: textViewTypeChart.setText("Comparación temperaturas Sensor 1");
+                            break;
+                        case 2: textViewTypeChart.setText("Comparación temperaturas Sensor 2");
+                            break;
+                        case 3: textViewTypeChart.setText("Comparación temperaturas Sensor 3");
+                            break;
+                        case 4: textViewTypeChart.setText("Comparación temperaturas Sensor 4");
+                            break;
+                            default: textViewTypeChart.setText("xxx");
+                    }
+                    loadAdapter(position);
+                    recyclerView.setAdapter(rvAdapter);//Al cambiar el Adaptador, cambian las graficas del recyclerView
+                }
+            }
 
-        Log.d("listSensedValues size",String.valueOf(listSensedValues.size()));
-        this.listDates = getListDates(idMash);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
 
+        //-----------------------------------
+
+        this.listExp = getAllExperiments(this.idMash);
+        loadAdapter(0);
+        //-----------------------
         // Inflate the layout for this fragment
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewChartExperiments);
-        this.intervaloMedicion= intervaloMedicion(idMash)/60;
-        rvAdapter =  new FragmentChartAdapter(this.listSensedValues,this.listDates,R.layout.item_list_chart_experiments,this.intervaloMedicion);
-
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setAdapter(rvAdapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -104,7 +148,12 @@ public class ChartExperimentsFragment extends Fragment {
         return resultados;
     } //end getAllExperiments
 
-    private List<Float> getSensedValues(int idExp){
+    private List<Float> getSensedValues(int idExp,int tipoTemp){
+        //tipotemp = 0 -> Promedio
+        //tipotemp = 1 -> Sensor1
+        //tipotemp = 2 -> Sensor2
+        //tipotemp = 3 -> Sensor3
+        //tipotemp = 4 -> Sensor4
 
         List<Float> listSensedValues = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
@@ -120,10 +169,21 @@ public class ChartExperimentsFragment extends Fragment {
             float temp3 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp3"));
             float temp4 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp4"));
 
-            Float TempMean= validatedTempMean(temp1,temp2,temp3,temp4);
-//            Log.d("TempMean",String.valueOf(TempMean));
+            Float Temp = 0f;
+            if(tipoTemp == 0){
+                Temp= validatedTempMean(temp1,temp2,temp3,temp4);
+            }
+            else if(tipoTemp == 1){
+                Temp = temp1;
+            }else if(tipoTemp == 2){
+                Temp = temp2;
+            }else if(tipoTemp == 3){
+                Temp = temp3;
+            }else if(tipoTemp == 4){
+                Temp = temp4;
+            }
 
-            listSensedValues.add(TempMean);
+            listSensedValues.add(Temp);
         }
         cursor.close();
         db.close();
@@ -198,5 +258,24 @@ public class ChartExperimentsFragment extends Fragment {
         dbHelper.close();
         return resultados;
     }
+
+    private void loadAdapter(int tipoChart){
+
+        this.listSensedValues.clear();
+        //Cargo la Lista de listas de SensedValues ya promediados
+        for(int i =0; i<listExp.size();i++){
+            this.listSensedValues.add(getSensedValues(listExp.get(i),tipoChart));
+            Log.d("listSensedValues size",String.valueOf(listSensedValues.size()));
+        }
+
+        Log.d("listSensedValues size",String.valueOf(listSensedValues.size()));
+        this.listDates = getListDates(idMash);
+
+        this.intervaloMedicion= intervaloMedicion(idMash)/60;
+        rvAdapter =  new FragmentChartAdapter(this.listSensedValues,this.listDates,R.layout.item_list_chart_experiments,this.intervaloMedicion);
+
+    }
+
+
 
 }
