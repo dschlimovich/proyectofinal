@@ -600,6 +600,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cant;
     }
 
+    public int getIdMash(int idExp){
+        int idMash = -1;
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            String[] columns = new String[]{"maceracion"};
+            Cursor cursor = db.query("Experimento", columns, "id = " + idExp, null, null, null, null);
+            if(cursor.moveToFirst()){
+                idMash = cursor.getInt(0);
+            }
+            cursor.close();
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+        return idMash;
+    }
+
     //------------------EXPERIMENT-----------------------
 
     //------------------SENSED VALUES-----------------------

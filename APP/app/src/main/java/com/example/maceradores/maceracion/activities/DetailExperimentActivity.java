@@ -20,6 +20,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
     private String date;
     private float density;
     private List<SensedValues> sensedValuesList;
+    private int intervaloTemp;
 
     //Widgets
     private LineChart tempChart;
