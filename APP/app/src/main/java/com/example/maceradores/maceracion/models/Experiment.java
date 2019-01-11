@@ -7,11 +7,20 @@ public class Experiment {
     private int id;
     private String date; //todo review formate date
     private List<SensedValues> sensedValuesList;
+    private float density;
 
     public Experiment(int id, String date) {
         this.id = id;
         this.date = date;
         this.sensedValuesList = new ArrayList<SensedValues>();
+    }
+
+    public float getDensity() {
+        return density;
+    }
+
+    public void setDensity(float density) {
+        this.density = density;
     }
 
     public int getId() {

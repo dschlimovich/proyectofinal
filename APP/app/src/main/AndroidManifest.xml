@@ -27,7 +27,8 @@
         <activity
             android:name=".activities.MashExpHistoryActivity"
             android:label="@string/title_activity_mash_exp_history"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.DetailExperimentActivity"></activity>
     </application>
 
 </manifest>
