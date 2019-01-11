@@ -82,7 +82,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
         //Carga de graficas
         loadCharts();
 
-        tv_DE_rendimiento.setText(currentExperiment.getDate());
+        tv_DE_rendimiento.setText("El rendimiento obtenido fue: "+currentExperiment.getDate());
         tv_DE_density.setText("Densidad obtenida: " + String.valueOf(currentExperiment.getDensity()));
 
 
