@@ -1,8 +1,10 @@
 package com.example.maceradores.maceracion.activities;
 
+import android.arch.persistence.room.Database;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +12,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.models.Experiment;
+import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.YAxis;
@@ -23,10 +28,11 @@ import java.util.List;
 public class DetailExperimentActivity extends AppCompatActivity {
 
     //Data
-    private int idExp;
-    private String date;
-    private float density;
-    private List<SensedValues> sensedValuesList = new ArrayList<>();
+    private Experiment currentExperiment;
+    //private int idExp;
+    //private String date;
+    //private float density;
+    private List<SensedValues> sensedValuesList;
     private int intervalo;
     private List<Float> tempProm =new ArrayList<>();
     private List<List<Float>> enzymesActivation = new ArrayList<>();
@@ -49,16 +55,20 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent.hasExtra("idExp")){
-            this.idExp = intent.getIntExtra("idExp", -1);
 
+            int idExp = intent.getIntExtra("idExp", -1);
+            this.currentExperiment = getExperiment(idExp);
+            sensedValuesList = getSensedValuesList(idExp);
+            intervalo = getIntervaloTemp(idExp);
         }
         else{
             startActivity(new Intent(DetailExperimentActivity.this, ExperimentActivity.class));
             finish();
         }
 
-        //TODO TRAER LA FECHA ANTES DE SETAR EL TITLE
-        setTitle(date);//Seteo el nombre en el ActionBar
+
+
+        setTitle(currentExperiment.getDate());//Seteo el nombre en el ActionBar
 
 
         this.tv_DE_date = (TextView)  findViewById(R.id.tv_DE_date);
@@ -82,7 +92,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
         //Carga de graficas
         loadCharts();
 
-        
+
     }
 
     private void loadCharts(){
@@ -360,4 +370,29 @@ public class DetailExperimentActivity extends AppCompatActivity {
                     sensedValuesList.get(i).getTemp4()));
         }
     }
+
+    private Experiment getExperiment(int idExp) {
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        Experiment experiment = dbHelper.getExperiment(idExp);
+        dbHelper.close();
+        return experiment;
+    }
+
+    private List<SensedValues> getSensedValuesList(int idExp){
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        List<SensedValues> list = dbHelper.getAllSensedValues(idExp);
+        dbHelper.close();
+        return list;
+    }
+
+    private int getIntervaloTemp(int idExp){
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        int idMash = dbHelper.getIdMash(idExp);
+        int intervalo = dbHelper.getIntervaloMedicionTemp(idMash);
+        dbHelper.close();
+        return intervalo;
+    }
+
+
+
 }

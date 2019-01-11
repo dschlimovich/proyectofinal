@@ -600,9 +600,93 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cant;
     }
 
+    public Experiment getExperiment(int idExp){
+        Experiment experiment = new Experiment();
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.rawQuery("SELECT E.id AS 'id', strftime('%d/%m/%Y %H:%M', E.fecha) AS 'fecha', E.densidad AS 'densidad' FROM Experimento AS E WHERE id = " + idExp, null);
+            if(cursor.moveToFirst()){
+                experiment.setId( idExp );
+                experiment.setDate( cursor.getString( cursor.getColumnIndexOrThrow("fecha")));
+                experiment.setDensity(cursor.getFloat( cursor.getColumnIndexOrThrow("densidad")));
+            }
+            cursor.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return experiment;
+    }
+
+    public int getIdMash(int idExp){
+        int idMash = -1;
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            String[] columns = new String[]{"maceracion"};
+            Cursor cursor = db.query("Experimento", columns, "id = " + idExp, null, null, null, null);
+            if(cursor.moveToFirst()){
+                idMash = cursor.getInt(0);
+            }
+            cursor.close();
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+        return idMash;
+    }
+
+    public float getDensity(int idExp){
+        float density = -1;
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.query("Experimento", new String[]{"densidad"}, "id = " + idExp, null, null, null, null);
+            if(cursor.moveToFirst()){
+                density = cursor.getFloat(0);
+            }
+            cursor.close();
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+        return density;
+    }
+
     //------------------EXPERIMENT-----------------------
 
     //------------------SENSED VALUES-----------------------
+    public List<SensedValues> getAllSensedValues(int idExp){
+        List<SensedValues> listSensedValues = new ArrayList<>();
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.query("SensedValues", null, "id_exp = " + idExp, null, null, null, null);
+            while(cursor.moveToNext()){
+                //if(cursor.moveToFirst()){
+                int id = cursor.getInt( cursor.getColumnIndexOrThrow("id"));
+                int idRaspi = cursor.getInt( cursor.getColumnIndexOrThrow("idRaspi"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("fechayhora"));
+                float temp1 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp1"));
+                float temp2 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp2"));
+                float temp3 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp3"));
+                float temp4 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp4"));
+                float temp5 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp5"));
+                float tempPh = cursor.getFloat(cursor.getColumnIndexOrThrow("tempPh"));
+                float tempAmb = cursor.getFloat(cursor.getColumnIndexOrThrow("tempAmb"));
+                float humidity = cursor.getFloat(cursor.getColumnIndexOrThrow("humity"));
+                float pH= cursor.getFloat(cursor.getColumnIndexOrThrow("pH"));
+
+                SensedValues sv = new SensedValues(id,idRaspi, date, temp1, temp2, temp3, temp4, temp5, tempPh, humidity, tempAmb, pH);
+                listSensedValues.add(sv);
+
+            }
+            cursor.close();
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return listSensedValues;
+    }
+
     public void updateSensedValue( int idSV, float[] v ){
         //DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = getWritableDatabase();
