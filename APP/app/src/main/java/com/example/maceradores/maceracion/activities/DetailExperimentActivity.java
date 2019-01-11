@@ -1,20 +1,15 @@
 package com.example.maceradores.maceracion.activities;
 
-import android.arch.persistence.room.Database;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.provider.ContactsContract;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Experiment;
-import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.YAxis;
@@ -29,12 +24,9 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
     //Data
     private Experiment currentExperiment;
-    //private int idExp;
-    //private String date;
-    //private float density;
     private List<SensedValues> sensedValuesList;
     private int intervalo;
-    private List<Float> tempProm =new ArrayList<>();
+    private List<Float> tempProm = new ArrayList<>();
     private List<List<Float>> enzymesActivation = new ArrayList<>();
 
     //Widgets
@@ -83,14 +75,14 @@ public class DetailExperimentActivity extends AppCompatActivity {
         this.ltempChartSensor4 = (LineChart) findViewById(R.id.DE_chartTemp4);
 
 
-
-        //todo getSensedValues
-
         calcTempProm(); //Calcula los valores promedio de temperatura
         this.enzymesActivation = enzymesActivation(); //esta funcion usa tempProm!!
 
         //Carga de graficas
         loadCharts();
+
+        tv_DE_date.setText(currentExperiment.getDate());
+        tv_DE_density.setText(String.valueOf(currentExperiment.getDensity()));
 
 
     }
@@ -217,7 +209,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
         //*********************************temp Sensores *******************************************
         //SENSOR 1
         //DataSet objects hold data which belongs together, and allow individual styling of that data
-        LineDataSet dataSetTemp1 = new LineDataSet(entriesTemp1,"Temperatura");
+        LineDataSet dataSetTemp1 = new LineDataSet(entriesTemp1,"Temperatura Sensor 1");
         dataSetTemp1.setColor(Color.RED);
         dataSetTemp1.enableDashedLine(1f,1f,1f);
         dataSetTemp1.setDrawFilled(true);
@@ -244,13 +236,13 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
         //SENSOR 2
 
-        LineDataSet dataSetTemp2 = new LineDataSet(entriesTemp2,"Temperatura");
+        LineDataSet dataSetTemp2 = new LineDataSet(entriesTemp2,"Temperatura Sensor 2");
         dataSetTemp2.setColor(Color.RED);
         dataSetTemp2.enableDashedLine(1f,1f,1f);
         dataSetTemp2.setDrawFilled(true);
         dataSetTemp2.setFillColor(Color.RED);
 
-        LineData lineDataTemp2 = new LineData(dataSetTemp1);
+        LineData lineDataTemp2 = new LineData(dataSetTemp2);
 
         ltempChartSensor2.setData(lineDataTemp2);
         ltempChartSensor2.getAxisRight().setEnabled(false);
@@ -265,13 +257,13 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
         //SENSOR 3
 
-        LineDataSet dataSetTemp3 = new LineDataSet(entriesTemp3,"Temperatura");
+        LineDataSet dataSetTemp3 = new LineDataSet(entriesTemp3,"Temperatura Sensor 3");
         dataSetTemp3.setColor(Color.RED);
         dataSetTemp3.enableDashedLine(1f,1f,1f);
         dataSetTemp3.setDrawFilled(true);
         dataSetTemp3.setFillColor(Color.RED);
 
-        LineData lineDataTemp3 = new LineData(dataSetTemp1);
+        LineData lineDataTemp3 = new LineData(dataSetTemp3);
 
         ltempChartSensor3.setData(lineDataTemp3);
         ltempChartSensor3.getAxisRight().setEnabled(false);
@@ -286,7 +278,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
         //SENSOR 4
 
-        LineDataSet dataSetTemp4 = new LineDataSet(entriesTemp4,"Temperatura");
+        LineDataSet dataSetTemp4 = new LineDataSet(entriesTemp4,"Temperatura Sensor 4");
         dataSetTemp4.setColor(Color.RED);
         dataSetTemp4.enableDashedLine(1f,1f,1f);
         dataSetTemp4.setDrawFilled(true);
@@ -332,6 +324,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
         }
 
     }
+
     private List<List<Float>> enzymesActivation(){
         //----Enzymes Activation
         List<Float> alphaAmylase = new ArrayList<>();
