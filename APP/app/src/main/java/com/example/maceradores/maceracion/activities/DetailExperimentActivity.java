@@ -7,8 +7,10 @@ import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.models.SensedValues;
 import com.github.mikephil.charting.charts.LineChart;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DetailExperimentActivity extends AppCompatActivity {
@@ -17,7 +19,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
     private int idExp;
     private String date;
     private float density;
-    private List<Float> 
+    private List<SensedValues> sensedValuesList;
 
     //Widgets
     private LineChart tempChart;
@@ -34,10 +36,11 @@ public class DetailExperimentActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent.hasExtra("idExp")){
             this.idExp = intent.getIntExtra("idExp", -1);
+            sensedValuesList = getSensedValuesList(this.idExp);
 
         }
         else{
-            startActivity(new Intent(ExperimentActivity.this, MainActivity.class));
+            startActivity(new Intent(DetailExperimentActivity.this, MainActivity.class));
             finish();
         }
 
@@ -54,6 +57,14 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
 
 
+    } //end onCreate
+
+    private List<SensedValues> getSensedValuesList(int idExp){
+        List<SensedValues> list = new ArrayList<>();
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        list = dbHelper.getAllSensedValues(idExp);
+        dbHelper.close();
+        return list;
     }
 
 

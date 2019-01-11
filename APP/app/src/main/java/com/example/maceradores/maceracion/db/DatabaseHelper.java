@@ -603,6 +603,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //------------------EXPERIMENT-----------------------
 
     //------------------SENSED VALUES-----------------------
+    public List<SensedValues> getAllSensedValues(int idExp){
+        List<SensedValues> listSensedValues = new ArrayList<>();
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.query("SensedValues", null, "id_exp = " + idExp, null, null, null, null);
+            while(cursor.moveToNext()){
+                //if(cursor.moveToFirst()){
+                int id = cursor.getInt( cursor.getColumnIndexOrThrow("id"));
+                int idRaspi = cursor.getInt( cursor.getColumnIndexOrThrow("idRaspi"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("fechayhora"));
+                float temp1 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp1"));
+                float temp2 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp2"));
+                float temp3 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp3"));
+                float temp4 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp4"));
+                float temp5 = cursor.getFloat(cursor.getColumnIndexOrThrow("temp5"));
+                float tempPh = cursor.getFloat(cursor.getColumnIndexOrThrow("tempPh"));
+                float tempAmb = cursor.getFloat(cursor.getColumnIndexOrThrow("tempAmb"));
+                float humidity = cursor.getFloat(cursor.getColumnIndexOrThrow("humity"));
+                float pH= cursor.getFloat(cursor.getColumnIndexOrThrow("pH"));
+
+                SensedValues sv = new SensedValues(id,idRaspi, date, temp1, temp2, temp3, temp4, temp5, tempPh, humidity, tempAmb, pH);
+                listSensedValues.add(sv);
+
+            }
+            cursor.close();
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return listSensedValues;
+    }
+
     public void updateSensedValue( int idSV, float[] v ){
         //DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         SQLiteDatabase db = getWritableDatabase();
