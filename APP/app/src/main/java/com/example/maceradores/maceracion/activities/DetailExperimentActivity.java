@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
@@ -37,7 +38,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
     private LineChart ltempChartSensor2;
     private LineChart ltempChartSensor3;
     private LineChart ltempChartSensor4;
-    private TextView tv_DE_date;
+    private TextView tv_DE_rendimiento;
     private TextView tv_DE_density;
 
     @Override
@@ -59,11 +60,11 @@ public class DetailExperimentActivity extends AppCompatActivity {
         }
 
 
+        setToolbar();
+        setTitle("Experimento - " +currentExperiment.getDate());//Seteo el nombre en el ActionBar
 
-        setTitle(currentExperiment.getDate());//Seteo el nombre en el ActionBar
 
-
-        this.tv_DE_date = (TextView)  findViewById(R.id.tv_DE_date);
+        this.tv_DE_rendimiento = (TextView)  findViewById(R.id.tv_DE_rendimiento);
         this.tv_DE_density = (TextView)  findViewById(R.id.tv_DE_densitiy);
 
         this.ltempChartProm = (LineChart) findViewById(R.id.DE_chartTempProm);
@@ -81,8 +82,8 @@ public class DetailExperimentActivity extends AppCompatActivity {
         //Carga de graficas
         loadCharts();
 
-        tv_DE_date.setText(currentExperiment.getDate());
-        tv_DE_density.setText(String.valueOf(currentExperiment.getDensity()));
+        tv_DE_rendimiento.setText(currentExperiment.getDate());
+        tv_DE_density.setText("Densidad obtenida: " + String.valueOf(currentExperiment.getDensity()));
 
 
     }
@@ -386,6 +387,11 @@ public class DetailExperimentActivity extends AppCompatActivity {
         return intervalo;
     }
 
+    private void setToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_DetailExperimentActivity);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().show();
+    }
 
 
 }
