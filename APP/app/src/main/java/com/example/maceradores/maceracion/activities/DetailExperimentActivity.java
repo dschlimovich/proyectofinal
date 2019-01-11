@@ -41,6 +41,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
             this.idExp = intent.getIntExtra("idExp", -1);
             sensedValuesList = getSensedValuesList(this.idExp);
             intervaloTemp = getIntervaloTemp(idExp);
+            density = getDensity(idExp);
 
         }
         else{
@@ -62,6 +63,14 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
 
     } //end onCreate
+
+    private float getDensity(int idExp) {
+        float density;
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        density = dbHelper.getDensity(idExp);
+        dbHelper.close();
+        return density;
+    }
 
     private List<SensedValues> getSensedValuesList(int idExp){
         List<SensedValues> list = new ArrayList<>();
