@@ -617,6 +617,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return idMash;
     }
 
+    public float getDensity(int idExp){
+        float density = -1;
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.query("Experimento", new String[]{"densidad"}, "id = " + idExp, null, null, null, null);
+            if(cursor.moveToFirst()){
+                density = cursor.getFloat(0);
+            }
+            cursor.close();
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+        return density;
+    }
+
     //------------------EXPERIMENT-----------------------
 
     //------------------SENSED VALUES-----------------------
