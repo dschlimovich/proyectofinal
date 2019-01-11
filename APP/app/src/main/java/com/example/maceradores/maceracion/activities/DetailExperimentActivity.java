@@ -1,6 +1,8 @@
 package com.example.maceradores.maceracion.activities;
 
+import android.arch.persistence.room.Database;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -38,6 +40,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
         if(intent.hasExtra("idExp")){
             this.idExp = intent.getIntExtra("idExp", -1);
             sensedValuesList = getSensedValuesList(this.idExp);
+            intervaloTemp = getIntervaloTemp(idExp);
 
         }
         else{
@@ -68,6 +71,14 @@ public class DetailExperimentActivity extends AppCompatActivity {
         return list;
     }
 
+    private int getIntervaloTemp(int idExp){
+        int intervalo = -1;
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        int idMash = dbHelper.getIdMash(idExp);
+        intervalo = dbHelper.getIntervaloMedicionTemp(idMash);
+        dbHelper.close();
+        return intervalo;
+    }
 
 
 
