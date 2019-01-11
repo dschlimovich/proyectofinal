@@ -9,6 +9,8 @@ public class Experiment {
     private List<SensedValues> sensedValuesList;
     private float density;
 
+    public Experiment(){}
+
     public Experiment(int id, String date) {
         this.id = id;
         this.date = date;

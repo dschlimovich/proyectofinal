@@ -600,6 +600,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cant;
     }
 
+    public Experiment getExperiment(int idExp){
+        Experiment experiment = new Experiment();
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.rawQuery("SELECT E.id AS 'id', strftime('%d/%m/%Y %H:%M', E.fecha) AS 'fecha', E.densidad AS 'densidad' FROM Experimento AS E WHERE id = " + idExp, null);
+            if(cursor.moveToFirst()){
+                experiment.setId( idExp );
+                experiment.setDate( cursor.getString( cursor.getColumnIndexOrThrow("fecha")));
+                experiment.setDensity(cursor.getFloat( cursor.getColumnIndexOrThrow("densidad")));
+            }
+            cursor.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        return experiment;
+    }
+
     public int getIdMash(int idExp){
         int idMash = -1;
         try{

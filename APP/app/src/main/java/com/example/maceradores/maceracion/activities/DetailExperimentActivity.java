@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.models.Experiment;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.github.mikephil.charting.charts.LineChart;
 
@@ -18,9 +19,10 @@ import java.util.List;
 public class DetailExperimentActivity extends AppCompatActivity {
 
     //Data
-    private int idExp;
-    private String date;
-    private float density;
+    private Experiment currentExperiment;
+    //private int idExp;
+    //private String date;
+    //private float density;
     private List<SensedValues> sensedValuesList;
     private int intervaloTemp;
 
@@ -38,11 +40,11 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent.hasExtra("idExp")){
-            this.idExp = intent.getIntExtra("idExp", -1);
-            sensedValuesList = getSensedValuesList(this.idExp);
-            intervaloTemp = getIntervaloTemp(idExp);
-            density = getDensity(idExp);
 
+            int idExp = intent.getIntExtra("idExp", -1);
+            this.currentExperiment = getExperiment(idExp);
+            sensedValuesList = getSensedValuesList(idExp);
+            intervaloTemp = getIntervaloTemp(idExp);
         }
         else{
             startActivity(new Intent(DetailExperimentActivity.this, MainActivity.class));
@@ -64,12 +66,11 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
     } //end onCreate
 
-    private float getDensity(int idExp) {
-        float density;
+    private Experiment getExperiment(int idExp) {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        density = dbHelper.getDensity(idExp);
+        Experiment experiment = dbHelper.getExperiment(idExp);
         dbHelper.close();
-        return density;
+        return experiment;
     }
 
     private List<SensedValues> getSensedValuesList(int idExp){
