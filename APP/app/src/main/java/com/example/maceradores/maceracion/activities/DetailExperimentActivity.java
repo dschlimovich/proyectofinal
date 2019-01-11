@@ -74,18 +74,18 @@ public class DetailExperimentActivity extends AppCompatActivity {
     }
 
     private List<SensedValues> getSensedValuesList(int idExp){
-        List<SensedValues> list = new ArrayList<>();
+        //List<SensedValues> list = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        list = dbHelper.getAllSensedValues(idExp);
+        List<SensedValues> list = dbHelper.getAllSensedValues(idExp);
         dbHelper.close();
         return list;
     }
 
     private int getIntervaloTemp(int idExp){
-        int intervalo = -1;
+        //int intervalo = -1;
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         int idMash = dbHelper.getIdMash(idExp);
-        intervalo = dbHelper.getIntervaloMedicionTemp(idMash);
+        int intervalo = dbHelper.getIntervaloMedicionTemp(idMash);
         dbHelper.close();
         return intervalo;
     }
