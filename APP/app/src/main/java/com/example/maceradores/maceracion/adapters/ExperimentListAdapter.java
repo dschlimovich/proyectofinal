@@ -51,6 +51,14 @@ public class ExperimentListAdapter extends RecyclerView.Adapter<ExperimentListAd
 
         public void bind(final Experiment experiment, final onItemClickListener listener) {
             tvNameMash.setText(experiment.getDate().toString());
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClickItem(experiment, getAdapterPosition());
+                }
+            });
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -62,6 +70,7 @@ public class ExperimentListAdapter extends RecyclerView.Adapter<ExperimentListAd
     }
 
     public interface onItemClickListener{
-        public void onLongClickItem(Experiment experiment, int position);
+        void onClickItem(Experiment experiment, int position);
+        void onLongClickItem(Experiment experiment, int position);
     }
 }

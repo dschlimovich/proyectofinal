@@ -80,6 +80,16 @@ public class ExperimentActivity extends AppCompatActivity {
 
         rvAdapter = new ExperimentListAdapter(experimentList, R.layout.item_list_mash, new ExperimentListAdapter.onItemClickListener() {
             @Override
+            public void onClickItem(Experiment experiment, int position) {
+                int idExp = experiment.getId();
+                Toast.makeText(ExperimentActivity.this, "El id clickeado es " + idExp, Toast.LENGTH_SHORT).show();
+                //creo el intent.
+                //Intent intent = new Intent(ExperimentActivity.this, DetailExperimentActivity.class);
+                //intent.putExtra("idExp", idExp);
+                // startActivity(intent);
+            }
+
+            @Override
             public void onLongClickItem(Experiment experiment, int position) {
                 experimentList.remove(position);
                 rvAdapter.notifyItemRemoved(position);
