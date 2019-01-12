@@ -86,6 +86,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
         loadCharts();
 
         tv_DE_rendimiento.setText("El rendimiento obtenido fue: "+ String.format("%.2f", this.rendimiento * 100) + "%");
+        
         tv_DE_density.setText("Densidad obtenida: " + String.valueOf(currentExperiment.getDensity()));
 
 
