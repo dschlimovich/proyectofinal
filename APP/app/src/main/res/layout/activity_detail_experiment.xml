@@ -17,13 +17,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <TextView
                 android:id="@+id/tv_DE_densitiy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:textStyle="bold"
+                android:textSize="17sp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"
@@ -32,19 +30,27 @@
                 android:id="@+id/tv_DE_rendimiento"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:textStyle="bold"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                />
+            <TextView
+                android:id="@+id/tv_DE_tempAmb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"
                 />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Evolución de la temperatura Promedio"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"
                 />
@@ -57,13 +63,11 @@
                 android:paddingTop="5dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"/>
-
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Evolución del pH"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
@@ -83,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Activación de enzimas"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
@@ -103,7 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Evolución de la temperatura - Sensor num. 1"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="10dp"
@@ -123,7 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Evolución de la temperatura sensor num. 2"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="10dp"
@@ -142,7 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Evolución de la temperatura - Sensor num. 3"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="10dp"
@@ -161,7 +165,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Evolución de la temperatura - Sensor num. 4"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="10dp"

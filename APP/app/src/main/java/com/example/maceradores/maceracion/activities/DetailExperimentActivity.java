@@ -43,6 +43,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
     private LineChart ltempChartSensor4;
     private TextView tv_DE_rendimiento;
     private TextView tv_DE_density;
+    private TextView tv_DE_temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
         this.tv_DE_rendimiento = (TextView)  findViewById(R.id.tv_DE_rendimiento);
         this.tv_DE_density = (TextView)  findViewById(R.id.tv_DE_densitiy);
+        this.tv_DE_temp = (TextView) findViewById(R.id.tv_DE_tempAmb);
 
         this.ltempChartProm = (LineChart) findViewById(R.id.DE_chartTempProm);
         this.lphChart = (LineChart) findViewById(R.id.DE_chartpH);
@@ -85,9 +87,9 @@ public class DetailExperimentActivity extends AppCompatActivity {
         //Carga de graficas
         loadCharts();
 
-        tv_DE_rendimiento.setText("El rendimiento obtenido fue: "+ this.rendimiento);
+        tv_DE_temp.setText("Temperatura ambiente de cocción: " + sensedValuesList.get(0).getTempEnviroment()+"°");
         tv_DE_density.setText("Densidad obtenida: " + String.valueOf(currentExperiment.getDensity()));
-
+        tv_DE_rendimiento.setText("El rendimiento del equipo: "+ this.rendimiento);
 
     }
 
