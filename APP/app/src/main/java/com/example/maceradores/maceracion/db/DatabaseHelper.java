@@ -430,6 +430,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return mediciones;
     }
+
     //------------------MASH-----------------------
 
     //------------------GRAIN-----------------------

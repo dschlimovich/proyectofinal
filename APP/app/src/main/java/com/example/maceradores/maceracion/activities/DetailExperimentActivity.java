@@ -11,7 +11,9 @@ import android.widget.TextView;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Experiment;
+import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.SensedValues;
+import com.example.maceradores.maceracion.utils.Calculos;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -27,6 +29,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
     private Experiment currentExperiment;
     private List<SensedValues> sensedValuesList;
     private int intervalo;
+    private float rendimiento;
     private List<Float> tempProm = new ArrayList<>();
     private List<List<Float>> enzymesActivation = new ArrayList<>();
 
@@ -52,7 +55,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
             int idExp = intent.getIntExtra("idExp", -1);
             this.currentExperiment = getExperiment(idExp);
             sensedValuesList = getSensedValuesList(idExp);
-            intervalo = getIntervaloTemp(idExp);
+            setIntervaloRendimiento(idExp);
         }
         else{
             startActivity(new Intent(DetailExperimentActivity.this, ExperimentActivity.class));
@@ -82,7 +85,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
         //Carga de graficas
         loadCharts();
 
-        tv_DE_rendimiento.setText("El rendimiento obtenido fue: "+currentExperiment.getDate());
+        tv_DE_rendimiento.setText("El rendimiento obtenido fue: "+ this.rendimiento);
         tv_DE_density.setText("Densidad obtenida: " + String.valueOf(currentExperiment.getDensity()));
 
 
@@ -379,12 +382,24 @@ public class DetailExperimentActivity extends AppCompatActivity {
         return list;
     }
 
-    private int getIntervaloTemp(int idExp){
+    private void setIntervaloRendimiento(int idExp){
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         int idMash = dbHelper.getIdMash(idExp);
-        int intervalo = dbHelper.getIntervaloMedicionTemp(idMash);
+        Mash mash = dbHelper.getMash(idMash);
+        mash.setGrains( dbHelper.getGrains(idMash));
+        // para saber los insumos necesito densidad esperada, volumen y rendimiento equipo 0.7.
+        float kgUtilizado = 0;
+        for( int i=0; i < mash.getGrains().size(); i++){
+            kgUtilizado = kgUtilizado + (float) Calculos.calcCantInsumoTeoRayDaniels(mash.getDensidadObjetivo(), mash.getVolumen(), mash.getGrains().get(i), 0.7f);
+            //uso 0.7f porque el primer calculo de insumo lo hace con ese rendimiento del equipo.
+        }
+        // rendimiento es masaObtenida/masaUsada
+        // masaObtenida = densidadEspecificaObtenida * Volumen
+        this.rendimiento = (this.currentExperiment.getDensity() * mash.getVolumen()) / kgUtilizado;
+        this.intervalo = mash.getPeriodMeasureTemperature();
+
         dbHelper.close();
-        return intervalo;
+
     }
 
     private void setToolbar(){
