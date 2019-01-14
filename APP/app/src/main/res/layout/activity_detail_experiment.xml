@@ -23,7 +23,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="17sp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"
                 />
             <TextView
@@ -106,7 +105,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Evolución de la temperatura - Sensor num. 1"
+                android:text="Evolución de la temperatura - Sensor N°1"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="30dp"
@@ -126,7 +125,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Evolución de la temperatura sensor num. 2"
+                android:text="Evolución de la temperatura - Sensor N°2"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="30dp"
@@ -145,7 +144,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Evolución de la temperatura - Sensor num. 3"
+                android:text="Evolución de la temperatura - Sensor N°3"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="30dp"
@@ -164,7 +163,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Evolución de la temperatura - Sensor num. 4"
+                android:text="Evolución de la temperatura - Sensor N°4"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="30dp"
