@@ -89,7 +89,9 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
         tv_DE_temp.setText("Temperatura ambiente de cocción: " + sensedValuesList.get(0).getTempEnviroment()+"°");
         tv_DE_density.setText("Densidad obtenida: " + String.valueOf(currentExperiment.getDensity()));
-        tv_DE_rendimiento.setText("El rendimiento del equipo: "+ this.rendimiento);
+        tv_DE_rendimiento.setText("Rendimiento del equipo: "+ String.format("%.2f", this.rendimiento * 100) + "%");
+
+
 
     }
 
