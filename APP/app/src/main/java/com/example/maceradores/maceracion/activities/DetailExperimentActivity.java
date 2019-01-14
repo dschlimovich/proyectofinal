@@ -397,7 +397,9 @@ public class DetailExperimentActivity extends AppCompatActivity {
         }
         // rendimiento es masaObtenida/masaUsada
         // masaObtenida = densidadEspecificaObtenida * Volumen
-        this.rendimiento = (this.currentExperiment.getDensity() * mash.getVolumen()) / kgUtilizado;
+        this.rendimiento = (float) Calculos.calcRendimiento(mash.getVolumen(),this.currentExperiment.getDensity(),kgUtilizado)[2];
+
+        //this.rendimiento = (float) Calculos.calcRendimiento(52.24,1.047,9.02)[2]; //hardcodeo para validar
         this.intervalo = mash.getPeriodMeasureTemperature();
 
         dbHelper.close();

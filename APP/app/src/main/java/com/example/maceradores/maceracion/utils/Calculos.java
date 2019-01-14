@@ -14,17 +14,17 @@ public class Calculos {
     // ---------------------- INSUMOS Y RENDIMIENTO -------------------------------
     public static double[] calcRendimiento(double volMosto, double densEspecif, double kgMalta){
         //Densidad Especifica que mido
-        double gradosPlato=(densEspecif-1)/0.004;
+        double gradosPlato = (densEspecif-1)/0.004; //DE*250 - 250
         double kgExhl = gradosPlato * densEspecif;
 
 
         double kgExtObtenido = volMosto * kgExhl/100;
-        //double porcRendimiento = 100 * kgExtObtenido / kgMalta;// Recordar que un 80% es un valor excelente, ya el otro 20% es bagazo
-        double porcRendimiento = kgExtObtenido / kgMalta;
+        double porcRendimiento = 100 * kgExtObtenido / kgMalta;// Recordar que un 80% es un valor excelente, ya el otro 20% es bagazo
+        //double porcRendimiento = kgExtObtenido / kgMalta;
         double [] array = {kgExhl,kgExtObtenido,porcRendimiento};
         return array;
     }
-
+    //0.996
     public static double rendimientoGeneral( List<Float> densities, double volMosto, double kgMalta){
         double rendimiento = 0.7;
         double acumulado = 0;
