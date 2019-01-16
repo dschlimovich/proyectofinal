@@ -65,24 +65,12 @@ public class MeasureInterval {
         return mainTemperatureDeviation;
     }
 
-    public void setMainTemperatureDeviation(float mainTemperatureDeviation) {
-        this.mainTemperatureDeviation = mainTemperatureDeviation;
-    }
-
     public float getSecondTemperatureDeviation() {
         return secondTemperatureDeviation;
     }
 
-    public void setSecondTemperatureDeviation(float secondTemperatureDeviation) {
-        this.secondTemperatureDeviation = secondTemperatureDeviation;
-    }
-
     public float getPhDeviation() {
         return phDeviation;
-    }
-
-    public void setPhDeviation(float phDeviation) {
-        this.phDeviation = phDeviation;
     }
 
     public int getOrder() {
@@ -97,16 +85,8 @@ public class MeasureInterval {
         return mainTemperature;
     }
 
-    public void setMainTemperature(float mainTemperature) {
-        this.mainTemperature = mainTemperature;
-    }
-
     public float getSecondTemperature() {
         return secondTemperature;
-    }
-
-    public void setSecondTemperature(float secondTemperature) {
-        this.secondTemperature = secondTemperature;
     }
 
     public float getpH() {
@@ -121,8 +101,6 @@ public class MeasureInterval {
         return duration;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
+
 
 }

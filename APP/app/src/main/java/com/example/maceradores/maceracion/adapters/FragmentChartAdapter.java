@@ -1,7 +1,5 @@
 package com.example.maceradores.maceracion.adapters;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.maceradores.maceracion.R;
-import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;

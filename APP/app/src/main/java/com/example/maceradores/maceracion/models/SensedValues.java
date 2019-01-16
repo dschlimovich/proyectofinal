@@ -68,64 +68,32 @@ public class SensedValues {
         return temp1;
     }
 
-    public void setTemp1(float temp1) {
-        this.temp1 = temp1;
-    }
-
     public float getTemp2() {
         return temp2;
-    }
-
-    public void setTemp2(float temp2) {
-        this.temp2 = temp2;
     }
 
     public float getTemp3() {
         return temp3;
     }
 
-    public void setTemp3(float temp3) {
-        this.temp3 = temp3;
-    }
-
     public float getTemp4() {
         return temp4;
-    }
-
-    public void setTemp4(float temp4) {
-        this.temp4 = temp4;
     }
 
     public float getTempSecondary() {
         return tempSecondary;
     }
 
-    public void setTempSecondary(float tempSecondary) {
-        this.tempSecondary = tempSecondary;
-    }
-
     public float getTempPH() {
         return tempPH;
-    }
-
-    public void setTempPH(float tempPH) {
-        this.tempPH = tempPH;
     }
 
     public float getHumidity() {
         return humidity;
     }
 
-    public void setHumidity(float humidity) {
-        this.humidity = humidity;
-    }
-
     public float getTempEnviroment() {
         return tempEnviroment;
-    }
-
-    public void setTempEnviroment(float tempEnviroment) {
-        this.tempEnviroment = tempEnviroment;
     }
 
     public float getpH() {
@@ -134,28 +102,6 @@ public class SensedValues {
 
     public void setpH(float pH) {
         this.pH = pH;
-    }
-
-    public int getIdRaspi() {
-        return idRaspi;
-    }
-
-    public void setIdRaspi(int idRaspi) {
-        this.idRaspi = idRaspi;
-    }
-
-
-    private static float enzymeParabolicActivation( float t, float minT, float maxT, float ph, float minPh, float maxPh ){
-        //devuelo porcentaje. osea si 70% entonces devuleve 70
-        // devuleve 100 en el centro del intervalo
-        if( t >= minT && t <= maxT && ph >= minPh && ph <= maxPh ){
-            float dividendo = 1600 * (t - minT) * (t - maxT) * (ph - minPh) * (ph - maxPh);
-            float divisor = (maxT - minT) * (maxT - minT) * (maxPh - minPh) * (maxPh - minPh) ;
-
-            if( divisor != 0) return dividendo / divisor;
-            else return 0;
-        }
-        else return 0;
     }
 
     private static float enzymeNormalActivation( float t, float minT, float maxT, float ph, float minPh, float maxPh ){

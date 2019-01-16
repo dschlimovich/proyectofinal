@@ -11,8 +11,6 @@ import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.models.Grain;
 import com.example.maceradores.maceracion.models.Mash;
 
-import java.util.List;
-
 public class GrainListAdapter extends BaseAdapter {
     private Context context;
     private int layout;

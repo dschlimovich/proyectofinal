@@ -105,14 +105,6 @@ public class Mash {
         this.densidadObjetivo = densidadObjetivo;
     }
 
-    public List<Experiment> getExperiments() {
-        return experiments;
-    }
-
-    public void setExperiments(List<Experiment> experiments) {
-        this.experiments = experiments;
-    }
-
     public int getId() {
         return id;
     }

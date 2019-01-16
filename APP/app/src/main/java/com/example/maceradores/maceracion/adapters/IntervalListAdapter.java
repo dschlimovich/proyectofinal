@@ -11,8 +11,6 @@ import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 
-import java.util.List;
-
 public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapter.ViewHolder> {
     private Mash mash;
     private boolean planned;
@@ -20,7 +18,6 @@ public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapte
     private IntervalListAdapter.onItemClickListener listener;
 
     public IntervalListAdapter(Mash mash, boolean planned, int layout, onItemClickListener listener) {
-        //this.intervals = intervals;
         this.mash = mash;
         this.layout = layout;
         this.listener = listener;
@@ -89,6 +86,6 @@ public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapte
     }
 
     public interface onItemClickListener{
-        public void onItemClick(MeasureInterval interval, int position);
+        void onItemClick(MeasureInterval interval, int position);
     }
 }

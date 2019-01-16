@@ -20,9 +20,6 @@ import android.widget.TextView;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.FragmentChartAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
-import com.example.maceradores.maceracion.models.Experiment;
-import com.example.maceradores.maceracion.models.SensedValues;
-import com.example.maceradores.maceracion.utils.Calculos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +40,6 @@ public class ChartExperimentsFragment extends Fragment {
     private List <Integer> listExp;
     private Spinner spinner;
     ArrayAdapter<CharSequence> adapterSpinner;
-    private int typeChart=0;
     private TextView textViewTypeChart;
     private boolean flagFirstSpinner = true;
 

@@ -25,16 +25,8 @@ public class Grain {
         return quantity;
     }
 
-    public void setQuantity(float quantity) {
-        this.quantity = quantity;
-    }
-
     public float getExtractPotential() {
         return extractPotential;
-    }
-
-    public void setExtractPotential(float extractPotential) {
-        this.extractPotential = extractPotential;
     }
 
     public String getStringPlanning(){

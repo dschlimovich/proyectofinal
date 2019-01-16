@@ -48,9 +48,5 @@ public class ViewPagerAdapterStatistics extends FragmentPagerAdapter {
     public int getCount() {
         return numberOfTabs;
     }
-//    public UUID getMeasurId(){
-//
-//
-//
-//    }
+
 }

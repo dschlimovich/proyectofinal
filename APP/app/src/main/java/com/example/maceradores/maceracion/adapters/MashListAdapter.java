@@ -66,6 +66,6 @@ public class MashListAdapter extends RecyclerView.Adapter<MashListAdapter.ViewHo
     }
 
     public interface onItemClickListener{
-        public void onItemClick(Mash mash, int position);
+        void onItemClick(Mash mash, int position);
     }
 }

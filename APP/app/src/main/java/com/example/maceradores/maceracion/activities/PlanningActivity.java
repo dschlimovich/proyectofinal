@@ -1,21 +1,16 @@
 package com.example.maceradores.maceracion.activities;
 
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
-import android.provider.ContactsContract;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,8 +39,6 @@ import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.utils.Calculos;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PlanningActivity extends AppCompatActivity {

@@ -41,11 +41,4 @@ public class Experiment {
         this.date = date;
     }
 
-    public List<SensedValues> getSensedValuesList() {
-        return sensedValuesList;
-    }
-
-    public void setSensedValuesList(List<SensedValues> sensedValuesList) {
-        this.sensedValuesList = sensedValuesList;
-    }
 }

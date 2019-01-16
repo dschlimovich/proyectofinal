@@ -5,7 +5,6 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +12,9 @@ import android.widget.Chronometer;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
-
-import org.w3c.dom.Text;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdapter.ViewHolder> {
     //private List<MeasureInterval> intervals;
