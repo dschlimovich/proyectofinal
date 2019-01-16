@@ -14,7 +14,6 @@ import com.example.maceradores.maceracion.models.Grain;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.models.SensedValues;
-import com.example.maceradores.maceracion.utils.Calculos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -636,22 +635,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return idMash;
     }
 
-    public float getDensity(int idExp){
-        float density = -1;
-        try{
-            SQLiteDatabase db = getReadableDatabase();
-            Cursor cursor = db.query("Experimento", new String[]{"densidad"}, "id = " + idExp, null, null, null, null);
-            if(cursor.moveToFirst()){
-                density = cursor.getFloat(0);
-            }
-            cursor.close();
-            db.close();
-        } catch(SQLException e){
-            Log.d("Error DB", e.toString());
-        }
-        return density;
-    }
-
     //------------------EXPERIMENT-----------------------
 
     //------------------SENSED VALUES-----------------------
@@ -686,23 +669,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return listSensedValues;
-    }
-
-    public void updateSensedValue( int idSV, float[] v ){
-        //DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues sensedValues = new ContentValues();
-
-        sensedValues.put("temp1", v[0] );
-        sensedValues.put("temp2", v[1] );
-        sensedValues.put("temp3", v[2] );
-        sensedValues.put("temp4", v[3] );
-        sensedValues.put("ph", v[4] );
-
-        String whereClausule = "id = ?";
-        String[] whereClausuleArgs = new String[] {String.valueOf(idSV)};
-        int cant = db.update("SensedValues", sensedValues,whereClausule, whereClausuleArgs);
-        //dbHelper.close();
     }
 
     public SensedValues getLastSensedValue(int idExp){
