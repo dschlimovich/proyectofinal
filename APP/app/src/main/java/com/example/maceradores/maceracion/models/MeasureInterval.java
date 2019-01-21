@@ -51,13 +51,13 @@ public class MeasureInterval {
     public String getDescription(){
         if( secondTemperature == -1000 || secondTemperatureDeviation == -1000 )
             return "Duración: " + this.duration + " minutos\n" +
-                    "Temperatura: " + this.mainTemperature + "°C ± " + this.mainTemperatureDeviation + "\n" +
-                    "pH: " + this.pH + " ± " + this.phDeviation + "\n" ;
+                    "Temperatura: " + String.format("%.2f",this.mainTemperature) + "°C ± " + String.format("%.2f",this.mainTemperatureDeviation) + "\n" +
+                    "pH: " + String.format("%.2f",this.pH) + " ± " + String.format("%.2f",this.phDeviation) + "\n" ;
         else
             return "Duración: " + this.duration + " minutos\n" +
-                    "Temperatura: " + this.mainTemperature + "°C ± " + this.mainTemperatureDeviation + "\n" +
-                    "pH: " + this.pH + " ± " + this.phDeviation + "\n" +
-                    "Temperatura Decocción: " + this.secondTemperature + "°C ± " + this.secondTemperatureDeviation + "\n";
+                    "Temperatura: " + String.format("%.2f",this.mainTemperature) + "°C ± " + String.format("%.2f",this.mainTemperatureDeviation) + "\n" +
+                    "pH: " + String.format("%.2f",this.pH) + " ± " + String.format("%.2f",this.phDeviation) + "\n" +
+                    "Temperatura Decocción: " + String.format("%.2f",this.secondTemperature) + "°C ± " + String.format("%.2f",this.secondTemperatureDeviation) + "\n";
     }
 
     // Getters & Setters
