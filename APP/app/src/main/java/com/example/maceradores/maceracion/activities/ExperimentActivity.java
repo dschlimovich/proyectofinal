@@ -1,11 +1,13 @@
 package com.example.maceradores.maceracion.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -121,7 +123,8 @@ public class ExperimentActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.deleteMash:
-                    deleteMash();
+                //deleteMash();
+                showAlertDeleteMash();
                 return true;
             case R.id.seePlanification:
                 // we should to show the planning activity with the values charged.
@@ -163,6 +166,29 @@ public class ExperimentActivity extends AppCompatActivity {
         dbHelper.close();
         return resultados;
     } //end getAllExperiments
+
+    private void showAlertDeleteMash(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Eliminar maceración");
+        builder.setMessage("¿Está seguro que desea eliminar maceración?");
+
+        builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // llamo a la función que me elimina la base de datos
+                deleteMash();
+            }
+        });
+
+        builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.create().show();
+    }
 
     private void deleteMash() {
         //tengo que eliminar todos los datos y tengo que mandar al main activity.

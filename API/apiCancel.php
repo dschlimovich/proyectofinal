@@ -26,7 +26,7 @@ if($idExp!=0){
         
     echo $salida."<br>"; 
     if(is_null($salida))
-        echo "FALLO EL COMANDO";
+        echo "sin python3 corriendo el comando falla, si python3 estaba corriendo, sucedió algo misterioso...";
     else
     	echo "Ejecucion Exitosa";
 }

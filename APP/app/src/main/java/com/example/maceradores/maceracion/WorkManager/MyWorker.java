@@ -208,6 +208,7 @@ public class MyWorker extends Worker {
         values.put("temp5", Float.valueOf(svc.getTemp5()));
         values.put("tempPh", Float.valueOf(svc.getTempPh()));
         values.put("tempAmb", Float.valueOf(svc.getTempAmb()));
+        values.put("humity",Float.valueOf(svc.getHumidity()));
         values.put("pH", Float.valueOf(svc.getpH()));
 
         long newSensedValueId = db.insert("SensedValues", null, values);

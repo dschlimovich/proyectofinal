@@ -15,6 +15,14 @@ class CdataBase {
 		//mysql_set_charset('utf8');
 	}
 
+	public function deleteExp($idExp){
+		$sql="DELETE FROM SensedValues WHERE id_exp=".$idExp; //INSERTA en maceracion esta maceracion, si no existe.
+        $results = $this->conn->query($sql);
+        $sql="DELETE FROM Experimento WHERE id=".$idExp; //INSERTA en maceracion esta maceracion, si no existe.
+        $results = $this->conn->query($sql);
+        return 0;
+	}
+
     public function nuevaExp($nombreMacerac,$idExp, $dur_min, $intMedTemp_seg, $intMedPH_seg){//Si no se le pasan variables todas las querys FALLAN y last_id=0
     	//---------Nueva Maceracion-----------
         $sql="INSERT IGNORE INTO Maceracion(nombre) VALUES ('".$nombreMacerac."')"; //INSERTA en maceracion esta maceracion, si no existe.
@@ -54,7 +62,7 @@ class CdataBase {
                 $json['temp5'] = $row['temp5'];
                 $json['tempPh'] = $row['tempPh'];
                 $json['tempAmb'] = $row['tempAmb'];
-                $json['humity'] = $row['humity'];
+                $json['humidity'] = $row['humidity'];
                 $json['pH'] = $row['pH'];
 
                 $data[] = $json;//Pushea el json en el arreglo data (arreglo de jsons)

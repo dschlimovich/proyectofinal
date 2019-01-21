@@ -225,23 +225,23 @@ public class MeasureFragment extends Fragment {
     private void loadSharedPreferences() {
         SharedPreferences settings = getActivity().getSharedPreferences("Config Temp", 0);
         if(settings.contains("Sensor 1")){
-            sensoresHabilitados[0] = settings.getBoolean("Sensor 1", true);
+            this.sensoresHabilitados[0] = settings.getBoolean("Sensor 1", true);
         }
 
         if(settings.contains("Sensor 2")){
-            sensoresHabilitados[1] = settings.getBoolean("Sensor 2", true);
+            this.sensoresHabilitados[1] = settings.getBoolean("Sensor 2", true);
         }
 
         if(settings.contains("Sensor 3")){
-            sensoresHabilitados[2] = settings.getBoolean("Sensor 3", true);
+            this.sensoresHabilitados[2] = settings.getBoolean("Sensor 3", true);
         }
 
         if(settings.contains("Sensor 4")){
-            sensoresHabilitados[3] = settings.getBoolean("Sensor 4", true);
+            this.sensoresHabilitados[3] = settings.getBoolean("Sensor 4", true);
         }
 
         if(settings.contains("Metodo Calculo")){
-            metodoCalculo = settings.getInt("Metodo Calculo", PROMEDIO);
+            this.metodoCalculo = settings.getInt("Metodo Calculo", PROMEDIO);
         }
 
     }
@@ -391,6 +391,7 @@ public class MeasureFragment extends Fragment {
                         loadPhCardView(ph, desvioPh, measureInterval.getpH(), measureInterval.getPhDeviation(), tempPh); //Solo actualizo ph si el valor es valido
                     loadStageCardView(etapa);
                     loadSecondMaceratorCardView(tempSecondary,desvioTempSecon,measureInterval.getSecondTemperature(),measureInterval.getSecondTemperatureDeviation());
+                    Log.d("Humedad: ",String.valueOf(bundle.getFloat("humidity")));
                     loadEnviromentCardView(bundle.getFloat("tempEnviroment"),bundle.getFloat("humidity"));
                     loadEnzymeCardView(SensedValues.alphaAmylase(tPromedio,ph),
                             SensedValues.betaAmylase(tPromedio,ph),SensedValues.betaGlucanase(tPromedio,ph),SensedValues.protease(tPromedio,ph));
@@ -551,66 +552,81 @@ public class MeasureFragment extends Fragment {
             desvioObtenido_s = "ERROR";
             Toast.makeText(getContext(), "Error general en medición de temperatura", Toast.LENGTH_SHORT).show();
         } else {
-            tPromedio_s = String.format("%.2f", tPromedio);
+            tPromedio_s = String.format("%.2f", tPromedio) + " °C";
             desvioObtenido_s = String.format("%.2f", desvioObtenido);
         }
 
-        tPlanificada_s = String.format("%.2f", tPlanificada);
-        desvioPlanificado_s = String.format("%.2f", desvioPlanificado);
+        tPlanificada_s = String.format("%.2f", tPlanificada) + " °C";
+        desvioPlanificado_s = String.format("%.2f", desvioPlanificado) + " °C";
 
-        if(t1 == -1000){
-            t1_s = "ERROR";
-            Toast.makeText(getContext(), "Error en el sensor n°1 de temperatura", Toast.LENGTH_SHORT).show();
-        } else {
-            t1_s = String.format("%.2f", t1);
-        }
+        if (sensoresHabilitados[0]){
+            if(t1 == -1000){
+                t1_s = "ERROR ";
+                Toast.makeText(getContext(), "Error en el sensor n°1 de temperatura", Toast.LENGTH_SHORT).show();
+            }
 
-        if(t2 == -1000){
-            t2_s = "ERROR";
-            Toast.makeText(getContext(), "Error en el sensor n°2 de temperatura", Toast.LENGTH_SHORT).show();
-        } else {
-            t2_s = String.format("%.2f", t2);
-        }
+            else t1_s = String.format("%.2f", t1) + " °C";
 
-        if(t3 == -1000){
-            t3_s = "ERROR";
-            Toast.makeText(getContext(), "Error en el sensor n°3 de temperatura", Toast.LENGTH_SHORT).show();
-        } else {
-            t3_s = String.format("%.2f", t3);
-        }
+        } else t1_s = "Deshabilitado";
 
-        if(t4 == -1000){
-            t4_s = "ERROR";
-            Toast.makeText(getContext(), "Error en el sensor n°4 de temperatura", Toast.LENGTH_SHORT).show();
-        } else {
-            t4_s = String.format("%.2f", t4);
-        }
+
+
+        if (sensoresHabilitados[1]){
+            if(t2 == -1000){
+                t2_s = "ERROR ";
+                Toast.makeText(getContext(), "Error en el sensor n°1 de temperatura", Toast.LENGTH_SHORT).show();
+            }
+
+            else t2_s = String.format("%.2f", t2) + " °C";
+
+        } else t2_s = "Deshabilitado";
+
+        if (sensoresHabilitados[2]){
+            if(t3 == -1000){
+                t3_s = "ERROR ";
+                Toast.makeText(getContext(), "Error en el sensor n°1 de temperatura", Toast.LENGTH_SHORT).show();
+            }
+
+            else t3_s = String.format("%.2f", t3) + " °C";
+
+        } else t3_s = "Deshabilitado";
+
+        if (sensoresHabilitados[3]){
+            if(t4 == -1000){
+                t4_s = "ERROR ";
+                Toast.makeText(getContext(), "Error en el sensor n°1 de temperatura", Toast.LENGTH_SHORT).show();
+            }
+
+            else t4_s = String.format("%.2f", t4) + " °C";
+
+        } else t4_s = "Deshabilitado";
+
 
 
         tvMeasureTemp.setText(" Calculado: ");
         tvMeasureTemp.append(tPromedio_s); //este debería ser el valor promedio calculado.
 
-        tvMeasureTemp.append(" °C \t\t Desvío: "); //esto es por una cuestión estetica.
+        tvMeasureTemp.append(" \t\t Desvío: "); //esto es por una cuestión estetica.
         tvMeasureTemp.append(desvioObtenido_s ); //valor desviado respecto a lo planificado.
 
-        tvMeasureTemp.append(" °C \n Planificado: ");
+        tvMeasureTemp.append(" \n Planificado: ");
         tvMeasureTemp.append(tPlanificada_s ); //Aca iría el valor planificado.
 
-        tvMeasureTemp.append(" °C \t\t\t Alerta: ± ");
+        tvMeasureTemp.append(" \t\t\t Alerta: ± ");
         tvMeasureTemp.append(desvioPlanificado_s); //aca sería valor de desvio
 
-        tvMeasureTemp.append(" °C \n Sensor 1: ");
+        tvMeasureTemp.append(" \n Sensor 1: ");
         tvMeasureTemp.append(t1_s); //valor del primer sensor.
 
-        tvMeasureTemp.append(" °C \t\t\t Sensor 3: ");
+        tvMeasureTemp.append(" \t\t\t Sensor 3: ");
         tvMeasureTemp.append(t3_s);
 
-        tvMeasureTemp.append(" °C \n Sensor 2: ");
+        tvMeasureTemp.append(" \n Sensor 2: ");
         tvMeasureTemp.append(t2_s);
 
-        tvMeasureTemp.append(" °C \t\t\t Sensor 4: ");
+        tvMeasureTemp.append(" \t\t\t Sensor 4: ");
         tvMeasureTemp.append(t4_s);
-        tvMeasureTemp.append(" °C");
+        //tvMeasureTemp.append(" °C");
     }
 
     private int cantMediciones( int idMash, int intervaloMedicion){
@@ -662,9 +678,10 @@ public class MeasureFragment extends Fragment {
         }
 
         if( ! t.isEmpty()){
-            if(metodo == PROMEDIO) return Calculos.promedio(t);
+            //if(metodo == PROMEDIO) return Calculos.promedio(t);
             if(metodo == MEDIANA) return Calculos.mediana(t);
             if(metodo == PROMEDIO_EXTREMOS) return Calculos.promedio_extremos(t);
+            return Calculos.promedio(t); //si no esta configurado, por defecto larga el promedio
         }
 
         return -1000;

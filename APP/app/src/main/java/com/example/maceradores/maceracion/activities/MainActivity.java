@@ -135,8 +135,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.deleteDatabase:
-                DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-                dbHelper.deleteDatabase();
+                //DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+                //dbHelper.deleteDatabase();
+                showAlertDeleteDatabase();
                 return true;
 
             default:
@@ -149,6 +150,38 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_MainActivity);
         setSupportActionBar(toolbar);
         getSupportActionBar().show();
+    }
+
+    private void showAlertDeleteDatabase(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Eliminar Base de datos");
+        builder.setMessage("¿Está seguro que desea eliminar la base de datos?");
+
+        builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // llamo a la función que me elimina la base de datos
+                deleteDatabase();
+            }
+        });
+
+        builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.create().show();
+    }
+
+    private void deleteDatabase(){
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        dbHelper.deleteDatabase();
+        dbHelper.close();
+
+        mashList.clear();
+        rvAdapter.notifyDataSetChanged();
     }
 
     private void showAlertCurrentValues(){

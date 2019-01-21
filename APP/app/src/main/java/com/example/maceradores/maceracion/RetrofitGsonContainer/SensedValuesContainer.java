@@ -14,10 +14,10 @@ public class SensedValuesContainer {
         private String temp5;
         private String tempPh;
         private String tempAmb;
-        private String humity;
+        private String humidity;
         private String pH;
 
-    public SensedValuesContainer(String id, String id_exp, String fechayhora, String temp1, String temp2, String temp3, String temp4, String temp5, String tempPh, String tempAmb, String humity, String pH) {
+    public SensedValuesContainer(String id, String id_exp, String fechayhora, String temp1, String temp2, String temp3, String temp4, String temp5, String tempPh, String tempAmb, String humidity, String pH) {
         this.id = id;
         this.id_exp = id_exp;
         this.fechayhora = fechayhora;
@@ -28,7 +28,7 @@ public class SensedValuesContainer {
         this.temp5 = temp5;
         this.tempPh = tempPh;
         this.tempAmb = tempAmb;
-        this.humity = humity;
+        this.humidity = humidity;
         this.pH = pH;
     }
 
@@ -72,13 +72,11 @@ public class SensedValuesContainer {
         return tempAmb;
     }
 
-    public String getHumity() {
-        return humity;
-    }
-
     public String getpH() {
         return pH;
     }
+
+    public String getHumidity(){return humidity;}
 }
 
 

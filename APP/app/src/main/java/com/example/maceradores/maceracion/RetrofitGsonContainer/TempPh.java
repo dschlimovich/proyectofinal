@@ -43,10 +43,6 @@ public class TempPh {
         return Temp5;
     }
 
-    public String getTempPh() {
-        return TempPh;
-    }
-
     public String getPh() {
         return Ph;
     }
