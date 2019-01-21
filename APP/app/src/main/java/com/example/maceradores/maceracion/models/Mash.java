@@ -201,8 +201,8 @@ public class Mash {
         if( this.tipo.equals( "Simple") ){
             // aca retorno la termperatura de inicio nomas.
             double tempInicio = Calculos.temperaturaAguaInicial(this.getPlan().get(0).getMainTemperature(), 20f, this.volumen, cantMalta );
-            tempInicio = tempInicio - tempInicio % 0.01;
-            return "Temperatura de agua: " + String.valueOf(tempInicio) + " °C \n" +
+            //tempInicio = tempInicio - tempInicio % 0.01;
+            return "Temperatura de agua: " + String.format("%.2f", tempInicio) + " °C \n" +
                     "Cantidad de agua a agregar: " + String.valueOf(this.volumen) + "litros \n";
         } // Simple
 
@@ -215,18 +215,18 @@ public class Mash {
             if( position == 0){
                 // como maceracion simple pero cambio el volumen de agua.
                 double tempInicio = Calculos.temperaturaAguaInicial(this.getPlan().get(0).getMainTemperature(), 20f, volAguaPrimerEscalon, cantMalta );
-                tempInicio = tempInicio - tempInicio % 0.01;
-                volAguaPrimerEscalon = volAguaPrimerEscalon - volAguaPrimerEscalon % 0.01;
-                return "Temperatura de agua: " + String.valueOf((float)tempInicio) + " °C \n" +
-                        "Cantidad de agua a agregar: " + String.valueOf((float)volAguaPrimerEscalon) + "litros \n";
+                //tempInicio = tempInicio - tempInicio % 0.01;
+                //volAguaPrimerEscalon = volAguaPrimerEscalon - volAguaPrimerEscalon % 0.01;
+                return "Temperatura de agua: " + String.format("%.2f", tempInicio) + " °C \n" +
+                        "Cantidad de agua a agregar: " + String.format("%.2f", volAguaPrimerEscalon) + "litros \n";
             } else{
                 // aca hay que hacer algo mas jugoso
                 // la temperatura siempre es 100°C -> agua hirviendo.
                 double cantAgua = Calculos.cantAguaEscalon(volAguaPrimerEscalon, cantMalta, temperaturas.subList(0, position + 1));
-                cantAgua = cantAgua - cantAgua % 0.01;
+                //cantAgua = cantAgua - cantAgua % 0.01;
 
                 return "Temperatura de agua: " + String.valueOf(100) + " °C \n" +
-                        "Cantidad de agua a agregar: " + String.valueOf((float)cantAgua) + "litros \n";
+                        "Cantidad de agua a agregar: " + String.format("%.2f", cantAgua) + "litros \n";
 
             }
         } // Escalonada
@@ -237,8 +237,8 @@ public class Mash {
             String primerEtapa = "";
             if(position == 0){
                 double tempInicio = Calculos.temperaturaAguaInicial(this.getPlan().get(0).getMainTemperature(), 20f, this.volumen, cantMalta );
-                tempInicio = tempInicio - tempInicio % 0.01;
-                primerEtapa = "Temperatura de agua: " + String.valueOf(tempInicio) + " °C \n" +
+                //tempInicio = tempInicio - tempInicio % 0.01;
+                primerEtapa = "Temperatura de agua: " + String.format("%.2f", tempInicio) + " °C \n" +
                         "Cantidad de agua a agregar: " + String.valueOf(this.volumen) + "litros \n";
             }
 
@@ -248,9 +248,9 @@ public class Mash {
                 double tempTarget = plan.get(position + 1).getMainTemperature();
                 double volAgua = this.volumen;
                 double cantMosto = Calculos.cantMostoRetirarDecoccion(tempMash, tempTarget, volAgua);
-                cantMosto = cantMosto - cantMosto % 0.01;
+                //cantMosto = cantMosto - cantMosto % 0.01;
 
-                return  primerEtapa + "Cantidad de mosto a retirar: " + String.valueOf((float)cantMosto) + "litros \n" +
+                return  primerEtapa + "Cantidad de mosto a retirar: " + String.format("%.2f",cantMosto) + "litros \n" +
                         "Reincorporar a temperatura de hervor \n" ;
 
             } else
