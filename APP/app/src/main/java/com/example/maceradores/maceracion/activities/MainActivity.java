@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.RetrofitGsonContainer.TempPh;
 import com.example.maceradores.maceracion.adapters.MashListAdapter;
@@ -228,11 +229,12 @@ public class MainActivity extends AppCompatActivity {
                 //agrego los valores obtenidos a los textviews
                 float temp=validatedTempMean(Float.valueOf(tempPh.getTemp1()),Float.valueOf(tempPh.getTemp2()),
                         Float.valueOf(tempPh.getTemp3()),Float.valueOf(tempPh.getTemp4()));
-                tvCurrentValues.append("Temperatura: " + String.valueOf(temp) + "\n");
-                tvCurrentValues.append("pH: " + tempPh.getPh() + "\n");
-                tvCurrentValues.append("Temp. Ambiente: " + tempPh.getTempAmb() + "\n");
-                tvCurrentValues.append("Humedad Ambiente: " + tempPh.getHumidity() + "\n");
-                tvCurrentValues.append("Segunda Temp: " + tempPh.getTemp5() + "\n");
+                String tempValid = String.format("%.2f", temp);
+                tvCurrentValues.append("Temperatura: " + tempValid + "\n");
+                tvCurrentValues.append("pH: " + String.format("%.2f", Float.valueOf(tempPh.getPh())) + "\n");
+                tvCurrentValues.append("Temp. Ambiente: " + String.format("%.2f", Float.valueOf(tempPh.getTempAmb()))  + "\n");
+                tvCurrentValues.append("Humedad Ambiente: " + String.format("%.2f", tempPh.getHumidity())  + "\n");
+                tvCurrentValues.append("Segunda Temp: " + String.format("%.2f", tempPh.getTemp5())  + "\n");
 
                 //Oculto el ProgressBar y muestro el Texto
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
