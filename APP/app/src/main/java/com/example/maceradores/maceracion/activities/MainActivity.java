@@ -233,8 +233,8 @@ public class MainActivity extends AppCompatActivity {
                 tvCurrentValues.append("Temperatura: " + tempValid + "\n");
                 tvCurrentValues.append("pH: " + String.format("%.2f", Float.valueOf(tempPh.getPh())) + "\n");
                 tvCurrentValues.append("Temp. Ambiente: " + String.format("%.2f", Float.valueOf(tempPh.getTempAmb()))  + "\n");
-                tvCurrentValues.append("Humedad Ambiente: " + String.format("%.2f", tempPh.getHumidity())  + "\n");
-                tvCurrentValues.append("Segunda Temp: " + String.format("%.2f", tempPh.getTemp5())  + "\n");
+                tvCurrentValues.append("Humedad Ambiente: " + String.format("%.2f", Float.valueOf(tempPh.getHumidity()))  + "\n");
+                tvCurrentValues.append("Segunda Temp: " + String.format("%.2f", Float.valueOf(tempPh.getTemp5()))  + "\n");
 
                 //Oculto el ProgressBar y muestro el Texto
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
