@@ -13,7 +13,9 @@ import android.widget.Chronometer;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 import com.example.maceradores.maceracion.R;
+import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 
 import org.w3c.dom.Text;
@@ -22,17 +24,16 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdapter.ViewHolder> {
-    private int stageInProgress;
-    private List<MeasureInterval> intervals;
+    //private List<MeasureInterval> intervals;
     private int layout;
-    //necesito Listener para el click?
+    private Mash mash;
 
 
-    public StageFragmentAdapter(List<MeasureInterval> intervals, int layout) {
-        this.intervals = intervals;
-        Log.d("StageFragmentAdapter", "tamaño de intervalos : " + intervals.size());
+    public StageFragmentAdapter(Mash mash, int layout) { //List<MeasureInterval> intervals
+        //this.intervals = intervals;
+        //Log.d("StageFragmentAdapter", "tamaño de intervalos : " + intervals.size());
+        this.mash = mash;
         this.layout = layout;
-        stageInProgress = 0;
     }
 
     @NonNull
@@ -45,12 +46,12 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.bind(this.intervals.get(i));
+        viewHolder.bind(this.mash, i);
     }
 
     @Override
     public int getItemCount() {
-        return intervals.size();
+        return mash.getPlan().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -60,6 +61,7 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
         private TextView temperatureStage;
         private TextView phStage;
         private TextView temperatureDecoccionStage;
+        private TextView planningStage;
         private LinearLayout linearLayoutRemainingStage;
 
 
@@ -71,13 +73,16 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
             this.temperatureStage = (TextView) itemView.findViewById(R.id.textViewTemperatureStage);
             this.phStage = (TextView) itemView.findViewById(R.id.textViewPhStage);
             this.temperatureDecoccionStage = (TextView) itemView.findViewById(R.id.textViewTemperatureDecoccionStage);
+            this.planningStage = (TextView) itemView.findViewById(R.id.textViewPlanningStage);
             this.linearLayoutRemainingStage = (LinearLayout) itemView.findViewById(R.id.linearLayoutRemainingStage);
+
 
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
-        public void bind(MeasureInterval interval) {
+        public void bind(Mash mash, int position) {
             //the interval have an order, no?
+            MeasureInterval interval = mash.getPlan().get(position);
             String stage = String.valueOf(interval.getOrder());
             numberStage.append(stage);
             //la duracion de la etapa esta expresada en minutos.
@@ -90,7 +95,7 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
             } else {
                 int remaining = 0;
                 for( int i = 0; i < interval.getOrder() - 1; i++ ){
-                    remaining = remaining + intervals.get(i).getDuration();
+                    remaining = remaining + mash.getPlan().get(i).getDuration();
                 }
                 remainingStage.setBase( SystemClock.elapsedRealtime() + remaining*60000);
                 remainingStage.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -119,7 +124,12 @@ public class StageFragmentAdapter extends RecyclerView.Adapter<StageFragmentAdap
             phStage.append( interval.getpH() + " ± " + interval.getPhDeviation());
 
             //temperatura decoccion
-            temperatureDecoccionStage.append( interval.getSecondTemperature() + " ± " + interval.getSecondTemperatureDeviation() + " °C " );
+            if(interval.getSecondTemperature() == -1000)
+                temperatureDecoccionStage.setText("");
+            else
+                temperatureDecoccionStage.append( interval.getSecondTemperature() + " ± " + interval.getSecondTemperatureDeviation() + " °C " );
+
+            planningStage.setText( mash.getPlanning(position));
         }
     }
 }

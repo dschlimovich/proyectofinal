@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Maceracion</string>
+    <string name="app_name">Maceración</string>
     <string-array name="tiposMaceracion">
         <item>Simple</item>
         <item>Escalonada</item>

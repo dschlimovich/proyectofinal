@@ -49,7 +49,7 @@ public class MyWorker extends Worker {
 
 
             int NumberOfCalls = cantMediciones(idMash, intervaloMedicion);
-            Log.d("La duracion es:", String.valueOf((intervaloMedicion / 2) * NumberOfCalls));
+            Log.d("La duración es:", String.valueOf((intervaloMedicion / 2) * NumberOfCalls));
             int counter = 0;
             int sleep = (intervaloMedicion / 2) * 1000;
             while (counter < NumberOfCalls) {
@@ -60,7 +60,7 @@ public class MyWorker extends Worker {
                     getSensedValues(IdExp_int, AppList); // Call to API to get the Sensed Values
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("Se rompio la ", "llamada RETROFIT new Exp");
+                    Log.d("Se rompió la ", "llamada RETROFIT new Exp");
                 }
 
                 counter++;
@@ -111,7 +111,7 @@ public class MyWorker extends Worker {
         }
         cursor.close();
         db.close();
-        if(intervaloMedicion<30)intervaloMedicion=30; // Minimo Intervalo de Medicion es de 30 seg
+        if(intervaloMedicion<60)intervaloMedicion=60; // Minimo Intervalo de Medicion es de 60 seg
 
         return intervaloMedicion;
     }

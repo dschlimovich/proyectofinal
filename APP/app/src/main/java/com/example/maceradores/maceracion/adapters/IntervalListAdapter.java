@@ -11,14 +11,11 @@ import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class IntervalListAdapter extends RecyclerView.Adapter<IntervalListAdapter.ViewHolder> {
     private Mash mash;
     private boolean planned;
-    //private List<MeasureInterval> intervals;
     private int layout;
     private IntervalListAdapter.onItemClickListener listener;
 

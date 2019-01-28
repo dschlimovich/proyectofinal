@@ -1,5 +1,8 @@
 package com.example.maceradores.maceracion.models;
 
+import android.widget.Toast;
+
+import com.example.maceradores.maceracion.activities.PlanningActivity;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.utils.Calculos;
 
@@ -73,7 +76,7 @@ public class Mash {
         }
         boolean finded = false;
         int it = plan.size() - 1; // arranco por el utlimo
-        while(finded){
+        while(!finded){
             if( it == position){
                 // lo encontre y lo elimino.
                 plan.remove(it);
@@ -261,5 +264,12 @@ public class Mash {
         } //Decoccion
 
         return "ERROR - Tipo de Maceracion Incorrecta";
+    }
+
+    public boolean validateMash(){
+        return (getPeriodMeasurePh() > getPeriodMeasureTemperature()) && // validacion que la temperatura se mide mas rapido que el ph
+               (getPeriodMeasurePh() % getPeriodMeasureTemperature() == 0) &&
+               (getPeriodMeasureTemperature() >=60) ;
+
     }
 }

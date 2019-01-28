@@ -6,12 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.maceradores.maceracion.Fragments.StageFragment;
 import com.example.maceradores.maceracion.Fragments.MeasureFragment;
+import com.example.maceradores.maceracion.Fragments.StageFragment;
 
-import java.util.UUID;
-
-public class ViewPagerAdapter  extends FragmentPagerAdapter {
+public class ViewPagerAdapterCurrent extends FragmentPagerAdapter {
     private int numberOfTabs;
     private int idMash;
     private int idExperiment;
@@ -19,7 +17,7 @@ public class ViewPagerAdapter  extends FragmentPagerAdapter {
     private Fragment stageFragment = null;
 
 
-    public ViewPagerAdapter(FragmentManager fm, Context context, int numberOfTabs, int idMash, int idExp) {
+    public ViewPagerAdapterCurrent(FragmentManager fm, Context context, int numberOfTabs, int idMash, int idExp) {
         super(fm);
         this.numberOfTabs=numberOfTabs;
         this.idMash=idMash;

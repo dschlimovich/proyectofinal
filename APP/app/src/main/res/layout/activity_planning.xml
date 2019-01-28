@@ -28,7 +28,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tipo de Maceracion:   "/>
+                        android:text="Tipo de Maceración:   "/>
 
                     <Spinner
                         android:id="@+id/spinnerTiposMaceracion"
@@ -67,7 +67,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ems="3"
-                        android:inputType="numberDecimal" />
+                        android:inputType="numberDecimal"
+                        android:hint="1.050"/>
                 </LinearLayout>
                 <!--> Granos a utilizar</!-->
                 <LinearLayout

@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         LineChart lineChart = findViewById(R.id.lineChart);
         ArrayList<Entry> entries = new ArrayList<>();
 
@@ -30,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
         dataSet.setColor(Color.RED);
         dataSet.setValueTextColor(Color.GREEN);
+
 
 
         LineData lineData = new LineData(dataSet);

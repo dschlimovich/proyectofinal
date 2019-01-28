@@ -1,8 +1,6 @@
 package com.example.maceradores.maceracion.models;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Experiment {

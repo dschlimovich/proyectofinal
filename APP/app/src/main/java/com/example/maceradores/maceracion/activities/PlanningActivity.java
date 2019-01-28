@@ -1,19 +1,16 @@
 package com.example.maceradores.maceracion.activities;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -46,8 +44,10 @@ import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.utils.Calculos;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
+
 
 public class PlanningActivity extends AppCompatActivity {
     //Buttons
@@ -56,7 +56,7 @@ public class PlanningActivity extends AppCompatActivity {
 
     //flag.
     private boolean planned = false;
-    private float rendimientoPractico = -1;
+
 
     //Container
     Spinner spinner;
@@ -71,7 +71,7 @@ public class PlanningActivity extends AppCompatActivity {
 
     //Data - Fields to create the new mash.
     private Mash mash;
-
+    private float rendimientoPractico = -1;
 
     // LifeCycle functions.
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -240,7 +240,8 @@ public class PlanningActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAlertDialogAddMeasureInterval();
+                String tipo = spinner.getSelectedItem().toString();
+                showAlertDialogAddMeasureInterval(tipo);
                 //intervalListAdapter.notifyDataSetChanged();
             }
         });
@@ -479,20 +480,17 @@ public class PlanningActivity extends AppCompatActivity {
                     //PlanningActivity.this.periodoMedicionPh = Integer.valueOf(medPh.getText().toString().trim());
                     PlanningActivity.this.mash.setPeriodMeasurePh(Integer.valueOf(medPh.getText().toString().trim()));
 
-                    if( mash.getPeriodMeasurePh() < mash.getPeriodMeasureTemperature()){
-                        // el sistema no lo permite.
-                        Toast.makeText(PlanningActivity.this, "El intervalo de medición de ph no puede ser menor que el intervalor de medición de temperatura.", Toast.LENGTH_SHORT).show();
-                    } else if(mash.getPeriodMeasurePh() % mash.getPeriodMeasureTemperature() != 0){
-                        Toast.makeText(PlanningActivity.this, "El intervalo de medicion de ph debe ser multiplo del intervalo de medicion de temperatura", Toast.LENGTH_SHORT).show();
-                    } else {
-                        //At this moment, i need to insert this new mash in the database
+                    if(mash.validateMash()){
 
                         mash.setTipo(spinner.getSelectedItem().toString());
 
                         insertNewPlanning();
                         //startActivity(new Intent(PlanningActivity.this, MainActivity.class));
                         finish();
+                    } else {
+                        Toast.makeText(PlanningActivity.this, "Los intervalos de medicion insertados no son válidos", Toast.LENGTH_SHORT).show();
                     }
+
                 } //end if validate planning
             }
         }); //end Accept Button
@@ -508,12 +506,13 @@ public class PlanningActivity extends AppCompatActivity {
 
     } //end finish alert dialog
 
-    private void showAlertDialogAddMeasureInterval() {
+    private void showAlertDialogAddMeasureInterval(final String tipo) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Nuevo Intervalo");
+        //builder.setTitle(tipo);
 
         View addIntervalView = LayoutInflater.from(this).inflate(R.layout.dialog_add_measure_interval, null);
-        builder.setView(addIntervalView);
 
         //le pongo el numerito de etapa que iria a agregar.
         TextView numberInterval = (TextView) addIntervalView.findViewById(R.id.textViewNumberInterval);
@@ -529,32 +528,55 @@ public class PlanningActivity extends AppCompatActivity {
         final EditText tempDecoccion = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccion);
         final EditText tempDecoccionDeviation = (EditText) addIntervalView.findViewById(R.id.editTextAddIntervalTemperatureDecoccionDeviation);
 
+
+        if( ! tipo.equals("Decocción")){
+            LinearLayout linearLayoutDecoccion = addIntervalView.findViewById(R.id.linearLayoutDecoccion);
+            LinearLayout linearLayoutDecoccionDeviation = addIntervalView.findViewById(R.id.linearLayoutDecoccionDeviation);
+            LinearLayout linearLayoutPlanning = addIntervalView.findViewById(R.id.linearLayoutPlanningMash);
+            linearLayoutPlanning.removeView(linearLayoutDecoccion);
+            linearLayoutPlanning.removeView(linearLayoutDecoccionDeviation);
+        }
+
+        builder.setView(addIntervalView);
+
         builder.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Aca debo tomar los valores y usarlos para llenar un IntervalMeasure.
                 if(     temperature.getText().toString().isEmpty() ||
                         temperatureDeviation.getText().toString().isEmpty() ||
-                        tempDecoccion.getText().toString().isEmpty() ||
-                        tempDecoccionDeviation.getText().toString().isEmpty() ||
-                        tempDecoccionDeviation.getText().toString().isEmpty() ||
+                        //tempDecoccion.getText().toString().isEmpty() ||
+                        //tempDecoccionDeviation.getText().toString().isEmpty() ||
                         ph.getText().toString().isEmpty() ||
                         phDeviation.getText().toString().isEmpty()){
                     Toast.makeText(PlanningActivity.this, "No se insertó intervalo. Algun campo vacío", Toast.LENGTH_SHORT).show();
                 } else{
+                    if(tipo.equals("Decocción")){
+                        MeasureInterval interval = new MeasureInterval(
+                                Float.valueOf(temperature.getText().toString().trim()),
+                                Float.valueOf(temperatureDeviation.getText().toString().trim()),
+                                Float.valueOf(tempDecoccion.getText().toString().trim()),
+                                Float.valueOf(tempDecoccionDeviation.getText().toString().trim()),
+                                Float.valueOf(ph.getText().toString().trim()),
+                                Float.valueOf(phDeviation.getText().toString().trim()),
+                                Integer.valueOf(duration.getText().toString().trim())
+                        );
 
-                    MeasureInterval interval = new MeasureInterval(
-                            Float.valueOf(temperature.getText().toString().trim()),
-                            Float.valueOf(temperatureDeviation.getText().toString().trim()),
-                            Float.valueOf(tempDecoccion.getText().toString().trim()),
-                            Float.valueOf(tempDecoccionDeviation.getText().toString().trim()),
-                            Float.valueOf(ph.getText().toString().trim()),
-                            Float.valueOf(phDeviation.getText().toString().trim()),
-                            Integer.valueOf(duration.getText().toString().trim())
-                    );
+                        //Ahora tengo que agregarlo a la lista de intervalos
+                        addInterval(interval);
+                    } else {
+                        MeasureInterval interval = new MeasureInterval(
+                                Float.valueOf(temperature.getText().toString().trim()),
+                                Float.valueOf(temperatureDeviation.getText().toString().trim()),
+                                Float.valueOf(ph.getText().toString().trim()),
+                                Float.valueOf(phDeviation.getText().toString().trim()),
+                                Integer.valueOf(duration.getText().toString().trim())
+                        );
 
-                    //Ahora tengo que agregarlo a la lista de intervalos
-                    addInterval(interval);
+                        //Ahora tengo que agregarlo a la lista de intervalos
+                        addInterval(interval);
+                    }
+
 
                 }
             }

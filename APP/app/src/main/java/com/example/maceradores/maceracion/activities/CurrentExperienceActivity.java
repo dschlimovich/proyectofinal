@@ -17,17 +17,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.maceradores.maceracion.Fragments.MeasureFragment;
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.WorkManager.MyWorker;
-import com.example.maceradores.maceracion.adapters.ViewPagerAdapter;
+import com.example.maceradores.maceracion.adapters.ViewPagerAdapterCurrent;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
 import com.google.gson.JsonObject;
@@ -54,7 +51,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     //UI
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private ViewPagerAdapter adapter;
+    private ViewPagerAdapterCurrent adapter;
     private UUID workId;
 
     // LifeCycle functions.
@@ -67,11 +64,13 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         if( intent.hasExtra("idMash") ){
             idMash = intent.getIntExtra("idMash", 0);
             setTitleName(idMash);
-            //setTitle("Medición " + intent.getStringExtra("nameMash"));
             long newExperimentId = insertNewExperiment(idMash);
             if(newExperimentId == -1) {
                 Toast.makeText(this, "Error al insertar experiencia", Toast.LENGTH_SHORT).show();
-                // TODO volver al activity
+                startActivity(
+                        new Intent(CurrentExperienceActivity.this, ExperimentActivity.class)
+                                .putExtra("idMash", idMash));
+                finish();
             } else{
                 // pudo insertar
                 this.idExperiment = (int) newExperimentId;
@@ -99,7 +98,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
             }
         } else {
-            Toast.makeText(this, "Usted ha llegado aqui de una manera misteriosa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Usted ha llegado aquí de una manera misteriosa", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -117,7 +116,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
         if(cursor.moveToFirst()){
             String name = cursor.getString(0); //como tengo una sola columna, devuelvo la primera nomas.
-            setTitle("Maceración" + name);
+            setTitle("Maceración " + name);
         }
         cursor.close();
         db.close();
@@ -150,17 +149,16 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         int medicionesRealizadas = amountSensedValue(idExperiment);
         int cadaCuantoMido = intervaloMedicion(idMash);
         int medicionesARealizar = cantMediciones( idMash, cadaCuantoMido);
-        Log.d("Mediciones a realizar: ",String.valueOf(medicionesARealizar));
+        Log.d("Mediciones a realizar: ",String.valueOf(medicionesARealizar/2));
         Log.d("Mediciones realizadas: ",String.valueOf(medicionesRealizadas));
 
-        //showAlertFinishExperience();
 
-        if( medicionesRealizadas == medicionesARealizar / 2){
+        if( medicionesRealizadas == medicionesARealizar/2){
             // Mostrar el alertDialog para finalizar la experiencia.
             // Tiene que insertar la densidad obtenida en el experimento.
             showAlertFinishExperience();
         } else {
-            Toast.makeText(this, "Aun no se realizaron todas las mediciones correspondientes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Aún no se realizaron todas las mediciones correspondientes", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -190,7 +188,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
     private void setViewPager(){
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager(),this,tabLayout.getTabCount(),idMash, idExperiment);
+        adapter = new ViewPagerAdapterCurrent(getSupportFragmentManager(),this,tabLayout.getTabCount(),idMash, idExperiment);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
@@ -408,7 +406,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
         }
         cursor.close();
         db.close();
-        if(intervaloMedicion<30)intervaloMedicion=30; // Minimo Intervalo de Medicion es de 30 seg
+        if(intervaloMedicion<60)intervaloMedicion=30; // Minimo Intervalo de Medicion es de 60 seg
 
         return intervaloMedicion;
     }

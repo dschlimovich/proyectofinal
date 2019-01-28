@@ -11,11 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.maceradores.maceracion.R;
 import com.example.maceradores.maceracion.adapters.StageFragmentAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
+import com.example.maceradores.maceracion.models.Grain;
+import com.example.maceradores.maceracion.models.Mash;
 import com.example.maceradores.maceracion.models.MeasureInterval;
 
 import java.util.ArrayList;
@@ -51,13 +52,81 @@ public class StageFragment extends Fragment {
         this.idExp=idExp;
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewStage);
-        List<MeasureInterval> intervals = getIntervals(idMash);
-        adapter = new StageFragmentAdapter(intervals, R.layout.item_list_stage);
+        //List<MeasureInterval> intervals = getIntervals(idMash);
+        //adapter = new StageFragmentAdapter(intervals, R.layout.item_list_stage);
+        Mash mash = getMash(idMash);
+        adapter = new StageFragmentAdapter(mash, R.layout.item_list_stage);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 
         return view;
+    }
+
+    private Mash getMash(int idMash){
+        // en principio me creo un mash con id nombre typo volumen
+        Mash mash;
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] columns = {"id", "nombre", "tipo", "volumen", "densidadObjetivo"};
+        String selection = "id = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+        //Log.d("StageFragment", "el id de maceracion es: " + idMash);
+
+        Cursor cursor = db.query("Maceracion", columns, selection, selectionArgs, null, null, null);
+        if(cursor.moveToFirst()){
+
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+
+            String name= cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
+
+            String type = cursor.getString(cursor.getColumnIndexOrThrow("tipo"));
+
+            float volume = cursor.getFloat(cursor.getColumnIndexOrThrow("volumen"));
+
+            float density = cursor.getFloat(cursor.getColumnIndexOrThrow("densidadObjetivo"));
+
+            mash = new Mash(id, name, type);
+            mash.setVolumen(volume);
+            mash.setDensidadObjetivo(density);
+        } else
+            return null;
+
+        cursor.close();
+        db.close();
+
+        mash.setGrains( getGrains(idMash));
+        mash.setPlan(getIntervals(idMash));
+
+        return mash;
+
+    }
+
+    private List<Grain> getGrains(int idMash){
+        List<Grain> grains = new ArrayList<>();
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String selection = "maceracion = ?";
+        String[] selectionArgs = { String.valueOf(idMash)};
+        //Log.d("StageFragment", "el id de maceracion es: " + idMash);
+
+        Cursor cursor = db.query("Grano", null, selection, selectionArgs, null, null, null);
+        while(cursor.moveToNext()){
+
+            String name= cursor.getString(cursor.getColumnIndexOrThrow("nombre"));
+
+            float quantity = cursor.getFloat(cursor.getColumnIndexOrThrow("cantidad"));
+
+            float extract = cursor.getFloat(cursor.getColumnIndexOrThrow("extractoPotencial"));
+
+            Grain grain = new Grain(name, quantity, extract);
+            grains.add(grain);
+        }
+        cursor.close();
+        db.close();
+        return grains;
     }
 
     private List<MeasureInterval> getIntervals(int idMash){
@@ -68,7 +137,7 @@ public class StageFragment extends Fragment {
         //String[] columns = {"idRaspi"};
         String selection = "maceracion = ?";
         String[] selectionArgs = { String.valueOf(idMash)};
-        Log.d("StageFragment", "el id de maceracion es: " + idMash);
+        //Log.d("StageFragment", "el id de maceracion es: " + idMash);
 
         Cursor cursor = db.query("Intervalo", null, selection, selectionArgs, null, null, null);
         while(cursor.moveToNext()){
@@ -92,7 +161,7 @@ public class StageFragment extends Fragment {
         cursor.close();
         db.close();
 
-        Log.d("StageFragment", "tamaño de intervalos: " + intervals.size());
+        //Log.d("StageFragment", "tamaño de intervalos: " + intervals.size());
         return intervals;
     }
 }
