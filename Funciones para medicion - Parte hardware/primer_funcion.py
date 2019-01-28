@@ -24,11 +24,10 @@ def funcion_uno(mido_ph):
     ruta_sensor = []
     ruta_sensor.append('28-000008e280f3')
     ruta_sensor.append('28-000008e44af9')
-    ruta_sensor.append('28-000008e3a29b') #e morto...
     ruta_sensor.append('28-00000901cc93')
-
-    ruta_sensor.append('28-000008e270f2') # Switcheamos 5 y 6
     ruta_sensor.append('28-000008e44df6') #posicion 6 es para pH
+    ruta_sensor.append('28-000008e270f2')  # Switcheamos 5 y 6
+    ruta_sensor.append('28-000008e3a29b')  # e morto...
 
     phHolder = -1 #el primero va a quedar con -1 si o si, porque no tiene valores anteriores de medicion.
     
