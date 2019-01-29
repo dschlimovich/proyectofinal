@@ -42,7 +42,7 @@ public class Calculos {
 
         double kgExtObtenido = volMosto * kgExhl/100;// Multiplicaría esto por el porcentaje de cada tipo de grano, Ej 92% pale, 8%caramel
 
-        double kgGrano = kgExtObtenido * 100 / porcRend;
+        double kgGrano = kgExtObtenido / porcRend;
 
         return kgGrano;
     }
