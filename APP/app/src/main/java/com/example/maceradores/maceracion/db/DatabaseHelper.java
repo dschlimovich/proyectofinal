@@ -711,6 +711,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return amount;
     }
 
+    public int updateSensedValue(SensedValues sv){
+        // Primero defino el contentValues con los valores del input
+        int flag = 0;
+        try{
+            SQLiteDatabase db = getWritableDatabase();
+
+            ContentValues cv = new ContentValues();
+            // id, id_exp e idRaspi no se deberían actualizar.
+            cv.put("temp1", sv.getTemp1());
+            cv.put("temp2", sv.getTemp2());
+            cv.put("temp1", sv.getTemp3());
+            cv.put("temp1", sv.getTemp4());
+            cv.put("temp5", sv.getTempSecondary());
+            cv.put("tempPh", sv.getTempPH());
+            cv.put("tempAmb", sv.getTempPH());
+            cv.put("tempPh", sv.getTempPH());
+            cv.put("pH", sv.getpH());
+
+            flag = db.update("SensedValues", cv, "id = " + sv.getId(), null);
+
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        // retorno flag que es uno en caso que se haya actualizado correctamente
+        return flag;
+    }
+
     //------------------SENSED VALUES-----------------------
 
 /*
