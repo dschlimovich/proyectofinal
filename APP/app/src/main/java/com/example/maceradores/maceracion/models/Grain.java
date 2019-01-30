@@ -32,7 +32,7 @@ public class Grain {
     public String getStringPlanning(){
         return  getName() +
                 "\t Porcentaje: " + String.valueOf(getQuantity()*100) +"%" +
-                "\t Extracto: " + String.valueOf(getExtractPotential());
+                "\t Extracto: " + String.valueOf(getExtractPotential()*100)+"%";
     }
 
     public float getMaltTheoritical(float densEspecif, float volLitros, float rendEquipo){
@@ -54,12 +54,12 @@ public class Grain {
         double kgPractico = getMaltTheoritical( densEspecif,  volLitros, rendEquipo);
 
         if(rendEquipo == 0.7f){
-            return getName() +
+            return getName() +" "+ (getQuantity()*100)+
                     //"\t Cant. Teór.: " + String.valueOf((float)kgTeorico) + "kg ";
-                    "\t Cant. Teór.: " + String.format("%.2f", (float)kgTeorico) + "kg ";
+                    "% Cant. Teór.: " + String.format("%.2f", (float)kgTeorico) + "kg ";
         } else{
-            return getName() +
-                    "\t Cant. Teór.: " + String.format("%.2f", (float)kgTeorico) + "kg " +
+            return getName() +" "+ (getQuantity()*100)+
+                    "% Cant. Teór.: " + String.format("%.2f", (float)kgTeorico) + "kg " +
                     " Práct.: " + String.format("%.2f", (float)kgPractico) + "kg";
         }
 
