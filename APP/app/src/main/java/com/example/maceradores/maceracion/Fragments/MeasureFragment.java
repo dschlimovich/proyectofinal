@@ -747,15 +747,15 @@ public class MeasureFragment extends Fragment {
         }
         // {10, 40, 60}
 
-        int orden = 1;
+        int orden = 0;
         boolean flag = true;
         while(flag){
-
-            if( amount <= medicionesPorIntervalo.get(orden-1)){
+            //la primer condicion del if es para que el compilador no se queje...
+            if( orden < medicionesPorIntervalo.size() && amount <= medicionesPorIntervalo.get(orden-1)){
                 flag = false;
-            }else{
-                orden = orden + 1;
             }
+
+            orden = orden + 1;
         }
         float porcentaje = (amount*2.0f) / (medicionesPorIntervalo.get(medicionesPorIntervalo.size()-1) * 1.0f); //amount *2 es porque tiene hace mas mediciones que los valores que tiene que traer
         return new float[]{orden, porcentaje};
