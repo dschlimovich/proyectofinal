@@ -483,7 +483,7 @@ public class MeasureFragment extends Fragment {
             beta_s = "----";
             glucanasa_s = "----";
             proteasa_s = "----";
-            Toast.makeText(getContext(), "Error en cálculo de enzimas", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), "Error en cálculo de enzimas", Toast.LENGTH_SHORT).show();
         } else {
             alfa_s = String.format("%.2f", alfa);
             beta_s = String.format("%.2f", beta);
