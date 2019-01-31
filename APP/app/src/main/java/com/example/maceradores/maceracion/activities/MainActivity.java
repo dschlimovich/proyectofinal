@@ -285,4 +285,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void multiiplicateExperiment(int idExpOrigin, int cant){
+        //primero tengo que saber el id de maceración del experimento a multiplicar.
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        int idMash = dbHelper.getIdMash(idExpOrigin);
+        //Experiment origin = dbHelper.getExperiment(idExpOrigin);
+
+        //me traigo todos los sensedvalues de este experimento.
+        List<SensedValues> svList = dbHelper.getAllSensedValues(idExpOrigin);
+
+
+        //Ahora tengo que hacer una iteración por la cantidad de veces que yo quiera.
+        List<Integer> newIdList = new ArrayList<>();
+        for( int i=0; i<cant; i++){
+            //primero debería agregar un experimento nuevo.
+            int idNewExp = (int) dbHelper.insertNewExperiment(idExpOrigin);
+            //con esto yo tengo un nuevo experimento con fecha "Ahora" y idMash igual quel origin.
+            newIdList.add(idNewExp);
+            //aca debería ver el tema de modificar la fecha tal vez
+        }
+
+        //ahora que tengo todos los ids, recorro los sensedValues y se los voy insertando.
+        for( int i=0; i<svList.size(); i++){
+            //meto cada uno de estos en cada experimento creado.
+            for (SensedValues sv : svList) {
+
+            }
+        }
+
+        dbHelper.close();
+
+    }
+
 } //end MainActivity
