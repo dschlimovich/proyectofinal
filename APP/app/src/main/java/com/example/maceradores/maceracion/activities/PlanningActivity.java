@@ -198,6 +198,9 @@ public class PlanningActivity extends AppCompatActivity {
         listGrains = (ListView) findViewById(R.id.listViewPlanningGrains);
         //grainListAdapter = new GrainListAdapter(this, grains, R.layout.item_list_grain);
         grainListAdapter = new GrainListAdapter(this, mash, planned, R.layout.item_list_grain, this.rendimientoPractico);
+        if(planned && this.rendimientoPractico==0.7){
+            Toast.makeText(this, "Cantidad de experimentos insuficientes para cálculo de insumos optimizado", Toast.LENGTH_SHORT).show();
+        }
         listGrains.setAdapter(grainListAdapter);
         registerForContextMenu(this.listGrains);
 
