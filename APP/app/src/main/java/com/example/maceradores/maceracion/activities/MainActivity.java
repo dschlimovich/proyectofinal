@@ -236,6 +236,10 @@ public class MainActivity extends AppCompatActivity {
                 tvCurrentValues.append("Humedad Ambiente: " + String.format("%.2f", Float.valueOf(tempPh.getHumidity()))  + "\n");
                 tvCurrentValues.append("Segunda Temp: " + String.format("%.2f", Float.valueOf(tempPh.getTemp5()))  + "\n");
 
+                if(temp<0 || Float.valueOf(tempPh.getPh())<0||
+                        Float.valueOf(tempPh.getTempAmb())<0||Float.valueOf(tempPh.getTemp5())<0){
+                    Toast.makeText(getApplicationContext(), "Falla en algún/os Sensor/es",Toast.LENGTH_LONG).show();
+                }
                 //Oculto el ProgressBar y muestro el Texto
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
                 tvCurrentValues.setVisibility(View.VISIBLE);
@@ -244,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TempPh> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Error de Conexión con el Servidor",Toast.LENGTH_LONG).show();
             }
         });
 
