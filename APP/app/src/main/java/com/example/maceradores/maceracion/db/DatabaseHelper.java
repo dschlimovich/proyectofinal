@@ -793,8 +793,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // id, id_exp e idRaspi no se deberían actualizar.
             cv.put("temp1", valoresMod[0]);
             cv.put("temp2", valoresMod[1]);
-            cv.put("temp1", valoresMod[2]);
-            cv.put("temp1", valoresMod[3]);
+            cv.put("temp3", valoresMod[2]);
+            cv.put("temp4", valoresMod[3]);
             cv.put("temp5", valoresMod[4]);
             cv.put("tempPh", valoresMod[5]);
             cv.put("pH", valoresMod[6]);
