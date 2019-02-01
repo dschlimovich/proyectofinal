@@ -671,6 +671,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return listSensedValues;
     }
 
+    public List<Integer> getAllSensedValuesId(int idExp){
+        List<Integer> svIdList = new ArrayList<>();
+        try{
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.query("SensedValues", null, "id_exp = " + idExp, null, null, null, null);
+            while(cursor.moveToNext()){
+                //if(cursor.moveToFirst()){
+                int id = cursor.getInt( cursor.getColumnIndexOrThrow("id"));
+                svIdList.add(id);
+            }
+            cursor.close();
+            db.close();
+
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+        return svIdList;
+    }
+
     public SensedValues getLastSensedValue(int idExp){
         SensedValues sv = null;
         try{
@@ -730,6 +749,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cv.put("pH", sv.getpH());
 
             flag = db.update("SensedValues", cv, "id = " + sv.getId(), null);
+
+            db.close();
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+
+        // retorno flag que es uno en caso que se haya actualizado correctamente
+        return flag;
+    }
+
+    public void insertSensedValue(SensedValues sv, int idExp) {
+        try{
+            SQLiteDatabase db = getWritableDatabase();
+            // creo el content value
+            ContentValues cv = new ContentValues();
+            cv.put("idRaspi", sv.getIdRaspi());
+            cv.put("id_exp", idExp);
+            cv.put("fechayhora", sv.getDate()); //TODO checkear que ande.
+            cv.put("temp1", sv.getTemp1());
+            cv.put("temp2", sv.getTemp2());
+            cv.put("temp3", sv.getTemp3());
+            cv.put("temp4", sv.getTemp4());
+            cv.put("temp5", sv.getTempSecondary());
+            cv.put("tempPh", sv.getTempPH());
+            cv.put("tempAmb", sv.getTempEnviroment());
+            cv.put("humity", sv.getHumidity());
+            cv.put("pH", sv.getpH());
+
+            //ahora tengo que hacer el insert.
+            db.insert("SensedValues", null, cv);
+        } catch(SQLException e){
+            Log.d("Error DB", e.toString());
+        }
+    }
+
+    public int updateSensedValue(int idSv, float[] valoresMod) {
+        int flag = 0;
+        try{
+            SQLiteDatabase db = getWritableDatabase();
+
+            ContentValues cv = new ContentValues();
+            // id, id_exp e idRaspi no se deberían actualizar.
+            cv.put("temp1", valoresMod[0]);
+            cv.put("temp2", valoresMod[1]);
+            cv.put("temp1", valoresMod[2]);
+            cv.put("temp1", valoresMod[3]);
+            cv.put("temp5", valoresMod[4]);
+            cv.put("tempPh", valoresMod[5]);
+            cv.put("pH", valoresMod[6]);
+
+            flag = db.update("SensedValues", cv, "id = " + idSv, null);
 
             db.close();
         } catch(SQLException e){

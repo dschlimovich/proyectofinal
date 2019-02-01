@@ -4,6 +4,8 @@ public class SensedValues {
 
     private int id;
     private int idRaspi;
+
+
     private String date; //the format YYYY MM DD hh:mm
     //temperatures from sensors
     private float temp1;
@@ -68,6 +70,30 @@ public class SensedValues {
         return temp1;
     }
 
+    public void setTemp1(float temp1) {
+        this.temp1 = temp1;
+    }
+
+    public void setTemp2(float temp2) {
+        this.temp2 = temp2;
+    }
+
+    public void setTemp3(float temp3) {
+        this.temp3 = temp3;
+    }
+
+    public void setTemp4(float temp4) {
+        this.temp4 = temp4;
+    }
+
+    public void setTempSecondary(float tempSecondary) {
+        this.tempSecondary = tempSecondary;
+    }
+
+    public void setTempPH(float tempPH) {
+        this.tempPH = tempPH;
+    }
+
     public float getTemp2() {
         return temp2;
     }
@@ -103,6 +129,11 @@ public class SensedValues {
     public void setpH(float pH) {
         this.pH = pH;
     }
+
+    public int getIdRaspi() {
+        return idRaspi;
+    }
+
 
     private static float enzymeNormalActivation( float t, float minT, float maxT, float ph, float minPh, float maxPh ){
         if( t < maxT){

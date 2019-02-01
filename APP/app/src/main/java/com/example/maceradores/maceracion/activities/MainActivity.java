@@ -36,6 +36,7 @@ import com.example.maceradores.maceracion.retrofitInterface.Api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -289,36 +290,49 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void multiiplicateExperiment(int idExpOrigin, int cant){
-        //primero tengo que saber el id de maceración del experimento a multiplicar.
+    private void alterExperiment( int idExpOrigin, int idExpDestination){
+        // aca la movida va a ser asi:
+        // suponiendo que el experimento origen esta en optimas condiciones.
+        // yo voy a tomar valores de temperatura y pH del experimento origen.
+        // y los voy a meter en el correspondiente sensedvalues del experimento destino.
+        // con una modificación..
+
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        int idMash = dbHelper.getIdMash(idExpOrigin);
-        //Experiment origin = dbHelper.getExperiment(idExpOrigin);
 
         //me traigo todos los sensedvalues de este experimento.
         List<SensedValues> svList = dbHelper.getAllSensedValues(idExpOrigin);
 
+        // ahora me traigo los ids de los sensedvalues insertados en el experimento destino.
+        List<Integer> svIdListDestination = dbHelper.getAllSensedValuesId(idExpDestination);
 
-        //Ahora tengo que hacer una iteración por la cantidad de veces que yo quiera.
-        List<Integer> newIdList = new ArrayList<>();
-        for( int i=0; i<cant; i++){
-            //primero debería agregar un experimento nuevo.
-            int idNewExp = (int) dbHelper.insertNewExperiment(idExpOrigin);
-            //con esto yo tengo un nuevo experimento con fecha "Ahora" y idMash igual quel origin.
-            newIdList.add(idNewExp);
-            //aca debería ver el tema de modificar la fecha tal vez
-        }
+        for( int i=0; i < svList.size(); i++){
+            SensedValues currentSv = svList.get(i);
+            //modifico los valores.
+            float rangoModTemp = 0.3f;
+            float rangoModPh = 0.1f;
 
-        //ahora que tengo todos los ids, recorro los sensedValues y se los voy insertando.
-        for( int i=0; i<svList.size(); i++){
-            //meto cada uno de estos en cada experimento creado.
-            for (SensedValues sv : svList) {
+            float[] valoresMod = new float[]{
+                    alterValue(currentSv.getTemp1(), rangoModTemp),
+                    alterValue(currentSv.getTemp2(), rangoModTemp),
+                    alterValue(currentSv.getTemp3(), rangoModTemp),
+                    alterValue(currentSv.getTemp4(), rangoModTemp),
+                    alterValue(currentSv.getTempSecondary(), rangoModTemp),
+                    alterValue(currentSv.getTempPH(), rangoModTemp),
+                    alterValue(currentSv.getpH(), rangoModPh)
+            };
 
-            }
+            //ahora actualizo los valores del sensesvalues.
+            dbHelper.updateSensedValue(svIdListDestination.get(i), valoresMod);
         }
 
         dbHelper.close();
+    }
 
+    private float alterValue( float value, float range){
+        // Aca la onda es el valor que me entra lo tengo que alterar dentro del rango que le pido.
+        Random rand = new Random();
+        float alt = rand.nextFloat()*range - (range/2.0f);
+        return value + alt;
     }
 
 } //end MainActivity
