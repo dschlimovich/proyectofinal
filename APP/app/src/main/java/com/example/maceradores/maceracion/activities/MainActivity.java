@@ -31,11 +31,13 @@ import com.example.maceradores.maceracion.RetrofitGsonContainer.TempPh;
 import com.example.maceradores.maceracion.adapters.MashListAdapter;
 import com.example.maceradores.maceracion.db.DatabaseHelper;
 import com.example.maceradores.maceracion.models.Mash;
+import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -287,6 +289,99 @@ public class MainActivity extends AppCompatActivity {
             return promedio;
         }
 
+    }
+
+    private void alterExperiment( int idExpOrigin, int idExpDestination){
+        // aca la movida va a ser asi:
+        // suponiendo que el experimento origen esta en optimas condiciones.
+        // yo voy a tomar valores de temperatura y pH del experimento origen.
+        // y los voy a meter en el correspondiente sensedvalues del experimento destino.
+        // con una modificación..
+
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+        //me traigo todos los sensedvalues de este experimento.
+        List<SensedValues> svList = dbHelper.getAllSensedValues(idExpOrigin);
+
+        // ahora me traigo los ids de los sensedvalues insertados en el experimento destino.
+        List<Integer> svIdListDestination = dbHelper.getAllSensedValuesId(idExpDestination);
+
+        for( int i=0; i < svList.size(); i++){
+            SensedValues currentSv = svList.get(i);
+            //modifico los valores.
+            float rangoModTemp = 0.3f;
+            float rangoModPh = 0.1f;
+
+            float[] valoresMod = new float[]{
+                    alterValue(currentSv.getTemp1(), rangoModTemp),
+                    alterValue(currentSv.getTemp2(), rangoModTemp),
+                    alterValue(currentSv.getTemp3(), rangoModTemp),
+                    alterValue(currentSv.getTemp4(), rangoModTemp),
+                    alterValue(currentSv.getTempSecondary(), rangoModTemp),
+                    alterValue(currentSv.getTempPH(), rangoModTemp),
+                    alterValue(currentSv.getpH(), rangoModPh)
+            };
+
+            //ahora actualizo los valores del sensesvalues.
+            dbHelper.updateSensedValue(svIdListDestination.get(i), valoresMod);
+        }
+
+        dbHelper.close();
+    }
+
+    private float alterValue( float value, float range){
+        // Aca la onda es el valor que me entra lo tengo que alterar dentro del rango que le pido.
+        Random rand = new Random();
+        float alt = rand.nextFloat()*range - (range/2.0f);
+        return value + alt;
+    }
+
+    private void enhanceTemperatureExperiment(int idExp){
+        // mi idea sería acomodar la temperatura un experimento para que quede
+        // como la planificación.
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        //primero debería obtener la planificación de la maceración.
+        //obtengo el id de la maceración corresóndiente.
+        int idMash = dbHelper.getIdMash(idExp);
+
+        //obtengo la temperatura a la que la tengo que llevar.
+        List<MeasureInterval> intervals = dbHelper.getMeasureIntervals(idMash);
+        float tempPlanned = intervals.get(0).getMainTemperature(); //suponiedo que es simple
+        intervals.clear();
+
+        //obtengo todos los sensedValues del experimento.
+        List<SensedValues> svList = dbHelper.getAllSensedValues(idExp);
+
+        //voy a recorrer todos los sensed values y voy acumulando los valores de temperatura para
+        //despues obtener el promedio.
+
+        float acumulado = 0;
+        for(SensedValues sv: svList){
+            float t = validatedTempMean( sv.getTemp1(),sv.getTemp2(), sv.getTemp3(), sv.getTemp4());
+            acumulado = acumulado + t;
+        }
+
+        float promedio = acumulado / svList.size();
+        float desvio = tempPlanned - promedio;
+
+        //ahora debería ir recorriendo los senseedvalues e ir modificando los valores.
+        //para actualizarlos.
+        for(SensedValues sv : svList){
+            //reutilizo la función que había definido antes.
+            float[] valoresMod = new float[]{
+                    sv.getTemp1() + desvio,
+                    sv.getTemp2() + desvio,
+                    sv.getTemp3() + desvio,
+                    sv.getTemp4() + desvio,
+                    sv.getTempSecondary(),
+                    sv.getTempPH(),
+                    sv.getpH()
+            };
+
+            dbHelper.updateSensedValue(sv.getId(), valoresMod);
+        }
+
+        dbHelper.close();
     }
 
 } //end MainActivity
