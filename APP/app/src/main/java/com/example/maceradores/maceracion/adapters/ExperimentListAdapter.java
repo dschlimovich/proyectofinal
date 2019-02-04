@@ -42,15 +42,18 @@ public class ExperimentListAdapter extends RecyclerView.Adapter<ExperimentListAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvNameMash;
+        private TextView tvSecondColumn;
         // TODO change the id to one more general.
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.tvNameMash = (TextView) itemView.findViewById(R.id.tvItemListMash);
+            this.tvSecondColumn = (TextView) itemView.findViewById(R.id.tvItemListMashSecond);
         }
 
         public void bind(final Experiment experiment, final onItemClickListener listener) {
             tvNameMash.setText(experiment.getDate());
+            tvSecondColumn.setText(experiment.getId());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
