@@ -11,12 +11,14 @@ public class Calculos {
     // ---------------------- INSUMOS Y RENDIMIENTO -------------------------------
     public static double[] calcRendimiento(double volMosto, double densEspecif, double kgMalta){
         //Densidad Especifica que mido
-        double gradosPlato = (densEspecif-1)/0.004; //DE*250 - 250
+        double gradosPlato1 = (densEspecif-1)/0.004; //DE*250 - 250
+        double gradosPlato2 = 259-(259/densEspecif);
+        double gradosPlato = (gradosPlato1 + gradosPlato2)/2;
         double kgExhl = gradosPlato * densEspecif;
 
 
         double kgExtObtenido = volMosto * kgExhl/100;
-        double porcRendimiento = 100 * kgExtObtenido / kgMalta;// Recordar que un 80% es un valor excelente, ya el otro 20% es bagazo
+        double porcRendimiento = kgExtObtenido / kgMalta;// ahora KG DE MALTA EN REALIDAD TRAE LOS KG DE EXT MAXIMOS.
         //double porcRendimiento = kgExtObtenido / kgMalta;
         double [] array = {kgExhl,kgExtObtenido,porcRendimiento};
         return array;
