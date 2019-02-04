@@ -392,11 +392,8 @@ public class DetailExperimentActivity extends AppCompatActivity {
         Mash mash = dbHelper.getMash(idMash);
         mash.setGrains( dbHelper.getGrains(idMash));
         // para saber los insumos necesito densidad esperada, volumen y rendimiento equipo 0.7.
-        float kgUtilizado = 0;
-        for( int i=0; i < mash.getGrains().size(); i++){
-            kgUtilizado = kgUtilizado + (float) Calculos.calcCantInsumoTeoRayDaniels(mash.getDensidadObjetivo(), mash.getVolumen(), mash.getGrains().get(i), 0.7f);
-            //uso 0.7f porque el primer calculo de insumo lo hace con ese rendimiento del equipo.
-        }
+        double kgUtilizado = mash.kgMalta();
+
         // rendimiento es masaObtenida/masaUsada
         // masaObtenida = densidadEspecificaObtenida * Volumen
         this.rendimiento = (float) Calculos.calcRendimiento(mash.getVolumen(),this.currentExperiment.getDensity(),kgUtilizado)[2];

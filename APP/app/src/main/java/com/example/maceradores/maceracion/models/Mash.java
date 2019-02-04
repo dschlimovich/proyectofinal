@@ -188,8 +188,8 @@ public class Mash {
     public double kgMalta(){
         double cantMalta = 0;
         for( int i = 0; i < this.getGrains().size(); i++){
-            //TODO calcular la cantidad de grano a partir del rendimiento practico.
-            cantMalta = cantMalta + Calculos.calcCantInsumoTeoRayDaniels(this.densidadObjetivo, this.volumen, this.grains.get(i), 0.7f);
+            //Ahora no es el kilaje de grano, sino el kilaje de extractopotencial. Así va a dar bien la relacion para el cal de Rendimiento
+            cantMalta = cantMalta + this.getGrains().get(i).getExtractPotential()*Calculos.calcCantInsumoTeoRayDaniels(this.densidadObjetivo, this.volumen, this.grains.get(i), 0.7f);
         }
         return cantMalta;
     }
