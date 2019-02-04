@@ -53,7 +53,7 @@ public class ExperimentListAdapter extends RecyclerView.Adapter<ExperimentListAd
 
         public void bind(final Experiment experiment, final onItemClickListener listener) {
             tvNameMash.setText(experiment.getDate());
-            tvSecondColumn.setText(experiment.getId());
+            tvSecondColumn.setText("" + experiment.getId());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
