@@ -60,7 +60,7 @@ public class Grain {
         } else{
             return getName() +" "+ (getQuantity()*100)+
                     "% Cant. Teór.: " + String.format("%.2f", (float)kgTeorico) + "kg " +
-                    " Práct.: " + String.format("%.2f", (float)kgPractico) + "kg";
+                    " Ajustado: " + String.format("%.2f", (float)kgPractico) + "kg";
         }
 
     }
