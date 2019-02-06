@@ -80,6 +80,7 @@ public class CurrentExperienceActivity extends AppCompatActivity{
 
                 final OneTimeWorkRequest simpleRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
                         .setInputData(data)
+                        .addTag("Worker")
                         .build();
                 WorkManager.getInstance().enqueue(simpleRequest);
 
@@ -212,6 +213,8 @@ public class CurrentExperienceActivity extends AppCompatActivity{
     private void cancelExperiment(int idExp, int idMash){
     //---Cancel Worker
         WorkManager.getInstance().cancelWorkById(this.workId);//Cancelo el Worker
+        WorkManager.getInstance().cancelAllWorkByTag("Worker");
+        WorkManager.getInstance().cancelAllWork();
 
     //---Move to the Experiment Activity
         //Intent intent = new Intent(CurrentExperienceActivity.this, ExperimentActivity.class);

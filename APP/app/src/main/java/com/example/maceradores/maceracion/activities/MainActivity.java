@@ -15,6 +15,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,6 +47,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class MainActivity extends AppCompatActivity {
     //Variables del modelo
@@ -188,6 +190,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAlertCurrentValues(){
+   /*     DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        List<SensedValues>lista=new ArrayList<>();
+        lista = dbHelper.getAllSensedValues(12);
+        lista = dbHelper.getAllSensedValues(13);
+        lista = dbHelper.getAllSensedValues(14);
+        dbHelper.deleteExperiment(12);
+        dbHelper.deleteExperiment(13);
+        dbHelper.deleteExperiment(14);
+        if(lista.isEmpty())Log.d("No hay","SV");
+        for(int i=0;i<lista.size();i++){
+            Log.d("id_Raspi",String.valueOf(lista.get(i).getIdRaspi()));
+            Log.d("id",String.valueOf(lista.get(i).getId()));
+        }
+        //cancelAllWork();*/
+        //----------------------------------------
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Valores Actuales");
