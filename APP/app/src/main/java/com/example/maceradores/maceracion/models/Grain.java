@@ -54,13 +54,13 @@ public class Grain {
         double kgPractico = getMaltTheoritical( densEspecif,  volLitros, rendEquipo);
 
         if(rendEquipo == 0.7f){
-            return getName() +" "+ (getQuantity()*100)+
+            return getName() +":\n Porcentaje en receta: "+ (getQuantity()*100)+
                     //"\t Cant. Teór.: " + String.valueOf((float)kgTeorico) + "kg ";
-                    "% Cant. Teór.: " + String.format("%.2f", (float)kgTeorico) + "kg ";
+                    "%\n Cantidad Teórica: " + String.format("%.2f", (float)kgTeorico) + "Kg. ";
         } else{
-            return getName() +" "+ (getQuantity()*100)+
-                    "% Cant. Teór.: " + String.format("%.2f", (float)kgTeorico) + "kg " +
-                    " Ajustado: " + String.format("%.2f", (float)kgPractico) + "kg";
+            return getName() +":\n Porcentaje en receta: "+ (getQuantity()*100)+
+                    "%\n Cantidad Teórica: " + String.format("%.2f", (float)kgTeorico) + "Kg. " +
+                    "\n Cantidad Teórica Ajustada: " + String.format("%.2f", (float)kgPractico) + "Kg.";
         }
 
     }
