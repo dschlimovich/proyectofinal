@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
         setToolbar();
 
-
-
     } //end OnCreate
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -326,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
         for( int i=0; i < svList.size(); i++){
             SensedValues currentSv = svList.get(i);
             //modifico los valores.
-            float rangoModTemp = 0.3f;
+            float rangoModTemp = 1f;
             float rangoModPh = 0.1f;
 
             float[] valoresMod = new float[]{
@@ -396,6 +394,48 @@ public class MainActivity extends AppCompatActivity {
             };
 
             dbHelper.updateSensedValue(sv.getId(), valoresMod);
+        }
+
+        dbHelper.close();
+    }
+
+    private void addExperimentChiquita(int idMash){
+        //el id de la maceración chiquita es 5
+        // yo tendría que insertar un experimento, en este caso id 1.
+        // porque no tengo otros experimentos insertados.
+        // luego tengo que insertar 5 sensedvalues.
+        // a ver que sale campeon
+
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        long idNewExperiment = dbHelper.insertNewExperiment(idMash);
+        dbHelper.insertDensity((int) idNewExperiment, 1.050f);
+        //le agrego 5 sensedValues.
+
+        for (int i=0; i < 5; i++){
+            //este hardcodeo de fecha no se si me lo va a perimitir...
+            SensedValues sv = new SensedValues(i,i, "5/5/2018 16:16",
+                    60, 60, 60, 60,
+                    50, 25, 33, 24, 5);
+            dbHelper.insertSensedValue(sv, (int) idNewExperiment);
+        }
+
+        //a este nuevo experimento yo lo debería multiplicar.
+        //suponete que lo repito 4 veces para tener 5 experimentos en total
+
+        for (int i=0; i<4; i++){
+            //agrego.
+            long id = dbHelper.insertNewExperiment(idMash);
+            dbHelper.insertDensity((int) id, 1.050f);
+            //repito el experimento.
+            for (int j=0; j < 5; j++){
+                //este hardcodeo de fecha no se si me lo va a perimitir...
+                SensedValues sv = new SensedValues(5+j+(5*i),5+j+(5*i), "5/5/2018 16:16",
+                        60, 60, 60, 60,
+                        50, 25, 33, 24, 5);
+                dbHelper.insertSensedValue(sv, (int) id);
+            }
+
+            alterExperiment((int) idNewExperiment, (int)id);
         }
 
         dbHelper.close();
