@@ -1,6 +1,7 @@
 package com.example.maceradores.maceracion.adapters;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -83,6 +84,9 @@ public class FragmentChartAdapter extends RecyclerView.Adapter<FragmentChartAdap
 
             this.lineChart.setData(lineDataTemp);
             this.lineChart.getAxisLeft().setEnabled(false);
+            this.lineChart.getDescription().setText("x:tiempo[min]; y:temperatura[ºC]");
+            this.lineChart.getDescription().setTypeface(Typeface.DEFAULT_BOLD);
+            this.lineChart.getDescription().setTextSize(12.0f);
 
             //tempChart.
             this.lineChart.invalidate(); //refresh

@@ -238,6 +238,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
         ltempChartSensor1.getDescription().setTextSize(12.0f);
 
 
+
         //tempChartSensor.
         ltempChartSensor1.invalidate(); //refresh
 
