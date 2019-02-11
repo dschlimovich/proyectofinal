@@ -59,7 +59,7 @@ public class FragmentChartAdapter extends RecyclerView.Adapter<FragmentChartAdap
         }
         public void bind(final List<Float> tempSensedValues,String date, float intMedTempMinutes){
 
-            textView.setText("Experiment of date: " + date);
+            textView.setText("Fecha experimento: " + date);
             List<Entry> entriesTemp = new ArrayList<Entry>();
 
             for ( int x=0;x<tempSensedValues.size();x++){
