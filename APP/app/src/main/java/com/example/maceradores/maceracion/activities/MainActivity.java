@@ -188,20 +188,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAlertCurrentValues(){
-   /*     DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
-        List<SensedValues>lista=new ArrayList<>();
-        lista = dbHelper.getAllSensedValues(12);
-        lista = dbHelper.getAllSensedValues(13);
-        lista = dbHelper.getAllSensedValues(14);
-        dbHelper.deleteExperiment(12);
-        dbHelper.deleteExperiment(13);
-        dbHelper.deleteExperiment(14);
-        if(lista.isEmpty())Log.d("No hay","SV");
-        for(int i=0;i<lista.size();i++){
-            Log.d("id_Raspi",String.valueOf(lista.get(i).getIdRaspi()));
-            Log.d("id",String.valueOf(lista.get(i).getId()));
-        }
-        //cancelAllWork();*/
+        //enhanceTemperatureExperiment(8);
+        //alterExperiment(8,14);
+
+
         //----------------------------------------
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -285,16 +275,16 @@ public class MainActivity extends AppCompatActivity {
     private float validatedTempMean(float t1, float t2, float t3, float t4){
         int divisor=4;
         float dividendo=0;
-        if(t1==-1000){
+        if(t1 <=0){
             divisor--;
         }else{dividendo = dividendo + t1;}
-        if(t2==-1000){
+        if(t2<=0){
             divisor--;
         }else{dividendo = dividendo + t2;}
-        if(t3==-1000){
+        if(t3<=0){
             divisor--;
         }else{dividendo = dividendo + t3;}
-        if(t4==-1000){
+        if(t4<=0){
             divisor--;
         }else{dividendo = dividendo + t4;}
         if(dividendo==0){//Asi evito la division por cero
