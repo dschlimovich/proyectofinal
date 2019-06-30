@@ -36,7 +36,11 @@ import com.example.maceradores.maceracion.models.MeasureInterval;
 import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.retrofitInterface.Api;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -80,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setToolbar();
+
 
     } //end OnCreate
 
@@ -295,6 +300,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    private long addDays( long milis, long days){
+        long ONE_DAY_IN_MILLIS = 1000*60*60*24;
+        return milis + (days * ONE_DAY_IN_MILLIS);
+    }
+
+    private long addMinutes( long milis, long mins) {
+        long ONE_MINUTE_IN_MILLIS = 60000;
+        return milis + (mins * ONE_MINUTE_IN_MILLIS);
+    }
+
+    private String getStringFromDateInMillis( long milis){
+        Date date = new Date( milis);
+        DateFormat df = new SimpleDateFormat("YYYY/MM/dd hh:mm:ss");
+        return df.format(date);
+    }
+
+    private long getMilisFromCurrent(){
+        Calendar cal = Calendar.getInstance();
+        return cal.getTimeInMillis();
+    }
 
     private void alterExperiment( int idExpOrigin, int idExpDestination){
         // aca la movida va a ser asi:
@@ -389,40 +414,53 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.close();
     }
 
-    private void addExperimentChiquita(int idMash){
-        //el id de la maceración chiquita es 5
-        // yo tendría que insertar un experimento, en este caso id 1.
-        // porque no tengo otros experimentos insertados.
-        // luego tengo que insertar 5 sensedvalues.
-        // a ver que sale campeon
-
+    private void addExperiments(int idMash){
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        long idNewExperiment = dbHelper.insertNewExperiment(idMash);
-        dbHelper.insertDensity((int) idNewExperiment, 1.050f);
-        //le agrego 5 sensedValues.
 
-        for (int i=0; i < 5; i++){
-            //este hardcodeo de fecha no se si me lo va a perimitir...
-            SensedValues sv = new SensedValues(i,i, "5/5/2018 16:16",
-                    60, 60, 60, 60,
-                    50, 25, 33, 24, 5);
+        long idNewExperiment = dbHelper.insertNewExperiment(idMash);
+
+        dbHelper.insertDensity((int) idNewExperiment, 1.050f);
+
+        // I going to insert 60 values every minute.
+        int cantIteraciones = 60;
+        Float pendiente = (63 - 68) / new Float(cantIteraciones);
+        Float temp = 68f; //Start in 68 and goes decreasing until 63
+        Float pH = 5.6f;
+        long tiempo = getMilisFromCurrent();
+
+        for (int i=0; i < cantIteraciones; i++){
+            String date = getStringFromDateInMillis(tiempo);
+            SensedValues sv = new SensedValues(i,i, date,
+                    temp, temp, temp, temp,
+                    50, 25, 33, 24, pH);
             dbHelper.insertSensedValue(sv, (int) idNewExperiment);
+            // update values
+            temp = temp + pendiente; // avanzo cada 1 minuto la pendiente no la tengo q multiplicar
+            tiempo = addMinutes(tiempo, 1);
         }
 
         //a este nuevo experimento yo lo debería multiplicar.
         //suponete que lo repito 4 veces para tener 5 experimentos en total
 
-        for (int i=0; i<4; i++){
-            //agrego.
+        int cantClones = 5;
+        for (int i=0; i< cantClones; i++){
+            //shift one day
             long id = dbHelper.insertNewExperiment(idMash);
             dbHelper.insertDensity((int) id, 1.050f);
-            //repito el experimento.
-            for (int j=0; j < 5; j++){
-                //este hardcodeo de fecha no se si me lo va a perimitir...
-                SensedValues sv = new SensedValues(5+j+(5*i),5+j+(5*i), "5/5/2018 16:16",
-                        60, 60, 60, 60,
-                        50, 25, 33, 24, 5);
+            tiempo = addDays( tiempo, 1);
+            temp = 68f; //temperature reset
+
+            // repeat the experiment.
+            for (int j=0; j < cantIteraciones; j++){
+                String date = getStringFromDateInMillis(tiempo);
+
+                SensedValues sv = new SensedValues(5+j+(5*i),5+j+(5*i), date,
+                        temp, temp, temp, temp,
+                        50, 25, 33, 24, pH);
                 dbHelper.insertSensedValue(sv, (int) id);
+                // update values
+                temp = temp + pendiente; // move by minute; the slope doesn't have to multiplicar
+                tiempo = addMinutes(tiempo, 1);
             }
 
             alterExperiment((int) idNewExperiment, (int)id);
