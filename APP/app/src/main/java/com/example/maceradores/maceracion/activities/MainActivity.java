@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         setToolbar();
 
-
+        //addExperiments(1);
     } //end OnCreate
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
