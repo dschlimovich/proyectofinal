@@ -137,6 +137,9 @@ public class DetailExperimentActivity extends AppCompatActivity {
         dataSetTemp.enableDashedLine(1f,1f,1f);
         dataSetTemp.setDrawFilled(true);
         dataSetTemp.setFillColor(Color.RED);
+        dataSetTemp.setDrawValues(false);
+        dataSetTemp.setCircleColor(R.color.colorPrimaryDark);
+        dataSetTemp.setCircleRadius(2f); // 1f and greater
 
 
         //As a last step, you need to add the LineDataSet object (or objects) you created to a
@@ -164,11 +167,21 @@ public class DetailExperimentActivity extends AppCompatActivity {
         dataSetPh.enableDashedLine(1f,1f,1f);
         dataSetPh.setDrawFilled(true);
         dataSetPh.setFillColor(Color.BLUE);
+        dataSetPh.setDrawValues(false);
+        dataSetPh.setCircleColor(R.color.colorPrimaryDark);
+        dataSetPh.setCircleRadius(2f); // 1f and greater
+
 
         LineData lineDataPh = new LineData(dataSetPh);
 
+        //lphChart.setVisibleYRange(0,14, YAxis.AxisDependency.LEFT );
+        //lphChart.setVisibleYRangeMinimum( 0, YAxis.AxisDependency.RIGHT);
+        //lphChart.setVisibleYRangeMaximum( 14, YAxis.AxisDependency.RIGHT);
+
         lphChart.setData(lineDataPh);
         lphChart.getAxisRight().setEnabled(false);
+        lphChart.getAxisLeft().setAxisMinimum(0);
+        lphChart.getAxisLeft().setAxisMaximum(14);
         lphChart.getDescription().setText("x:tiempo[min]; y:pH[sin unidad]");
         lphChart.getDescription().setTypeface(Typeface.DEFAULT_BOLD);
         lphChart.getDescription().setTextSize(12.0f);
@@ -180,15 +193,31 @@ public class DetailExperimentActivity extends AppCompatActivity {
         //--Enzymes
         LineDataSet dataSetAlfa = new LineDataSet(entriesAlfa,"AlfaAmilasa");
         dataSetAlfa.setColor(Color.BLUE);
+        dataSetAlfa.setDrawValues(false);
+        dataSetAlfa.setCircleColor(R.color.colorPrimaryDark);
+        dataSetAlfa.setDrawCircles(false);
+        //dataSetAlfa.setCircleRadius(2f); // 1f and greater
 
         LineDataSet dataSetBeta = new LineDataSet(entriesBeta,"BetaAmilasa");
         dataSetBeta.setColor(Color.RED);
+        dataSetBeta.setDrawValues(false);
+        dataSetBeta.setCircleColor(R.color.colorPrimaryDark);
+        //dataSetBeta.setCircleRadius(2f); // 1f and greater
+        dataSetBeta.setDrawCircles(false);
 
         LineDataSet dataSetGlucan = new LineDataSet(entriesGlucan,"BetaGlucanasa");
         dataSetGlucan.setColor(Color.GREEN);
+        dataSetGlucan.setDrawValues(false);
+        dataSetGlucan.setCircleColor(R.color.colorPrimaryDark);
+        //dataSetGlucan.setCircleRadius(2f);
+        dataSetGlucan.setDrawCircles(false);
 
         LineDataSet dataSetProt = new LineDataSet(entriesProte,"Proteasa");
         dataSetProt.setColor(Color.MAGENTA);
+        dataSetProt.setDrawValues(false);
+        dataSetProt.setCircleColor(R.color.colorPrimaryDark);
+        //dataSetProt.setCircleRadius(2f);
+        dataSetProt.setDrawCircles(false);
 
         LineData lineDataEnzymes = new LineData();
         lineDataEnzymes.addDataSet(dataSetAlfa);
@@ -214,14 +243,20 @@ public class DetailExperimentActivity extends AppCompatActivity {
         //**********************************fin Enzymes*********************************************
 
 
+
         //*********************************temp Sensores *******************************************
         //SENSOR 1
         //DataSet objects hold data which belongs together, and allow individual styling of that data
         LineDataSet dataSetTemp1 = new LineDataSet(entriesTemp1,"Temperatura Sensor 1");
         dataSetTemp1.setColor(Color.RED);
         dataSetTemp1.enableDashedLine(1f,1f,1f);
-        dataSetTemp1.setDrawFilled(true);
-        dataSetTemp1.setFillColor(Color.RED);
+        dataSetTemp1.setDrawFilled(true); //este si va
+        dataSetTemp1.setFillColor(Color.RED); //este va
+        dataSetTemp1.setDrawValues(false); // no muestra numerito cuando esta en false
+        dataSetTemp1.setCircleColor(R.color.colorPrimaryDark);
+        dataSetTemp1.setCircleRadius(2f); // 1f and greater
+
+        //dataSetTemp1.setDrawCircles(false);
 
 
         //As a last step, you need to add the LineDataSet object (or objects) you created to a
@@ -237,9 +272,11 @@ public class DetailExperimentActivity extends AppCompatActivity {
         ltempChartSensor1.getDescription().setTypeface(Typeface.DEFAULT_BOLD);
         ltempChartSensor1.getDescription().setTextSize(12.0f);
 
+        //ltempChartSensor1.setVisibleXRange(0,60);
 
 
         //tempChartSensor.
+        //ltempChartSensor1.setMaxVisibleValueCount(20);
         ltempChartSensor1.invalidate(); //refresh
 
 
@@ -250,6 +287,10 @@ public class DetailExperimentActivity extends AppCompatActivity {
         dataSetTemp2.enableDashedLine(1f,1f,1f);
         dataSetTemp2.setDrawFilled(true);
         dataSetTemp2.setFillColor(Color.RED);
+        dataSetTemp2.setDrawValues(false);
+        dataSetTemp2.setCircleColor(R.color.colorPrimaryDark);
+        dataSetTemp2.setCircleRadius(2f); // 1f and greater
+
 
         LineData lineDataTemp2 = new LineData(dataSetTemp2);
 
@@ -259,6 +300,7 @@ public class DetailExperimentActivity extends AppCompatActivity {
         ltempChartSensor2.getDescription().setText("x:tiempo[min]; y:temperatura[ºC]");
         ltempChartSensor2.getDescription().setTypeface(Typeface.DEFAULT_BOLD);
         ltempChartSensor2.getDescription().setTextSize(12.0f);
+
 
 
         //tempChartSensor.
@@ -271,6 +313,9 @@ public class DetailExperimentActivity extends AppCompatActivity {
         dataSetTemp3.enableDashedLine(1f,1f,1f);
         dataSetTemp3.setDrawFilled(true);
         dataSetTemp3.setFillColor(Color.RED);
+        dataSetTemp3.setDrawValues(false);
+        dataSetTemp3.setCircleColor(R.color.colorPrimaryDark);
+        dataSetTemp3.setCircleRadius(2f); // 1f and greater
 
         LineData lineDataTemp3 = new LineData(dataSetTemp3);
 
@@ -292,6 +337,9 @@ public class DetailExperimentActivity extends AppCompatActivity {
         dataSetTemp4.enableDashedLine(1f,1f,1f);
         dataSetTemp4.setDrawFilled(true);
         dataSetTemp4.setFillColor(Color.RED);
+        dataSetTemp4.setDrawValues(false);
+        dataSetTemp4.setCircleColor(R.color.colorPrimaryDark);
+        dataSetTemp4.setCircleRadius(2f); // 1f and greater
 
 
         LineData lineDataTemp4 = new LineData(dataSetTemp4);
