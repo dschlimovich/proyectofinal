@@ -86,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
         setToolbar();
 
         //addExperiments(1);
+        //addComplexExperiments(2);
+        /*alterExperiment(7,8);
+        alterExperiment(7,9);
+        alterExperiment(7,10);
+        alterExperiment(7,11);
+        alterExperiment(7,12);*/
     } //end OnCreate
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -411,6 +417,70 @@ public class MainActivity extends AppCompatActivity {
             dbHelper.updateSensedValue(sv.getId(), valoresMod);
         }
 
+        dbHelper.close();
+    }
+
+    private void addComplexExperiments(int idMash){
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+        long idNewExperiment = dbHelper.insertNewExperiment(idMash);
+
+        dbHelper.insertDensity((int) idNewExperiment, 1.050f);
+
+        // I going to insert 60 values every minute.
+        int[] cantIteraciones = new int[]{20,20,20,};
+        float[] tempInciales = new float[]{50f,60f,70f};
+        // Ahora necesito en vez de una sola temperatura de inicio, una por cada intervalo.
+
+        Float pendiente = (63 - 68) / new Float(60); //mantengo la pendiente
+
+        for (int t=0; t<3; t++){
+            Float temp = tempInciales[t]; //Start in 68 and goes decreasing until 63
+            Float pH = 5.6f;
+            long tiempo = getMilisFromCurrent();
+
+            for (int i=0; i < cantIteraciones[t]; i++){
+                String date = getStringFromDateInMillis(tiempo);
+                SensedValues sv = new SensedValues(i,i, date,
+                        temp, temp, temp, temp,
+                        50, 25, 33, 24, pH);
+                dbHelper.insertSensedValue(sv, (int) idNewExperiment);
+                // update values
+                temp = temp + pendiente; // avanzo cada 1 minuto la pendiente no la tengo q multiplicar
+                tiempo = addMinutes(tiempo, 1);
+            }
+        } //recorro cada intervalo
+
+        //alterExperiment((int) idNewExperiment, (int)idNewExperiment);
+
+/*
+        //a este nuevo experimento yo lo debería multiplicar.
+        //suponete que lo repito 4 veces para tener 5 experimentos en total
+
+        int cantClones = 5;
+        for (int i=0; i< cantClones; i++){
+            //shift one day
+            long id = dbHelper.insertNewExperiment(idMash);
+            dbHelper.insertDensity((int) id, 1.050f);
+            tiempo = addDays( tiempo, 1);
+            temp = 68f; //temperature reset
+
+            // repeat the experiment.
+            for (int j=0; j < cantIteraciones; j++){
+                String date = getStringFromDateInMillis(tiempo);
+
+                SensedValues sv = new SensedValues(5+j+(5*i),5+j+(5*i), date,
+                        temp, temp, temp, temp,
+                        50, 25, 33, 24, pH);
+                dbHelper.insertSensedValue(sv, (int) id);
+                // update values
+                temp = temp + pendiente; // move by minute; the slope doesn't have to multiplicar
+                tiempo = addMinutes(tiempo, 1);
+            }
+
+            alterExperiment((int) idNewExperiment, (int)id);
+        }
+*/
         dbHelper.close();
     }
 
