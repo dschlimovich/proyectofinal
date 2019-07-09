@@ -74,6 +74,9 @@ public class FragmentChartAdapter extends RecyclerView.Adapter<FragmentChartAdap
             dataSetTemp.enableDashedLine(1f,1f,1f);
             dataSetTemp.setDrawFilled(true);
             dataSetTemp.setFillColor(Color.RED);
+            dataSetTemp.setDrawValues(false);
+            dataSetTemp.setCircleColor(R.color.colorPrimaryDark);
+            dataSetTemp.setCircleRadius(2f);
 
             //As a last step, you need to add the LineDataSet object (or objects) you created to a
             // LineData object. This object holds all data that is represented by a Chart instance
