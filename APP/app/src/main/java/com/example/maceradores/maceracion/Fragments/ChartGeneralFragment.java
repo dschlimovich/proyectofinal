@@ -25,6 +25,7 @@ import com.example.maceradores.maceracion.models.SensedValues;
 import com.example.maceradores.maceracion.utils.Calculos;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
@@ -267,8 +268,8 @@ public class ChartGeneralFragment extends Fragment {
         LineData lineDataPh = new LineData(dataSetPh);
 
         phChart.setData(lineDataPh);
-        phChart.getAxisLeft().setAxisMinimum(0);
-        phChart.getAxisLeft().setAxisMaximum(14);
+        phChart.getAxisLeft().setAxisMinimum(3.4f);
+        phChart.getAxisLeft().setAxisMaximum(7.4f);
         phChart.getAxisRight().setEnabled(false);
         phChart.getDescription().setText("x:tiempo[min]; y:pH[sin unidad]");
         phChart.getDescription().setTypeface(Typeface.DEFAULT_BOLD);
@@ -343,16 +344,27 @@ public class ChartGeneralFragment extends Fragment {
 
         List<Integer> intervalos = intervaloMedicionTempPh(idMash);
 
+        Float maxValue = new Float(-1000);
+        Float minValue= new Float(1000);
+
         for(int x=0; x<medianAndQuartils.size();x++){
             candleEntries.add(new CandleEntry(x*(intervalos.get(0)/60),medianAndQuartils.get(x).get(1),
                     medianAndQuartils.get(x).get(2),
                     medianAndQuartils.get(x).get(3),
                     medianAndQuartils.get(x).get(4)));
 
+            if( maxValue < medianAndQuartils.get(x).get(4)){
+                maxValue = medianAndQuartils.get(x).get(4);
+            }
+
+            if( minValue > medianAndQuartils.get(x).get(1)){
+                minValue = medianAndQuartils.get(x).get(1);
+            }
+
             entries.add(new Entry(x*(intervalos.get(0)/60),medianAndQuartils.get(x).get(0)));
         }
 
-        LineDataSet lineDataSet = new LineDataSet(entries,"Median");
+        LineDataSet lineDataSet = new LineDataSet(entries,"Mediana");
         CandleDataSet candleDataSet = new CandleDataSet(candleEntries,"Box-plot");
 
         candleDataSet.setColor(Color.rgb(80, 80, 80));
@@ -364,8 +376,13 @@ public class ChartGeneralFragment extends Fragment {
         candleDataSet.setIncreasingPaintStyle(Paint.Style.STROKE);
         candleDataSet.setNeutralColor(Color.BLUE);
         candleDataSet.setValueTextColor(Color.RED);
+        candleDataSet.setDrawValues(false);
+
         lineDataSet.setFillColor(Color.WHITE);
         lineDataSet.setFillAlpha(0);
+        lineDataSet.setDrawValues(false);
+        lineDataSet.setCircleColor(R.color.colorPrimaryDark);
+        lineDataSet.setCircleRadius(2f);
 
         LineData lineData = new LineData(lineDataSet);
         CandleData candleData = new CandleData(candleDataSet);
@@ -378,19 +395,19 @@ public class ChartGeneralFragment extends Fragment {
 
 
         //-----
-
+        //combinedChart.getLegend().setEnabled(false); //hide the label . legend
         YAxis yAxis = combinedChart.getAxisLeft();
         YAxis rightAxis = combinedChart.getAxisRight();
         rightAxis.setEnabled(false);
         yAxis.setEnabled(true);
         if(temp0ph1==0) {//Solo toca el eje y si es para grafico de temperatura y no de pH
-            yAxis.setAxisMinimum(20f);
-            yAxis.setAxisMaximum(80f);
+            yAxis.setAxisMinimum(minValue*0.97f);
+            yAxis.setAxisMaximum(maxValue*1.02f);
             yAxis.setSpaceTop(50);
         }
         else if (temp0ph1 ==1){
-            yAxis.setAxisMinimum(4f);
-            yAxis.setAxisMaximum(6f);
+            yAxis.setAxisMinimum(minValue*0.97f);
+            yAxis.setAxisMaximum(maxValue*1.02f);
             yAxis.setSpaceTop(50);
         }
 
@@ -406,6 +423,7 @@ public class ChartGeneralFragment extends Fragment {
         combinedChart.setHighlightPerTapEnabled(true);
 
         combinedChart.setData(combinedData);
+        combinedChart.getDescription().setText("x:tiempo[min]; y:temperatura[ºC]");
         combinedChart.invalidate();//refresh
 
     }

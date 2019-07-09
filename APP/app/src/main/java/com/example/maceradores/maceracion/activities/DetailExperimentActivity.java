@@ -180,8 +180,8 @@ public class DetailExperimentActivity extends AppCompatActivity {
 
         lphChart.setData(lineDataPh);
         lphChart.getAxisRight().setEnabled(false);
-        lphChart.getAxisLeft().setAxisMinimum(0);
-        lphChart.getAxisLeft().setAxisMaximum(14);
+        lphChart.getAxisLeft().setAxisMinimum(3.4f);
+        lphChart.getAxisLeft().setAxisMaximum(7.4f);
         lphChart.getDescription().setText("x:tiempo[min]; y:pH[sin unidad]");
         lphChart.getDescription().setTypeface(Typeface.DEFAULT_BOLD);
         lphChart.getDescription().setTextSize(12.0f);
@@ -459,6 +459,5 @@ public class DetailExperimentActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().show();
     }
-
 
 }
