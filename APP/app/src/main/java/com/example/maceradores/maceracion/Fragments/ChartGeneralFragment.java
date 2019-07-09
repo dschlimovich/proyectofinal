@@ -232,6 +232,9 @@ public class ChartGeneralFragment extends Fragment {
         dataSetTemp.enableDashedLine(1f,1f,1f);
         dataSetTemp.setDrawFilled(true);
         dataSetTemp.setFillColor(Color.RED);
+        dataSetTemp.setDrawValues(false);
+        dataSetTemp.setCircleColor(R.color.colorPrimaryDark);
+        dataSetTemp.setCircleRadius(2f); // 1f and greater
 
 
         //As a last step, you need to add the LineDataSet object (or objects) you created to a
@@ -257,10 +260,15 @@ public class ChartGeneralFragment extends Fragment {
         dataSetPh.enableDashedLine(1f,1f,1f);
         dataSetPh.setDrawFilled(true);
         dataSetPh.setFillColor(Color.BLUE);
+        dataSetPh.setDrawValues(false);
+        dataSetPh.setCircleColor(R.color.colorPrimaryDark);
+        dataSetPh.setCircleRadius(2f);
 
         LineData lineDataPh = new LineData(dataSetPh);
 
         phChart.setData(lineDataPh);
+        phChart.getAxisLeft().setAxisMinimum(0);
+        phChart.getAxisLeft().setAxisMaximum(14);
         phChart.getAxisRight().setEnabled(false);
         phChart.getDescription().setText("x:tiempo[min]; y:pH[sin unidad]");
         phChart.getDescription().setTypeface(Typeface.DEFAULT_BOLD);
@@ -270,15 +278,32 @@ public class ChartGeneralFragment extends Fragment {
         //--Enzymes
         LineDataSet dataSetAlfa = new LineDataSet(entriesAlfa,"AlfaAmilasa");
         dataSetAlfa.setColor(Color.BLUE);
+        dataSetAlfa.setDrawValues(false);
+        dataSetAlfa.setCircleColor(R.color.colorPrimaryDark);
+        //dataSetBeta.setCircleRadius(2f); // 1f and greater
+        dataSetAlfa.setDrawCircles(false);
 
         LineDataSet dataSetBeta = new LineDataSet(entriesBeta,"BetaAmilasa");
         dataSetBeta.setColor(Color.RED);
+        dataSetBeta.setDrawValues(false);
+        dataSetBeta.setCircleColor(R.color.colorPrimaryDark);
+        //dataSetBeta.setCircleRadius(2f); // 1f and greater
+        dataSetBeta.setDrawCircles(false);
 
         LineDataSet dataSetGlucan = new LineDataSet(entriesGlucan,"BetaGlucanasa");
         dataSetGlucan.setColor(Color.GREEN);
+        dataSetGlucan.setDrawValues(false);
+        dataSetGlucan.setCircleColor(R.color.colorPrimaryDark);
+        //dataSetBeta.setCircleRadius(2f); // 1f and greater
+        dataSetGlucan.setDrawCircles(false);
+
 
         LineDataSet dataSetProt = new LineDataSet(entriesProte,"Proteasa");
         dataSetProt.setColor(Color.MAGENTA);
+        dataSetProt.setCircleColor(R.color.colorPrimaryDark);
+        dataSetProt.setDrawValues(false);
+        //dataSetBeta.setCircleRadius(2f); // 1f and greater
+        dataSetProt.setDrawCircles(false);
 
         LineData lineDataEnzymes = new LineData();
         lineDataEnzymes.addDataSet(dataSetAlfa);
