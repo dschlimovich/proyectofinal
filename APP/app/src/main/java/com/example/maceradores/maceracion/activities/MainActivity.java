@@ -85,6 +85,9 @@ public class MainActivity extends AppCompatActivity {
 
         setToolbar();
 
+        //for( int i = 2; i<13; i++){
+        //     boicotPhValues(i,0,9, -1);
+        //}
         //addExperiments(1);
         //addComplexExperiments(2);
         /*alterExperiment(7,8);
@@ -534,6 +537,35 @@ public class MainActivity extends AppCompatActivity {
             }
 
             alterExperiment((int) idNewExperiment, (int)id);
+        }
+
+        dbHelper.close();
+    }
+
+    private void boicotPhValues( int idExp, int initialPos, int amount, float value){
+        //the idea is to set certain amount of values whit a default value
+        // from some initial position.
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+        List<SensedValues> svList = dbHelper.getAllSensedValues(idExp);
+
+        if( svList.size() - initialPos > amount ) { //may be unnecessary
+            for( int i=0; i < amount; i++){
+                SensedValues sv = svList.get(initialPos + i);
+
+                float[] valoresMod = new float[]{
+                        sv.getTemp1(),
+                        sv.getTemp2(),
+                        sv.getTemp3(),
+                        sv.getTemp4(),
+                        sv.getTempSecondary(),
+                        sv.getTempPH(),
+                        value
+                };
+
+                dbHelper.updateSensedValue(sv.getId(), valoresMod);
+
+            }
         }
 
         dbHelper.close();
